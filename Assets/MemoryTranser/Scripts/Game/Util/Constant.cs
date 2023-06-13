@@ -1,18 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class Constant : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+namespace MemoryTranser.Scripts.Game.Util {
+    public static class Constant {
+        public const int MEMORY_BOX_LAYER_MASK = 1 << 7;
+        public const float DELTA = 1f;
     }
 }

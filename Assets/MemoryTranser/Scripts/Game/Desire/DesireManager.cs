@@ -1,18 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class DesireManager : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+namespace MemoryTranser.Scripts.Game.Desire {
+    public class DesireManager : MonoBehaviour {
+        #region 変数の定義
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        private bool _spawnFlag;
+
+        #endregion
+
+        #region プロパティーの定義
+
+        public bool Spawnflag {
+            get => _spawnFlag;
+            set => _spawnFlag = value;
+        }
+
+        #endregion
+
+        private void SpawnDesire() { }
     }
 }

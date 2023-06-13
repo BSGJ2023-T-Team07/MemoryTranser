@@ -1,18 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
-public class ConcentrationShower : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+namespace MemoryTranser.Scripts.Game.UI {
+    public class ConcentrationShower : MonoBehaviour {
+        [SerializeField] private Concentration.ConcentrationManager concentrationManager;
+        [SerializeField] private TextMeshProUGUI concentrationText;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        private void Update() {
+            concentrationText.text = $"RemainingConcentration: {concentrationManager.RemainingConcentration}";
+        }
     }
 }

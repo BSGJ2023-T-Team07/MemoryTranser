@@ -1,18 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
+using MemoryTranser.Scripts.Game.Phase;
+using TMPro;
 using UnityEngine;
 
-public class PhaseShower : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+namespace MemoryTranser.Scripts.Game.UI {
+    public class PhaseShower : MonoBehaviour {
+        [SerializeField] private TextMeshProUGUI text;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        public void SetPhaseText(PhaseCore[] phaseCores, int currentPhaseIndex) {
+            text.text = "";
+            for (var i = 0; i < phaseCores.Length; i++) {
+                if (i == currentPhaseIndex) {
+                    text.text += $"CurrentPhase: {phaseCores[i].QuestType}, Score: {phaseCores[i].Score}\n";
+                    continue;
+                }
+
+                text.text += $"Phase{i+1}: {phaseCores[i].QuestType}, Score: {phaseCores[i].Score}\n";
+            }
+        }
     }
 }

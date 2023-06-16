@@ -33,7 +33,7 @@ namespace MemoryTranser.Scripts.Game.Concentration {
         private void Update() {
             if (DecreaseFlag) DecreaseConcentration();
 
-            if (RemainingConcentration <= 0) {
+            if (RemainingConcentration < 0) {
                 RemainingConcentration = 0;
                 GameFlowManager.I.ChangeGameState(GameState.Result);
             }

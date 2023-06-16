@@ -25,11 +25,11 @@ namespace MemoryTranser.Scripts.Game.Desire {
         private DesireParameters _myParameters;
         private Vector3 _followPos;
 
-        private bool _followFlag;
-
         #endregion
 
         #region プロパティーの定義
+
+        public bool FollowFlag => _myState == DesireState.FollowingFairy;
 
         public Rigidbody2D Rb2D {
             get {
@@ -44,7 +44,7 @@ namespace MemoryTranser.Scripts.Game.Desire {
         #region Unityから呼ばれる
 
         private void FixedUpdate() {
-            if (_followFlag) {
+            if (FollowFlag) {
                 //DesireとFairyの距離を算出する
                 Vector2 direction = (fairyTransform.position - transform.position).normalized;
 
@@ -66,9 +66,6 @@ namespace MemoryTranser.Scripts.Game.Desire {
             //Desireを非表示にする
             gameObject.SetActive(false);
 
-            //追跡を停止する
-            _followFlag = false;
-
             //ステータスを更新する
             _myState = DesireState.Freeze;
 
@@ -79,9 +76,6 @@ namespace MemoryTranser.Scripts.Game.Desire {
         public void BeEliminated() {
             //Desireを非表示にする
             gameObject.SetActive(false);
-
-            //追跡を停止する
-            _followFlag = false;
 
             //ステータスを更新する
             _myState = DesireState.Freeze;
@@ -107,7 +101,6 @@ namespace MemoryTranser.Scripts.Game.Desire {
 
             //Fairyの追跡を開始する
             gameObject.SetActive(true);
-            _followFlag = true;
             _myState = DesireState.FollowingFairy;
         }
     }

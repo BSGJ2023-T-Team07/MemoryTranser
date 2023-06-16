@@ -4,9 +4,11 @@ using Cysharp.Threading.Tasks;
 using MemoryTranser.Scripts.Game.Desire;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.Util;
+using UniRx;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Unit = UniRx.Unit;
 
 namespace MemoryTranser.Scripts.Game.MemoryBox {
     [RequireComponent(typeof(SpriteRenderer))]
@@ -16,9 +18,8 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         #region コンポーネントの定義
 
         [SerializeField] private SpriteRenderer spriteRenderer;
-        [SerializeField] private BoxCollider2D boxCollider2D;
-        [SerializeField] private Rigidbody2D rigidbody2D;
-        private MemoryBoxManager memoryBoxManager;
+        [SerializeField] private BoxCollider2D bc2D;
+        [SerializeField] private Rigidbody2D rb2D;
 
         #endregion
 
@@ -29,8 +30,15 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         private float _weight;
         private int _boxId;
 
-
         private float _diff;
+        private Transform _holderTransform;
+
+        #endregion
+
+        #region eventの定義
+
+        private readonly Subject<Unit> _onDisappear = new();
+        public IObservable<Unit> OnDisappear => _onDisappear;
 
         #endregion
 
@@ -38,18 +46,37 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         #region プロパティーの定義
 
         public SpriteRenderer SpRr {
-            get => spriteRenderer;
+            get {
+                if (!spriteRenderer) spriteRenderer = GetComponent<SpriteRenderer>();
+                return spriteRenderer;
+            }
             set => spriteRenderer = value;
         }
 
         public BoxCollider2D Bc2D {
-            get => boxCollider2D;
-            set => boxCollider2D = value;
+            get {
+                if (!bc2D) bc2D = GetComponent<BoxCollider2D>();
+                return bc2D;
+            }
+            set => bc2D = value;
+        }
+
+        public Rigidbody2D Rb2D {
+            get {
+                if (!rb2D) rb2D = GetComponent<Rigidbody2D>();
+                return rb2D;
+            }
+            set => rb2D = value;
         }
 
         public BoxMemoryType BoxMemoryType {
             get => _boxMemoryType;
             set => _boxMemoryType = value;
+        }
+
+        public MemoryBoxState MyState {
+            get => _myState;
+            private set => _myState = value;
         }
 
         public float Weight {
@@ -66,70 +93,94 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
         #region Unityから呼ばれる
 
-        private void Awake() {
-            memoryBoxManager = GameFlowManager.I.gameObject.GetComponent<MemoryBoxManager>();
-        }
-
         private void Update() {
-            if (_myState == MemoryBoxState.Held) transform.position = transform.parent.position + Vector3.up * _diff;
+            if (_myState == MemoryBoxState.Held)
+                transform.position = _holderTransform.position + (Vector3)Vector2.up * _diff;
 
-            if (_myState == MemoryBoxState.Thrown && rigidbody2D.velocity.magnitude < Constant.DELTA)
-                _myState = MemoryBoxState.PlacedOnLevel;
+            if (_myState == MemoryBoxState.PlacedOnLevel) {
+                //投げられてない状態で大きい速度を持っていたら毎フレーム減速する
+                if (rb2D.velocity.magnitude > Constant.DELTA) {
+                    rb2D.velocity *= 0.99f;
+                }
+                //速度が一定以下になったら、速度を0にしてStateを変更する
+                else {
+                    rb2D.velocity = Vector2.zero;
+                    _myState = MemoryBoxState.PlacedOnLevel;
+                }
+            }
         }
 
         private void OnTriggerEnter2D(Collider2D other) {
-            if (_myState == MemoryBoxState.Thrown && other.gameObject.layer == LayerMask.NameToLayer("Desire"))
+            if (_myState != MemoryBoxState.Thrown) return;
+
+
+            if (other.gameObject.layer == LayerMask.NameToLayer("Desire")) {
                 //DesireにThrow状態のMemoryBoxが当たった時に以下の関数を呼び出す
                 AttackDesire(other.gameObject.GetComponent<DesireCore>());
+                return;
+            }
+
+            //消失壁に当たったら消える
+            if (other.gameObject.layer == LayerMask.NameToLayer("LostWall")) {
+                Disappear();
+                return;
+            }
         }
 
         #endregion
 
+        #region 受動的行動の定義
+
+        public void BeHeld(Transform holderTransform) {
+            _myState = MemoryBoxState.Held;
+            _holderTransform = holderTransform;
+            Rb2D.velocity = Vector2.zero;
+            Bc2D.enabled = false;
+        }
+
+        public void BeThrown(float throwPower, Vector2 throwDirection) {
+            _myState = MemoryBoxState.Thrown;
+            Bc2D.enabled = true;
+            Bc2D.isTrigger = true;
+            Rb2D.velocity = throwDirection * throwPower / Weight * 2f;
+        }
+
+        public void BePut() {
+            _myState = MemoryBoxState.PlacedOnLevel;
+            Bc2D.enabled = true;
+            Bc2D.isTrigger = false;
+        }
+
+        #endregion
+
+        #region 能動的行動の定義
+
         private void AttackDesire(DesireCore desire) {
             //Desireの命中時の処理を実行する
-            desire.Eliminated();
-        }
-
-        public void Held(Transform holderTransform) {
-            _myState = MemoryBoxState.Held;
-            transform.SetParent(holderTransform);
-            boxCollider2D.enabled = false;
-            rigidbody2D.velocity = Vector2.zero;
-        }
-
-        public async void Thrown(float throwPower, Vector2 throwDirection) {
-            _myState = MemoryBoxState.Thrown;
-            transform.SetParent(null);
-            rigidbody2D.velocity = throwDirection * throwPower / Weight;
-
-            //投げてから少しは当たり判定が無いようにする
-            //await UniTask.Delay(1000 * Convert.ToInt32(throwPower / Weight));
-
-            boxCollider2D.enabled = true;
-        }
-
-        public void Put() {
-            _myState = MemoryBoxState.PlacedOnLevel;
-            boxCollider2D.enabled = true;
+            desire.BeEliminated();
         }
 
         public async void Disappear() {
-            gameObject.SetActive(false);
+            _myState = MemoryBoxState.Disappeared;
+            SpRr.enabled = false;
+            Bc2D.enabled = false;
+            Rb2D.velocity = Vector2.zero;
 
-            await UniTask.Delay(5000);
+            //消えてから3秒後にMemoryBoxManagerへ再生成通知をする
+            await UniTask.Delay(TimeSpan.FromSeconds(3f));
+            _onDisappear.OnNext(Unit.Default);
+            _onDisappear.OnCompleted();
+            _onDisappear.Dispose();
 
-            Revive();
+            SpRr.enabled = true;
+            Bc2D.enabled = true;
+            _myState = MemoryBoxState.PlacedOnLevel;
         }
 
-        public void Revive() {
-            memoryBoxManager.GenerateRandomMemoryBox(this);
-            transform.position = memoryBoxManager.GetRandomSpawnPosition();
-            gameObject.SetActive(true);
-        }
-
+        #endregion
 
         public void SetDiff() {
-            _diff = boxCollider2D.size.y * transform.localScale.y;
+            _diff = bc2D.size.y * transform.localScale.y;
         }
     }
 }

@@ -6,7 +6,9 @@ using MemoryTranser.Scripts.Game.Desire;
 using MemoryTranser.Scripts.Game.Fairy;
 using MemoryTranser.Scripts.Game.MemoryBox;
 using MemoryTranser.Scripts.Game.Phase;
+using MemoryTranser.Scripts.Game.Sound;
 using MemoryTranser.Scripts.Game.Util;
+using TMPro.EditorUtilities;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
@@ -18,18 +20,22 @@ namespace MemoryTranser.Scripts.Game.GameManagers {
     public class GameFlowManager : SingletonMonoBehaviour<GameFlowManager> {
         protected override bool DontDestroy => false;
 
-        //変数の定義
+        #region コンポーネントの定義
+
         [SerializeField] private PhaseManager phaseManager;
         [SerializeField] private ConcentrationManager concentrationManager;
         [SerializeField] private MemoryBoxManager memoryBoxManager;
         [SerializeField] private DesireManager desireManager;
 
         [SerializeField] private FairyCore fairyCore;
+        private BgmManager _bgmManager;
+
+        #endregion
 
         //ゲームシーンがデザイアコアにアクセスできるようにする
         [SerializeField] private DesireCore desireCore;
 
-        private int _initialPhaseCount = 3;
+        #region Unityから呼ばれる
 
         protected override void Awake() {
             base.Awake();
@@ -37,13 +43,17 @@ namespace MemoryTranser.Scripts.Game.GameManagers {
             concentrationManager = GetComponent<ConcentrationManager>();
             memoryBoxManager = GetComponent<MemoryBoxManager>();
             desireManager = GetComponent<DesireManager>();
+            _bgmManager = FindObjectOfType<BgmManager>();
         }
 
         private void Start() {
             ChangeGameState(GameState.Initializing);
         }
 
+        #endregion
+
         private GameState _gameState = GameState.Initializing;
+        public GameState NowGameState => _gameState;
 
 
         public void ChangeGameState(GameState state) {
@@ -72,24 +82,25 @@ namespace MemoryTranser.Scripts.Game.GameManagers {
         }
 
         private async void OnStateInitializing() {
+            _bgmManager?.PlayIntro();
             memoryBoxManager.InitializeMemoryBoxes();
             phaseManager.InitializePhases();
             fairyCore.InitializeFairy();
-            //Desireを初期化する
             desireCore.InitializeDesire();
             concentrationManager.InitializeConcentration();
-            await UniTask.Delay(1);
+
+            await UniTask.Delay(TimeSpan.FromTicks(1));
 
             ChangeGameState(GameState.Ready);
         }
 
         private async void OnStateReady() {
             concentrationManager.DecreaseFlag = false;
-            fairyCore.IsControllable = false;
             desireManager.Spawnflag = false;
             phaseManager.UpdatePhaseText();
+            phaseManager.ResetRemainingTime();
 
-            await UniTask.Delay(1000);
+            await UniTask.Delay(TimeSpan.FromSeconds(1f));
 
             ChangeGameState(GameState.Playing);
         }
@@ -97,7 +108,7 @@ namespace MemoryTranser.Scripts.Game.GameManagers {
         private void OnStatePlaying() {
             concentrationManager.DecreaseFlag = true;
             fairyCore.IsControllable = true;
-            desireCore.RestartFllowing();
+            desireCore.RestartFollowing();
             desireManager.Spawnflag = true;
         }
 
@@ -107,7 +118,6 @@ namespace MemoryTranser.Scripts.Game.GameManagers {
             desireManager.Spawnflag = false;
         }
 
-        private void OnStateFinished() {
-        }
+        private void OnStateFinished() { }
     }
 }

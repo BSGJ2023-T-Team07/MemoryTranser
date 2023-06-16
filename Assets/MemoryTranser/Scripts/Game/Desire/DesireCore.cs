@@ -11,7 +11,7 @@ namespace MemoryTranser.Scripts.Game.Desire {
         #region コンポーネントの定義
 
         [SerializeField] private BoxCollider2D boxCollider2D;
-        [SerializeField] private Rigidbody2D rigidbody2D;
+        [SerializeField] private Rigidbody2D rb2D;
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private Transform fairyTransform;
         [SerializeField] private NavMeshAgent navMeshAgent;
@@ -31,24 +31,12 @@ namespace MemoryTranser.Scripts.Game.Desire {
 
         #region プロパティーの定義
 
-        public DesireState MyState {
-            get => _myState;
-            set => _myState = value;
-        }
-
-        public DesireType MyType {
-            get => _myType;
-            set => _myType = value;
-        }
-
-        public DesireParameters MyParameters {
-            get => _myParameters;
-            set => _myParameters = value;
-        }
-
-        public bool FollowFlag {
-            get => _followFlag;
-            set => _followFlag = value;
+        public Rigidbody2D Rb2D {
+            get {
+                if (!rb2D) rb2D = GetComponent<Rigidbody2D>();
+                return rb2D;
+            }
+            set => rb2D = value;
         }
 
         #endregion
@@ -56,61 +44,66 @@ namespace MemoryTranser.Scripts.Game.Desire {
         #region Unityから呼ばれる
 
         private void FixedUpdate() {
-            if (FollowFlag) {
+            if (_followFlag) {
                 //DesireとFairyの距離を算出する
-                Vector2 Distance = fairyTransform.position - transform.position;
-                //算出した距離を単位ベクトルする
-                Distance = Distance.normalized;
+                Vector2 direction = (fairyTransform.position - transform.position).normalized;
+
                 //移動処理
-                rigidbody2D.velocity = Distance * MyParameters.FollowSpeed;
+                Rb2D.velocity = direction * _myParameters.FollowSpeed;
             }
         }
 
         private void OnTriggerEnter2D(Collider2D other) {
             if (other.gameObject.CompareTag("Fairy")) {
-                other.GetComponent<FairyCore>().AttackedByDesire();
-                AttackFairy();
+                other.GetComponent<FairyCore>().BeAttackedByDesire();
+                Disappear();
             }
         }
 
         #endregion
 
-        private void AttackFairy() {
+        private void Disappear() {
             //Desireを非表示にする
             gameObject.SetActive(false);
+
             //追跡を停止する
             _followFlag = false;
+
             //ステータスを更新する
             _myState = DesireState.Freeze;
+
             //一時停止処理を実行させる
-            RestartFllowing();
+            RestartFollowing();
         }
 
-        public void Eliminated() {
+        public void BeEliminated() {
             //Desireを非表示にする
             gameObject.SetActive(false);
+
             //追跡を停止する
             _followFlag = false;
+
             //ステータスを更新する
             _myState = DesireState.Freeze;
+
             //一時停止処理を実行させる
-            RestartFllowing();
+            RestartFollowing();
         }
 
         /// <summary>
         /// Desireの初期化関数
         /// </summary>
         public void InitializeDesire() {
-            MyParameters = new DesireParameters();
-            MyState = DesireState.Freeze;
+            _myParameters = new DesireParameters();
+            _myState = DesireState.Freeze;
 
-            MyParameters.FollowSpeed = FairyParameters.INITIAL_WALK_SPEED * 1.25f;
-            MyParameters.ActionRecoveryTime = 20f;
+            _myParameters.FollowSpeed = FairyParameters.INITIAL_WALK_SPEED * 0.8f;
+            _myParameters.ActionRecoveryTime = 20f;
         }
 
-        public async void RestartFllowing() {
+        public async void RestartFollowing() {
             //指定した時間待機する
-            await UniTask.Delay(1000 * (int)MyParameters.ActionRecoveryTime);
+            await UniTask.Delay(TimeSpan.FromSeconds(_myParameters.ActionRecoveryTime));
 
             //Fairyの追跡を開始する
             gameObject.SetActive(true);

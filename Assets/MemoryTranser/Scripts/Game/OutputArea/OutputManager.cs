@@ -61,12 +61,6 @@ namespace MemoryTranser.Scripts.Game.OutputArea {
 
             //正誤表を元に集中力アップ
             concentrationManager.AddConcentration(trueCount * 10f);
-            
-            //フェイズの更新
-            phaseManager.TransitToNextPhase();
-            
-            //GameStateの変更
-            GameFlowManager.I.ChangeGameState(GameState.Ready);
         }
     }
 }

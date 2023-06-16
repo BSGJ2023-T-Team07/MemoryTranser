@@ -1,21 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using MemoryTranser.Scripts.Game.OutputArea;
 using MemoryTranser.Scripts.Game.Util;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using UniRx;
 
 namespace MemoryTranser.Scripts.Game.MemoryBox {
     public class MemoryBoxManager : MonoBehaviour {
-        #region コンポーネントの定義
-
-        [SerializeField] private Sprite mathMemoryBoxSprite;
-        [SerializeField] private Sprite englishMemoryBoxSprite;
-        [SerializeField] private OutputManager outputManager;
-
-        #endregion
-
         #region ゲームオブジェクトの定義
 
         [SerializeField] private GameObject memoryBoxPrefab;
@@ -33,27 +25,37 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
         #region 定数の定義
 
-        private const int MAX_BOX_GENERATE_COUNT = 5;
+        private const int MAX_BOX_GENERATE_COUNT = 20;
         private const float MAX_WEIGHT = 2f;
         private const float MIN_WEIGHT = 0.8f;
 
         #endregion
 
 
-        public void GenerateRandomMemoryBox(MemoryBoxCore memoryBox) {
+        private void GenerateRandomMemoryBox(MemoryBoxCore memoryBox) {
             var randomBoxType = (BoxMemoryType)Random.Range(1, _maxBoxType);
             var randomWeight = Random.Range(MIN_WEIGHT, MAX_WEIGHT);
 
+            //ランダムで科目と重さを決める
             memoryBox.BoxMemoryType = randomBoxType;
             memoryBox.Weight = randomWeight;
+
+            //決まったパラメーターに対して色々変更する
             memoryBox.SpRr.sprite = randomBoxType.ToMemoryBoxSprite();
             memoryBox.transform.localScale *= memoryBox.Weight / (MAX_WEIGHT - MIN_WEIGHT);
             memoryBox.SetDiff();
+
+            //つくったMemoryBoxを監視する
+            //このBoxが消えた時に新しく生成するように購読している
+            memoryBox.OnDisappear.Subscribe(_ => {
+                GenerateRandomMemoryBox(memoryBox);
+                memoryBox.transform.position = GetRandomSpawnPosition();
+            });
         }
 
 
-        public Vector3 GetRandomSpawnPosition() {
-            var randomX = Random.Range(-20f, 20f);
+        private Vector3 GetRandomSpawnPosition() {
+            var randomX = Random.Range(-15f, 15f);
             var randomY = Random.Range(5f, 10f);
             return new Vector3(randomX, randomY, 0);
         }

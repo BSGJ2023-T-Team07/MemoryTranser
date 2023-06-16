@@ -10,7 +10,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
     public class FairyCore : MonoBehaviour {
         #region コンポーネントの定義
 
-        [SerializeField] private Rigidbody2D rigidbody2D;
+        [SerializeField] private Rigidbody2D rb2D;
         [SerializeField] private Animator animator;
         [SerializeField] private BoxCollider2D boxCollider2D;
 
@@ -23,12 +23,9 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         private MemoryBoxCore _holdingBox;
         private int _comboCount;
 
-        private bool _isDash;
-        private bool _hasBox;
-
         private bool _isControllable;
 
-        private Vector2 _velocity;
+        private Vector2 _inputVelocity;
 
         #endregion
 
@@ -40,9 +37,11 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         #region プロパティーの定義
 
+        public bool HasBox => _holdingBox;
+
         public FairyParameters MyParameters {
             get => _myParameters;
-            set => _myParameters = value;
+            private set => _myParameters = value;
         }
 
         public FairyState MyState {
@@ -52,19 +51,16 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         public bool IsControllable {
             get => _isControllable;
-            set {
-                _isControllable = value;
-                if (!_isControllable) rigidbody2D.velocity = Vector2.zero;
-            }
+            set => _isControllable = value;
         }
-        
+
         public int ComboCount {
             get => _comboCount;
             set {
                 _comboCount = value;
-                
-                if(_holdingBox) MyParameters.UpdateWalkSpeedByWeightAndCombo(_holdingBox.Weight, value);
-                else MyParameters.UpdateWalkSpeedByWeightAndCombo(0,value);
+
+                if (HasBox) MyParameters.UpdateWalkSpeedByWeightAndCombo(_holdingBox.Weight, value);
+                else MyParameters.UpdateWalkSpeedByWeightAndCombo(0, value);
             }
         }
 
@@ -72,33 +68,56 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         #region Unityから呼ばれる
 
+        private void Update() { }
+
         private void FixedUpdate() {
             Move();
         }
 
         #endregion
 
+
         #region 操作入力時の処理
 
         public void OnMoveInput(InputAction.CallbackContext context) {
-            if (!IsControllable && _velocity != Vector2.zero) {
-                //フェーズ遷移時、速度が0
-                _velocity = Vector2.zero;
+            if (!IsControllable) {
+                //操作不能かつ速度が0でなかったら速度を0にする
+                if (_inputVelocity != Vector2.zero) {
+                    _inputVelocity = Vector2.zero;
+                    return;
+                }
+
+                //単に操作不能だったら何もしない
                 return;
             }
 
-            if (!IsControllable) return;
-            
             var moveInput = context.ReadValue<Vector2>();
-            _velocity = moveInput * MyParameters.WalkSpeed;
+            _inputVelocity = moveInput * MyParameters.WalkSpeed;
         }
 
+        public void OnThrowInput(InputAction.CallbackContext context) {
+            //操作不能だったら何もしない
+            if (!IsControllable) return;
+
+            //何もMemoryBoxを持っていなければ何もしない
+            if (!HasBox) return;
+            if (_inputVelocity == Vector2.zero) {
+                Debug.Log("もっと勢いを付けて投げてください");
+                return;
+            }
+
+            Throw();
+        }
 
         public void OnHoldInput(InputAction.CallbackContext context) {
+            //このフレームに完全に押されてなければ何もしない
+            if (!context.action.WasPressedThisFrame()) return;
+
+            //操作不能だったら何もしない
             if (!IsControllable) return;
 
             //もし既にBoxを持ってたら何もしない
-            if (_holdingBox) return;
+            if (HasBox) return;
 
             var casts = Physics2D.CircleCastAll(transform.position, HOLDABLE_DISTANCE, Vector2.zero,
                 0, Constant.MEMORY_BOX_LAYER_MASK);
@@ -106,57 +125,73 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             //もし近くにBoxがなかったら何もしない
             if (casts.Length == 0) return;
 
-            var memoryBoxCore = GetNearestMemoryBoxCore(casts);
-            if (memoryBoxCore) Hold(memoryBoxCore);
-        }
+            var holdableNearestBox = GetNearestMemoryBoxCore(casts);
 
-        public void OnThrowInput(InputAction.CallbackContext context) {
-            if (!IsControllable) return;
-
-            Throw();
+            //近くに地面の置かれてるBoxがあったらHoldする
+            if (holdableNearestBox && holdableNearestBox.MyState == MemoryBoxState.PlacedOnLevel)
+                Hold(holdableNearestBox);
         }
 
 
         public void OnPutInput(InputAction.CallbackContext context) {
+            //このフレームに完全に押されてなければ何もしない
+            if (!context.action.WasPressedThisFrame()) return;
+
+            //操作不能だったら何もしない
             if (!IsControllable) return;
+
+            //何もMemoryBoxを持っていなければ何もしない
+            if (!HasBox) return;
 
             Put();
         }
 
         #endregion
 
-        #region 行動の定義
+        #region 能動的行動の定義
 
         private void Move() {
-            rigidbody2D.velocity = _velocity;
+            rb2D.velocity = _inputVelocity;
         }
 
         private void Hold(MemoryBoxCore memoryBoxCore) {
-            memoryBoxCore.Held(transform);
+            memoryBoxCore.BeHeld(transform);
             _holdingBox = memoryBoxCore;
-            
-            MyParameters.UpdateWalkSpeedByWeightAndCombo(_holdingBox.Weight,ComboCount);
+
+            MyParameters.UpdateWalkSpeedByWeightAndCombo(_holdingBox.Weight, ComboCount);
 
             Debug.Log($"IDが{_holdingBox.BoxId}の記憶を持った");
         }
 
         private void Throw() {
-            if (!_holdingBox) return;
-            _holdingBox.Thrown(MyParameters.ThrowPower,
-                rigidbody2D.velocity.normalized);
+            _holdingBox.BeThrown(MyParameters.ThrowPower,
+                _inputVelocity.normalized);
 
             Debug.Log($"IDが{_holdingBox.BoxId}の記憶を投げた");
             _holdingBox = null;
-            MyParameters.UpdateWalkSpeedByWeightAndCombo(0,ComboCount);
+            MyParameters.UpdateWalkSpeedByWeightAndCombo(0, ComboCount);
         }
 
         private void Put() {
-            if (!_holdingBox) return;
-            _holdingBox.Put();
+            _holdingBox.BePut();
 
             Debug.Log($"IDが{_holdingBox.BoxId}の記憶を置いた");
             _holdingBox = null;
-            MyParameters.UpdateWalkSpeedByWeightAndCombo(0,ComboCount);
+            MyParameters.UpdateWalkSpeedByWeightAndCombo(0, ComboCount);
+        }
+
+        #endregion
+
+        #region 受動的行動の定義
+
+        public async void BeAttackedByDesire() {
+            IsControllable = false;
+            ComboCount = 0;
+
+            //Desireに当たると3秒停止
+            await UniTask.Delay(TimeSpan.FromSeconds(3f));
+
+            IsControllable = true;
         }
 
         #endregion
@@ -177,20 +212,10 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         }
 
         public void InitializeFairy() {
+            Debug.Log("InitializeFairyが呼ばれました");
             MyParameters = new FairyParameters();
-            MyState = FairyState.IdlingWithoutMemory;
 
             MyParameters.InitializeParameters();
-        }
-
-        public async void AttackedByDesire() {
-            IsControllable = false;
-            ComboCount = 0;
-
-            //Desireに当たると3秒停止
-            await UniTask.Delay(3000);
-
-            IsControllable = true;
         }
     }
 }

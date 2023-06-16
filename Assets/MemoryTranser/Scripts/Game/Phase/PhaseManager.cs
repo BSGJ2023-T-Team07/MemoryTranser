@@ -83,7 +83,7 @@ namespace MemoryTranser.Scripts.Game.Phase {
                 else falseCount++;
             }
 
-            _phaseCores[currentPhaseIndex].Score = Mathf.Clamp(trueCount * 20 - falseCount * 10, 0, 100);
+            _phaseCores[currentPhaseIndex].Score += Mathf.Clamp(trueCount * 20 - falseCount * 10, 0, 100);
         }
 
         public void CalculateCurrentScore(bool[] errataList) {

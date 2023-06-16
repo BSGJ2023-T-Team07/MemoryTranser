@@ -55,6 +55,7 @@ namespace MemoryTranser.Scripts.Game.OutputArea {
 
             //正誤表を元にスコア加算
             phaseManager.CalculateCurrentScore(errataList);
+            phaseManager.UpdatePhaseText();
 
             //正誤表を元にコンボ加算
             fairyCore.ComboCount += trueCount;

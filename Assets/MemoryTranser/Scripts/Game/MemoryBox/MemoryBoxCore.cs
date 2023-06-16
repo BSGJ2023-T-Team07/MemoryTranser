@@ -98,15 +98,12 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
                 transform.position = _holderTransform.position + (Vector3)Vector2.up * _diff;
 
             if (_myState == MemoryBoxState.PlacedOnLevel) {
-                //投げられてない状態で大きい速度を持っていたら毎フレーム減速する
-                if (rb2D.velocity.magnitude > Constant.DELTA) {
-                    rb2D.velocity *= 0.99f;
-                }
-                //速度が一定以下になったら、速度を0にしてStateを変更する
-                else {
+                //地面に置かれてる状態で大きい速度を持っていたら毎フレーム減速する
+                if (rb2D.velocity.magnitude > Constant.DELTA)
+                    rb2D.velocity *= 0.98f;
+                //速度が一定以下になったら、速度を0にする
+                else
                     rb2D.velocity = Vector2.zero;
-                    _myState = MemoryBoxState.PlacedOnLevel;
-                }
             }
         }
 

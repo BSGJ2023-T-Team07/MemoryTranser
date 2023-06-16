@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using Cysharp.Threading.Tasks;
 using MemoryTranser.Scripts.Game.Concentration;
 using MemoryTranser.Scripts.Game.Desire;
@@ -8,7 +7,6 @@ using MemoryTranser.Scripts.Game.MemoryBox;
 using MemoryTranser.Scripts.Game.Phase;
 using MemoryTranser.Scripts.Game.Sound;
 using MemoryTranser.Scripts.Game.Util;
-using TMPro.EditorUtilities;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 

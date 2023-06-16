@@ -1929,6 +1929,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   phaseShower: {fileID: 1682213858}
+  desireCore: {fileID: 1632883787}
   initialPhaseCount: 5
   viewablePhaseCount: 3
 --- !u!1 &1288957706

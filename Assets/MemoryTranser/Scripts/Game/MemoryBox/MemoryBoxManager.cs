@@ -42,8 +42,11 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
             //決まったパラメーターに対して色々変更する
             memoryBox.SpRr.sprite = randomBoxType.ToMemoryBoxSprite();
-            memoryBox.transform.localScale *= memoryBox.Weight / (MAX_WEIGHT - MIN_WEIGHT);
+            memoryBox.transform.localScale = Vector3.one * memoryBox.Weight / (MAX_WEIGHT - MIN_WEIGHT);
             memoryBox.SetDiff();
+
+            //コンポーネントのプロパティー初期化
+            memoryBox.Bc2D.isTrigger = false;
 
             //つくったMemoryBoxを監視する
             //このBoxが消えた時に新しく生成するように購読している

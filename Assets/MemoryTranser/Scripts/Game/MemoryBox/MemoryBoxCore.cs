@@ -168,19 +168,22 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
             //消えてから3秒後にMemoryBoxManagerへ再生成通知をする
             await UniTask.Delay(TimeSpan.FromSeconds(3f));
-            _onDisappear.OnNext(Unit.Default);
-            _onDisappear.OnCompleted();
-            _onDisappear.Dispose();
-
             SpRr.enabled = true;
+            Bc2D.isTrigger = false;
             Bc2D.enabled = true;
             _myState = MemoryBoxState.PlacedOnLevel;
+            _onDisappear.OnNext(Unit.Default);
         }
 
         #endregion
 
         public void SetDiff() {
-            _diff = bc2D.size.y * transform.localScale.y;
+            _diff = Bc2D.size.y * transform.localScale.y;
+        }
+
+        private void OnDisable() {
+            _onDisappear.OnCompleted();
+            _onDisappear.Dispose();
         }
     }
 }

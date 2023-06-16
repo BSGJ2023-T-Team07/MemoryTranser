@@ -54,7 +54,7 @@ namespace MemoryTranser.Scripts.Game.OutputArea {
             memoryBoxManager.GetOutputableBoxes();
 
             //正誤表を元にスコア加算
-            phaseManager.CalculateCurrentScore(errataList);
+            phaseManager.AddCurrentScoreByErrataList(errataList);
             phaseManager.UpdatePhaseText();
 
             //正誤表を元にコンボ加算

@@ -1,10 +1,9 @@
 using System;
 using Cysharp.Threading.Tasks;
 using MemoryTranser.Scripts.Game.Fairy;
-using MemoryTranser.Scripts.Game.MemoryBox;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Serialization;
+using UniRx;
 
 namespace MemoryTranser.Scripts.Game.Desire {
     public class DesireCore : MonoBehaviour {
@@ -24,6 +23,13 @@ namespace MemoryTranser.Scripts.Game.Desire {
         private DesireType _myType;
         private DesireParameters _myParameters;
         private Vector3 _followPos;
+
+        #endregion
+
+        #region eventの定義
+
+        private readonly Subject<Unit> _onAttacked = new();
+        public IObservable<Unit> OnAttacked => _onAttacked;
 
         #endregion
 
@@ -74,6 +80,9 @@ namespace MemoryTranser.Scripts.Game.Desire {
         }
 
         public void BeEliminated() {
+            //スコアを加算する通知をだす
+            _onAttacked.OnNext(Unit.Default);
+
             //Desireを非表示にする
             gameObject.SetActive(false);
 
@@ -102,6 +111,11 @@ namespace MemoryTranser.Scripts.Game.Desire {
             //Fairyの追跡を開始する
             gameObject.SetActive(true);
             _myState = DesireState.FollowingFairy;
+        }
+
+        private void OnDestroy() {
+            _onAttacked.OnCompleted();
+            _onAttacked.Dispose();
         }
     }
 }

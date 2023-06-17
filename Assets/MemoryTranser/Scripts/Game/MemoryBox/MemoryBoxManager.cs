@@ -71,12 +71,6 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             _allBoxes = new MemoryBoxCore[MAX_BOX_GENERATE_COUNT];
             _outputable = new bool[MAX_BOX_GENERATE_COUNT];
 
-            for (var i = 1; i <= _maxBoxType; i++) {
-                //BoxTypeの確率リストを作成
-                _initialBoxTypeProbabilityList.Add(i);
-                _boxTypeProbabilityList.Add(i);
-            }
-
             for (var i = 0; i < MAX_BOX_GENERATE_COUNT; i++) {
                 //MemoryBoxの生成
                 var obj = Instantiate(memoryBoxPrefab, GetRandomSpawnPosition(), Quaternion.identity);
@@ -91,6 +85,14 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
                 //MemoryBoxの監視
                 _allBoxes[i] = memoryBoxCore;
+            }
+        }
+
+        public void InitializeGenerationProbability() {
+            for (var i = 1; i <= _maxBoxType; i++) {
+                //BoxTypeの確率リストを作成
+                _initialBoxTypeProbabilityList.Add(i);
+                _boxTypeProbabilityList.Add(i);
             }
         }
 

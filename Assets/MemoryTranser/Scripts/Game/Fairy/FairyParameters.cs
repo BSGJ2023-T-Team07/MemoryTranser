@@ -11,7 +11,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         #region 定数の定義
 
-        public const float MAX_WALK_SPEED = 10f;
+        public const float MAX_WALK_SPEED = 30f;
         public const float MIN_WALK_SPEED = 0f;
         public const float INITIAL_WALK_SPEED = 8f;
 

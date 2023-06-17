@@ -192,7 +192,9 @@ namespace MemoryTranser.Scripts.Game.Phase {
             for (var i = _currentPhaseIndex; i <= _currentPhaseIndex + memoryBoxProbabilityPhaseCount; i++) {
                 var questTypeInt = (int)GetQuestType(i);
                 var questTypeInts = new List<int>();
-                for (var j = 0; j < memoryBoxProbabilityWeight; j++) {
+                
+                //直近のフェイズになるほど対応するMemoryBoxが出やすくなる
+                for (var j = 0; j < memoryBoxProbabilityWeight * 2 - (i - _currentPhaseIndex); j++) {
                     questTypeInts.Add(questTypeInt);
                 }
 

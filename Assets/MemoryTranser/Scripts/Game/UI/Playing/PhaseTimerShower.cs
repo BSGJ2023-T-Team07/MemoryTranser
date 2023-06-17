@@ -9,7 +9,7 @@ namespace MemoryTranser.Scripts.Game.UI {
         [SerializeField] private PhaseManager phaseManager;
 
         private void Update() {
-            text.text = $"Time : {phaseManager.RemainingTime:0}";
+            text.text = $"PhaseRemainingTime : {phaseManager.RemainingTime:0}";
         }
     }
 }

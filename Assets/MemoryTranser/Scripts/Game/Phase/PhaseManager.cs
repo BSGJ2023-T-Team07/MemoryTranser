@@ -11,7 +11,8 @@ namespace MemoryTranser.Scripts.Game.Phase {
     public class PhaseManager : MonoBehaviour {
         #region コンポーネントの定義
 
-        [SerializeField] private PhaseShower phaseShower;
+        [SerializeField] private QuestTypeShower questTypeShower;
+        [SerializeField] private ScoreShower scoreShower;
         [SerializeField] private DesireCore desireCore;
         [SerializeField] private MemoryBoxManager memoryBoxManager;
 
@@ -55,10 +56,7 @@ namespace MemoryTranser.Scripts.Game.Phase {
 
         private void Awake() {
             //DesireCoreが攻撃されたらスコアを加算する
-            desireCore.OnAttacked.Subscribe(_ => {
-                AddScore(_currentPhaseIndex, 5);
-                phaseShower.SetPhaseText(_phaseCores.ToArray(), _currentPhaseIndex);
-            });
+            desireCore.OnAttacked.Subscribe(_ => { scoreShower.SetScoreText(AddScore(_currentPhaseIndex, 5)); });
         }
 
         private void Start() {
@@ -102,13 +100,6 @@ namespace MemoryTranser.Scripts.Game.Phase {
         }
 
         /// <summary>
-        /// PhaseShowerにフェイズの情報を渡す
-        /// </summary>
-        public void UpdatePhaseText() {
-            phaseShower.SetPhaseText(_phaseCores.ToArray(), _currentPhaseIndex);
-        }
-
-        /// <summary>
         /// Phaseの残り時間をリセットする
         /// </summary>
         public void ResetRemainingTime() {
@@ -121,6 +112,19 @@ namespace MemoryTranser.Scripts.Game.Phase {
         /// <returns></returns>
         public BoxMemoryType GetCurrentQuestType() {
             return GetQuestType(_currentPhaseIndex);
+        }
+
+        public void UpdatePhaseText() {
+            scoreShower.SetScoreText(_phaseCores[_currentPhaseIndex].Score);
+            questTypeShower.SetQuestTypeText(GetCurrentQuestType());
+        }
+
+        /// <summary>
+        /// デバッグ用関数
+        /// </summary>
+        /// <returns></returns>
+        public (PhaseCore[], int) GetPhaseInformation() {
+            return (_phaseCores.ToArray(), _currentPhaseIndex);
         }
 
         #endregion
@@ -161,8 +165,10 @@ namespace MemoryTranser.Scripts.Game.Phase {
         /// </summary>
         /// <param name="phaseIndex">スコアを足すフェイズのインデックス</param>
         /// <param name="score">足すスコア</param>
-        private void AddScore(int phaseIndex, int score) {
-            _phaseCores[phaseIndex].Score += score;
+        private int AddScore(int phaseIndex, int score) {
+            var phaseCore = _phaseCores[phaseIndex];
+            phaseCore.Score += score;
+            return phaseCore.Score;
         }
 
         /// <summary>

@@ -1,13 +1,14 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace MemoryTranser.Scripts.Game.UI {
     public class ConcentrationShower : MonoBehaviour {
         [SerializeField] private Concentration.ConcentrationManager concentrationManager;
-        [SerializeField] private TextMeshProUGUI concentrationText;
+        [SerializeField] private Slider concentrationSlider;
 
         private void Update() {
-            concentrationText.text = $"RemainingConcentration: {concentrationManager.RemainingConcentration}";
+            concentrationSlider.value = concentrationManager.GetRemainingConcentrationValue();
         }
     }
 }

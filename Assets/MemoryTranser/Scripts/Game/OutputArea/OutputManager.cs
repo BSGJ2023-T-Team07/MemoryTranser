@@ -61,7 +61,7 @@ namespace MemoryTranser.Scripts.Game.OutputArea {
             fairyCore.ComboCount += trueCount;
 
             //正誤表を元に集中力アップ
-            concentrationManager.AddConcentration(trueCount * 10f);
+            concentrationManager.AddConcentration(trueCount * 5f);
         }
     }
 }

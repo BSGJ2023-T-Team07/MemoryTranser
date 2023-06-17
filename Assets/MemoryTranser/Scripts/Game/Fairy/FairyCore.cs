@@ -212,7 +212,6 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         }
 
         public void InitializeFairy() {
-            Debug.Log("InitializeFairyが呼ばれました");
             MyParameters = new FairyParameters();
 
             MyParameters.InitializeParameters();

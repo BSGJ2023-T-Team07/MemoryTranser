@@ -7,7 +7,7 @@ namespace MemoryTranser.Scripts.Game.Concentration {
         #region 変数の定義
 
         private float _remainingConcentration;
-        private float _maxConcentration = 120f;
+        private float _maxConcentration = 60f;
 
         private bool _decreaseFlag;
 
@@ -15,11 +15,6 @@ namespace MemoryTranser.Scripts.Game.Concentration {
 
 
         #region プロパティーの定義
-
-        public float RemainingConcentration {
-            get => _remainingConcentration;
-            set => _remainingConcentration = value;
-        }
 
         public bool DecreaseFlag {
             get => _decreaseFlag;
@@ -33,8 +28,8 @@ namespace MemoryTranser.Scripts.Game.Concentration {
         private void Update() {
             if (DecreaseFlag) DecreaseConcentration();
 
-            if (RemainingConcentration < 0) {
-                RemainingConcentration = 0;
+            if (_remainingConcentration < 0) {
+                _remainingConcentration = 0;
                 GameFlowManager.I.ChangeGameState(GameState.Result);
             }
         }
@@ -42,15 +37,19 @@ namespace MemoryTranser.Scripts.Game.Concentration {
         #endregion
 
         public void InitializeConcentration() {
-            RemainingConcentration = _maxConcentration;
+            _remainingConcentration = _maxConcentration;
         }
 
         private void DecreaseConcentration() {
-            RemainingConcentration -= Time.deltaTime;
+            _remainingConcentration -= Time.deltaTime;
         }
 
         public void AddConcentration(float addition) {
-            RemainingConcentration += addition;
+            _remainingConcentration = Mathf.Max(_maxConcentration, _remainingConcentration + addition);
+        }
+
+        public float GetRemainingConcentrationValue() {
+            return _remainingConcentration / _maxConcentration;
         }
     }
 }

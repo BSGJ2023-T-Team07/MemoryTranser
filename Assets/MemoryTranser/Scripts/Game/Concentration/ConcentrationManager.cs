@@ -45,7 +45,7 @@ namespace MemoryTranser.Scripts.Game.Concentration {
         }
 
         public void AddConcentration(float addition) {
-            _remainingConcentration = Mathf.Max(_maxConcentration, _remainingConcentration + addition);
+            _remainingConcentration = Mathf.Min(_maxConcentration, _remainingConcentration + addition);
         }
 
         public float GetRemainingConcentrationValue() {

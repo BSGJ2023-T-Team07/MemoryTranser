@@ -13,13 +13,23 @@ namespace MemoryTranser.Scripts.Game.Phase {
 
         [SerializeField] private PhaseShower phaseShower;
         [SerializeField] private DesireCore desireCore;
+        [SerializeField] private MemoryBoxManager memoryBoxManager;
 
         #endregion
 
         #region 変数の定義
 
-        [SerializeField] private int initialPhaseCount = 5;
-        [SerializeField] private int viewablePhaseCount = 3;
+        [Header("最初に生成されるフェイスの数")] [SerializeField]
+        private int initialPhaseCount = 20;
+
+        [Header("UIで見ることのできるフェイズの数")] [SerializeField]
+        private int viewablePhaseCount = 3;
+
+        [Header("MemoryBoxの発生確率に関わるフェイズの数")] [SerializeField]
+        private int memoryBoxProbabilityPhaseCount = 5;
+
+        [Header("値が大きいほど直近のフェイズに対応するMemoryBoxが増える")] [SerializeField]
+        private int memoryBoxProbabilityWeight = 5;
 
         private List<PhaseCore> _phaseCores;
         private int _maxPhaseTypeCount = (int)BoxMemoryType.Count;
@@ -79,6 +89,8 @@ namespace MemoryTranser.Scripts.Game.Phase {
             for (var i = 0; i < initialPhaseCount; i++) {
                 _phaseCores.Add(GenerateRandomPhase(ScriptableObject.CreateInstance<PhaseCore>()));
             }
+
+            SetBoxGenerationProbability();
         }
 
         /// <summary>
@@ -101,6 +113,14 @@ namespace MemoryTranser.Scripts.Game.Phase {
         /// </summary>
         public void ResetRemainingTime() {
             _phaseRemainingTime = PHASE_DURATION;
+        }
+
+        /// <summary>
+        /// 現在のPhaseのQuestTypeを取得する
+        /// </summary>
+        /// <returns></returns>
+        public BoxMemoryType GetCurrentQuestType() {
+            return GetQuestType(_currentPhaseIndex);
         }
 
         #endregion
@@ -161,12 +181,19 @@ namespace MemoryTranser.Scripts.Game.Phase {
             return _phaseCores[phaseIndex].QuestType;
         }
 
-        /// <summary>
-        /// 現在のPhaseのQuestTypeを取得する
-        /// </summary>
-        /// <returns></returns>
-        public BoxMemoryType GetCurrentQuestType() {
-            return GetQuestType(_currentPhaseIndex);
+        private void SetBoxGenerationProbability() {
+            var nextQuestTypeInts = new List<int>();
+            for (var i = _currentPhaseIndex; i <= _currentPhaseIndex + memoryBoxProbabilityPhaseCount; i++) {
+                var questTypeInt = (int)GetQuestType(i);
+                var questTypeInts = new List<int>();
+                for (var j = 0; j < memoryBoxProbabilityWeight; j++) {
+                    questTypeInts.Add(questTypeInt);
+                }
+
+                nextQuestTypeInts.AddRange(questTypeInts);
+            }
+
+            memoryBoxManager.AddProbability(nextQuestTypeInts);
         }
 
         #endregion

@@ -81,11 +81,11 @@ namespace MemoryTranser.Scripts.Game.GameManagers {
 
         private async void OnStateInitializing() {
             _bgmManager?.PlayIntro();
-            memoryBoxManager.InitializeMemoryBoxes();
             phaseManager.InitializePhases();
             fairyCore.InitializeFairy();
             desireCore.InitializeDesire();
             concentrationManager.InitializeConcentration();
+            memoryBoxManager.InitializeMemoryBoxes();
 
             await UniTask.Delay(TimeSpan.FromTicks(1));
 

@@ -1930,8 +1930,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   phaseShower: {fileID: 1682213858}
   desireCore: {fileID: 1632883787}
-  initialPhaseCount: 5
+  memoryBoxManager: {fileID: 1278093508}
+  initialPhaseCount: 20
   viewablePhaseCount: 3
+  memoryBoxProbabilityPhaseCount: 3
+  memoryBoxProbabilityWeight: 10
 --- !u!1 &1288957706
 GameObject:
   m_ObjectHideFlags: 0
@@ -3673,6 +3676,10 @@ PrefabInstance:
     - target: {fileID: 5175419891693762498, guid: f29cc8924997b514480750551dfbdf40, type: 3}
       propertyPath: m_Name
       value: MemoryBox
+      objectReference: {fileID: 0}
+    - target: {fileID: 5175419891693762498, guid: f29cc8924997b514480750551dfbdf40, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

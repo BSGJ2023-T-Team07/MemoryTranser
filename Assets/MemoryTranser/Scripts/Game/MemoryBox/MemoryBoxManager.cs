@@ -19,7 +19,10 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         private MemoryBoxCore[] _allBoxes;
         private bool[] _outputable;
 
-        private readonly int _maxBoxType = Enum.GetValues(typeof(BoxMemoryType)).Length;
+        private readonly int _maxBoxType = (int)BoxMemoryType.Count;
+
+        private List<int> _initialBoxTypeProbabilityList = new();
+        private List<int> _boxTypeProbabilityList = new();
 
         #endregion
 
@@ -33,7 +36,8 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
 
         private void GenerateRandomMemoryBox(MemoryBoxCore memoryBox) {
-            var randomBoxType = (BoxMemoryType)Random.Range(1, _maxBoxType);
+            var randomBoxType =
+                (BoxMemoryType)_initialBoxTypeProbabilityList[Random.Range(0, _initialBoxTypeProbabilityList.Count)];
             var randomWeight = Random.Range(MIN_WEIGHT, MAX_WEIGHT);
 
             //ランダムで科目と重さを決める
@@ -66,6 +70,12 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         public void InitializeMemoryBoxes() {
             _allBoxes = new MemoryBoxCore[MAX_BOX_GENERATE_COUNT];
             _outputable = new bool[MAX_BOX_GENERATE_COUNT];
+
+            for (var i = 1; i <= _maxBoxType; i++) {
+                //BoxTypeの確率リストを作成
+                _initialBoxTypeProbabilityList.Add(i);
+                _boxTypeProbabilityList.Add(i);
+            }
 
             for (var i = 0; i < MAX_BOX_GENERATE_COUNT; i++) {
                 //MemoryBoxの生成
@@ -100,6 +110,11 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             }
 
             return outputableBoxes.ToArray();
+        }
+
+        public void AddProbability(List<int> probabilityList) {
+            _boxTypeProbabilityList = _initialBoxTypeProbabilityList;
+            _boxTypeProbabilityList.AddRange(probabilityList);
         }
     }
 }

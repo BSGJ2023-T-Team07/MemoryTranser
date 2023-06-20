@@ -1,5 +1,6 @@
 using System;
 using Cysharp.Threading.Tasks;
+using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.MemoryBox;
 using Unity.Burst.CompilerServices;
 using UnityEngine;
@@ -7,7 +8,8 @@ using UnityEngine.InputSystem;
 using Constant = MemoryTranser.Scripts.Game.Util.Constant;
 
 namespace MemoryTranser.Scripts.Game.Fairy {
-    public class FairyCore : MonoBehaviour {
+    public class FairyCore : MonoBehaviour, IOnStateChangedToInitializing, IOnStateChangedToPlaying,
+        IOnStateChangedToResult {
         #region コンポーネントの定義
 
         [SerializeField] private Rigidbody2D rb2D;
@@ -49,11 +51,6 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             set => _myState = value;
         }
 
-        public bool IsControllable {
-            get => _isControllable;
-            set => _isControllable = value;
-        }
-
         public int ComboCount {
             get => _comboCount;
             set {
@@ -68,8 +65,6 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         #region Unityから呼ばれる
 
-        private void Update() { }
-
         private void FixedUpdate() {
             Move();
         }
@@ -80,7 +75,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         #region 操作入力時の処理
 
         public void OnMoveInput(InputAction.CallbackContext context) {
-            if (!IsControllable) {
+            if (!_isControllable) {
                 //操作不能かつ速度が0でなかったら速度を0にする
                 if (_inputVelocity != Vector2.zero) {
                     _inputVelocity = Vector2.zero;
@@ -97,7 +92,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         public void OnThrowInput(InputAction.CallbackContext context) {
             //操作不能だったら何もしない
-            if (!IsControllable) return;
+            if (!_isControllable) return;
 
             //何もMemoryBoxを持っていなければ何もしない
             if (!HasBox) return;
@@ -114,7 +109,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             if (!context.action.WasPressedThisFrame()) return;
 
             //操作不能だったら何もしない
-            if (!IsControllable) return;
+            if (!_isControllable) return;
 
             //もし既にBoxを持ってたら何もしない
             if (HasBox) return;
@@ -138,7 +133,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             if (!context.action.WasPressedThisFrame()) return;
 
             //操作不能だったら何もしない
-            if (!IsControllable) return;
+            if (!_isControllable) return;
 
             //何もMemoryBoxを持っていなければ何もしない
             if (!HasBox) return;
@@ -185,13 +180,13 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         #region 受動的行動の定義
 
         public async void BeAttackedByDesire() {
-            IsControllable = false;
+            _isControllable = false;
             ComboCount = 0;
 
             //Desireに当たると3秒停止
             await UniTask.Delay(TimeSpan.FromSeconds(3f));
 
-            IsControllable = true;
+            _isControllable = true;
         }
 
         #endregion
@@ -211,10 +206,26 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             return castArray[nearestIndex].transform.GetComponent<MemoryBoxCore>();
         }
 
-        public void InitializeFairy() {
+        private void InitializeFairy() {
             MyParameters = new FairyParameters();
 
             MyParameters.InitializeParameters();
         }
+
+        #region interfaceの実装
+
+        public void OnStateChangedToInitializing() {
+            InitializeFairy();
+        }
+
+        public void OnStateChangedToPlaying() {
+            _isControllable = true;
+        }
+
+        public void OnStateChangedToResult() {
+            _isControllable = false;
+        }
+
+        #endregion
     }
 }

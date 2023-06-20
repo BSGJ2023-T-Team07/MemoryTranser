@@ -1,16 +1,19 @@
 using System;
 using System.Collections.Generic;
-using MemoryTranser.Scripts.Game.OutputArea;
+using MemoryTranser.Scripts.Game.GameManagers;
+using MemoryTranser.Scripts.Game.UI.Debug;
 using MemoryTranser.Scripts.Game.Util;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using UniRx;
+using UnityEngine.Serialization;
 
 namespace MemoryTranser.Scripts.Game.MemoryBox {
     public class MemoryBoxManager : MonoBehaviour {
         #region ゲームオブジェクトの定義
 
         [SerializeField] private GameObject memoryBoxPrefab;
+        [SerializeField] private MemoryGenerationProbabilityShower memoryGenerationProbabilityShower;
 
         #endregion
 
@@ -19,8 +22,6 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         private MemoryBoxCore[] _allBoxes;
         private bool[] _outputable;
 
-        private readonly int _maxBoxType = (int)BoxMemoryType.Count;
-
         private List<int> _initialBoxTypeProbabilityList = new();
         private List<int> _boxTypeProbabilityList = new();
 
@@ -28,17 +29,26 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
         #region 定数の定義
 
-        private const int MAX_BOX_GENERATE_COUNT = 20;
-        private const float MAX_WEIGHT = 2f;
-        private const float MIN_WEIGHT = 0.8f;
+        [SerializeField] private int maxBoxGenerateCount = 20;
+        [SerializeField] private float maxWeight = 2f;
+        [SerializeField] private float minWeight = 0.8f;
+
+        #endregion
+
+        #region Unityから呼ばれる
+
+        private void Awake() {
+            _outputable = new bool[maxBoxGenerateCount];
+            InitializeGenerationProbability();
+        }
 
         #endregion
 
 
-        private void GenerateRandomMemoryBox(MemoryBoxCore memoryBox) {
+        private void ApplyRandomParameterForMemoryBox(MemoryBoxCore memoryBox) {
             var randomBoxType =
                 (BoxMemoryType)_initialBoxTypeProbabilityList[Random.Range(0, _initialBoxTypeProbabilityList.Count)];
-            var randomWeight = Random.Range(MIN_WEIGHT, MAX_WEIGHT);
+            var randomWeight = Random.Range(minWeight, maxWeight);
 
             //ランダムで科目と重さを決める
             memoryBox.BoxMemoryType = randomBoxType;
@@ -46,7 +56,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
             //決まったパラメーターに対して色々変更する
             memoryBox.SpRr.sprite = randomBoxType.ToMemoryBoxSprite();
-            memoryBox.transform.localScale = Vector3.one * memoryBox.Weight / (MAX_WEIGHT - MIN_WEIGHT);
+            memoryBox.transform.localScale = Vector3.one * memoryBox.Weight / (maxWeight - minWeight);
             memoryBox.SetDiff();
 
             //コンポーネントのプロパティー初期化
@@ -55,29 +65,28 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             //つくったMemoryBoxを監視する
             //このBoxが消えた時に新しく生成するように購読している
             memoryBox.OnDisappear.Subscribe(_ => {
-                GenerateRandomMemoryBox(memoryBox);
+                ApplyRandomParameterForMemoryBox(memoryBox);
                 memoryBox.transform.position = GetRandomSpawnPosition();
             });
         }
 
 
-        private Vector3 GetRandomSpawnPosition() {
+        private static Vector3 GetRandomSpawnPosition() {
             var randomX = Random.Range(-15f, 15f);
             var randomY = Random.Range(5f, 10f);
             return new Vector3(randomX, randomY, 0);
         }
 
-        public void InitializeMemoryBoxes() {
-            _allBoxes = new MemoryBoxCore[MAX_BOX_GENERATE_COUNT];
-            _outputable = new bool[MAX_BOX_GENERATE_COUNT];
+        public void GenerateMemoryBoxes() {
+            _allBoxes = new MemoryBoxCore[maxBoxGenerateCount];
 
-            for (var i = 0; i < MAX_BOX_GENERATE_COUNT; i++) {
+            for (var i = 0; i < maxBoxGenerateCount; i++) {
                 //MemoryBoxの生成
                 var obj = Instantiate(memoryBoxPrefab, GetRandomSpawnPosition(), Quaternion.identity);
                 var memoryBoxCore = obj.GetComponent<MemoryBoxCore>();
 
                 //MemoryBoxの初期化
-                GenerateRandomMemoryBox(memoryBoxCore);
+                ApplyRandomParameterForMemoryBox(memoryBoxCore);
 
                 //IDの生成
                 //_allBoxesのインデックスがIDとなる
@@ -88,8 +97,8 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             }
         }
 
-        public void InitializeGenerationProbability() {
-            for (var i = 1; i <= _maxBoxType; i++) {
+        private void InitializeGenerationProbability() {
+            for (var i = 1; i <= (int)BoxMemoryType.Count; i++) {
                 //BoxTypeの確率リストを作成
                 _initialBoxTypeProbabilityList.Add(i);
                 _boxTypeProbabilityList.Add(i);
@@ -107,16 +116,18 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
         public MemoryBoxCore[] GetOutputableBoxes() {
             var outputableBoxes = new List<MemoryBoxCore>();
-            for (var i = 0; i < MAX_BOX_GENERATE_COUNT; i++) {
+            for (var i = 0; i < maxBoxGenerateCount; i++) {
                 if (_outputable[i]) outputableBoxes.Add(_allBoxes[i]);
             }
 
             return outputableBoxes.ToArray();
         }
 
-        public void AddProbability(List<int> probabilityList) {
+        public void SetProbabilityList(List<int> probabilityList) {
             _boxTypeProbabilityList = _initialBoxTypeProbabilityList;
             _boxTypeProbabilityList.AddRange(probabilityList);
+
+            memoryGenerationProbabilityShower.SetMemoryGenerationProbabilityText(_boxTypeProbabilityList);
         }
     }
 }

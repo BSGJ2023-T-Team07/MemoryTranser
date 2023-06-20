@@ -1,11 +1,12 @@
 using System;
 using Cysharp.Threading.Tasks;
+using MemoryTranser.Scripts.Game.GameManagers;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
 namespace MemoryTranser.Scripts.Game.Sound {
-    public class BgmManager : MonoBehaviour {
+    public class BgmManager : MonoBehaviour, IOnStateChangedToInitializing {
         #region コンポーネントの定義
 
         [SerializeField] private AudioClip bgmIntro;
@@ -26,7 +27,11 @@ namespace MemoryTranser.Scripts.Game.Sound {
 
         #endregion
 
-        public async void PlayIntro() {
+        public void OnStateChangedToInitializing() {
+            PlayIntro();
+        }
+
+        private async void PlayIntro() {
             Debug.Log("BGMイントロの再生を開始しました");
             bgmIntroSource.clip = bgmIntro;
             bgmIntroSource.Play();

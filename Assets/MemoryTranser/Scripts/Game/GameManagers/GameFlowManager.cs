@@ -14,34 +14,33 @@ namespace MemoryTranser.Scripts.Game.GameManagers {
     [RequireComponent(typeof(PhaseManager))]
     [RequireComponent(typeof(ConcentrationManager))]
     [RequireComponent(typeof(MemoryBoxManager))]
-    [RequireComponent(typeof(DesireManager))]
     public class GameFlowManager : SingletonMonoBehaviour<GameFlowManager> {
         protected override bool DontDestroy => false;
 
-        #region コンポーネントの定義
+        #region interfaceのインスタンス配列の定義
 
-        [SerializeField] private PhaseManager phaseManager;
-        [SerializeField] private ConcentrationManager concentrationManager;
-        [SerializeField] private MemoryBoxManager memoryBoxManager;
-        [SerializeField] private DesireManager desireManager;
-
-        [SerializeField] private FairyCore fairyCore;
-        private BgmManager _bgmManager;
+        private IOnStateChangedToInitializing[] _onStateChangedToInitializings;
+        private IOnStateChangedToReady[] _onStateChangedToReadys;
+        private IOnStateChangedToPlaying[] _onStateChangedToPlayings;
+        private IOnStateChangedToResult[] _onStateChangedToResults;
+        private IOnStateChangedToFinished[] _onStateChangedToFinisheds;
 
         #endregion
-
-        //ゲームシーンがデザイアコアにアクセスできるようにする
-        [SerializeField] private DesireCore desireCore;
 
         #region Unityから呼ばれる
 
         protected override void Awake() {
             base.Awake();
-            phaseManager = GetComponent<PhaseManager>();
-            concentrationManager = GetComponent<ConcentrationManager>();
-            memoryBoxManager = GetComponent<MemoryBoxManager>();
-            desireManager = GetComponent<DesireManager>();
-            _bgmManager = FindObjectOfType<BgmManager>();
+            _onStateChangedToInitializings =
+                GameObjectExtensions.FindObjectsByInterface<IOnStateChangedToInitializing>();
+            _onStateChangedToReadys =
+                GameObjectExtensions.FindObjectsByInterface<IOnStateChangedToReady>();
+            _onStateChangedToPlayings =
+                GameObjectExtensions.FindObjectsByInterface<IOnStateChangedToPlaying>();
+            _onStateChangedToResults =
+                GameObjectExtensions.FindObjectsByInterface<IOnStateChangedToResult>();
+            _onStateChangedToFinisheds =
+                GameObjectExtensions.FindObjectsByInterface<IOnStateChangedToFinished>();
         }
 
         private void Start() {
@@ -80,16 +79,9 @@ namespace MemoryTranser.Scripts.Game.GameManagers {
         }
 
         private async void OnStateInitializing() {
-            _bgmManager?.PlayIntro();
-
-            phaseManager.InitializePhases();
-            memoryBoxManager.InitializeGenerationProbability();
-
-            fairyCore.InitializeFairy();
-            desireCore.InitializeDesire();
-            concentrationManager.InitializeConcentration();
-
-            memoryBoxManager.InitializeMemoryBoxes();
+            foreach (var onStateChangedToInitializing in _onStateChangedToInitializings) {
+                onStateChangedToInitializing.OnStateChangedToInitializing();
+            }
 
             await UniTask.Delay(TimeSpan.FromTicks(1));
 
@@ -97,10 +89,9 @@ namespace MemoryTranser.Scripts.Game.GameManagers {
         }
 
         private async void OnStateReady() {
-            concentrationManager.DecreaseFlag = false;
-            desireManager.Spawnflag = false;
-            phaseManager.UpdatePhaseText();
-            phaseManager.ResetRemainingTime();
+            foreach (var onStateChangedToReady in _onStateChangedToReadys) {
+                onStateChangedToReady.OnStateChangedToReady();
+            }
 
             await UniTask.Delay(TimeSpan.FromSeconds(1f));
 
@@ -108,18 +99,21 @@ namespace MemoryTranser.Scripts.Game.GameManagers {
         }
 
         private void OnStatePlaying() {
-            concentrationManager.DecreaseFlag = true;
-            fairyCore.IsControllable = true;
-            desireCore.RestartFollowing();
-            desireManager.Spawnflag = true;
+            foreach (var onStateChangedToPlaying in _onStateChangedToPlayings) {
+                onStateChangedToPlaying.OnStateChangedToPlaying();
+            }
         }
 
         private void OnStateResult() {
-            concentrationManager.DecreaseFlag = false;
-            fairyCore.IsControllable = false;
-            desireManager.Spawnflag = false;
+            foreach (var onStateChangedToResult in _onStateChangedToResults) {
+                onStateChangedToResult.OnStateChangedToResult();
+            }
         }
 
-        private void OnStateFinished() { }
+        private void OnStateFinished() {
+            foreach (var onStateChangedToFinished in _onStateChangedToFinisheds) {
+                onStateChangedToFinished.OnStateChangedToFinished();
+            }
+        }
     }
 }

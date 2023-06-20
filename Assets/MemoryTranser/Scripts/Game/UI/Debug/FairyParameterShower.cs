@@ -1,9 +1,8 @@
-using System;
 using MemoryTranser.Scripts.Game.Fairy;
 using TMPro;
 using UnityEngine;
 
-namespace MemoryTranser.Scripts.Game.UI {
+namespace MemoryTranser.Scripts.Game.UI.Debug {
     public class FairyParameterShower : MonoBehaviour {
         [SerializeField] private TextMeshProUGUI text;
         [SerializeField] private FairyCore fairyCore;

@@ -1,8 +1,7 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace MemoryTranser.Scripts.Game.UI {
+namespace MemoryTranser.Scripts.Game.UI.Playing {
     public class ConcentrationShower : MonoBehaviour {
         [SerializeField] private Concentration.ConcentrationManager concentrationManager;
         [SerializeField] private Slider concentrationSlider;

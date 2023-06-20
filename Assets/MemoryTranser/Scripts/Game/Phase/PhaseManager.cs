@@ -4,11 +4,13 @@ using MemoryTranser.Scripts.Game.Desire;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.MemoryBox;
 using MemoryTranser.Scripts.Game.UI;
+using MemoryTranser.Scripts.Game.UI.Debug;
+using MemoryTranser.Scripts.Game.UI.Playing;
 using UnityEngine;
 using UniRx;
 
 namespace MemoryTranser.Scripts.Game.Phase {
-    public class PhaseManager : MonoBehaviour {
+    public class PhaseManager : MonoBehaviour, IOnStateChangedToInitializing, IOnStateChangedToReady {
         #region コンポーネントの定義
 
         [SerializeField] private QuestTypeShower questTypeShower;
@@ -32,7 +34,7 @@ namespace MemoryTranser.Scripts.Game.Phase {
         [Header("値が大きいほど直近のフェイズに対応するMemoryBoxが増える")] [SerializeField]
         private int memoryBoxProbabilityWeight = 5;
 
-        private List<PhaseCore> _phaseCores;
+        private List<PhaseCore> _phaseCores = new();
         private int _maxPhaseTypeCount = (int)BoxMemoryType.Count;
 
         private int _currentPhaseIndex = 0;
@@ -77,19 +79,20 @@ namespace MemoryTranser.Scripts.Game.Phase {
         #endregion
 
 
-        #region public関数
+        #region interfaceの実装
 
-        /// <summary>
-        /// フェイズの初期化
-        /// </summary>
-        public void InitializePhases() {
-            _phaseCores = new List<PhaseCore>();
-            for (var i = 0; i < initialPhaseCount; i++) {
-                _phaseCores.Add(GenerateRandomPhase(ScriptableObject.CreateInstance<PhaseCore>()));
-            }
-
-            SetBoxGenerationProbability();
+        public void OnStateChangedToInitializing() {
+            InitializePhases();
         }
+
+        public void OnStateChangedToReady() {
+            UpdatePhaseText();
+            ResetRemainingTime();
+        }
+
+        #endregion
+
+        #region public関数
 
         /// <summary>
         /// 現在のフェイズのスコアを正誤表から加算する
@@ -97,13 +100,6 @@ namespace MemoryTranser.Scripts.Game.Phase {
         /// <param name="errataList">正誤表</param>
         public void AddCurrentScoreByErrataList(bool[] errataList) {
             AddScore(_currentPhaseIndex, CalculateScoreByErrata(errataList));
-        }
-
-        /// <summary>
-        /// Phaseの残り時間をリセットする
-        /// </summary>
-        public void ResetRemainingTime() {
-            _phaseRemainingTime = PHASE_DURATION;
         }
 
         /// <summary>
@@ -124,12 +120,27 @@ namespace MemoryTranser.Scripts.Game.Phase {
         /// </summary>
         /// <returns></returns>
         public (PhaseCore[], int) GetPhaseInformation() {
+            // var viewablePhaseCores = _phaseCores.GetRange(_currentPhaseIndex, viewablePhaseCount).ToArray();
+            // return (viewablePhaseCores, 0);
+
             return (_phaseCores.ToArray(), _currentPhaseIndex);
         }
 
         #endregion
 
         #region private関数
+
+        /// <summary>
+        /// フェイズの初期化
+        /// </summary>
+        private void InitializePhases() {
+            for (var i = 0; i < initialPhaseCount; i++) {
+                _phaseCores.Add(GenerateRandomPhase(ScriptableObject.CreateInstance<PhaseCore>()));
+            }
+
+            SetBoxGenerationProbability();
+            memoryBoxManager.GenerateMemoryBoxes();
+        }
 
         /// <summary>
         /// 引数のPhaseCoreにランダムなQuestTypeを設定する
@@ -148,7 +159,7 @@ namespace MemoryTranser.Scripts.Game.Phase {
         /// </summary>
         /// <param name="errataList"></param>
         /// <returns>スコアが返ってくる</returns>
-        private int CalculateScoreByErrata(bool[] errataList) {
+        private static int CalculateScoreByErrata(bool[] errataList) {
             var trueCount = 0;
             var falseCount = 0;
 
@@ -158,6 +169,13 @@ namespace MemoryTranser.Scripts.Game.Phase {
             }
 
             return Mathf.Clamp(trueCount * 20 - falseCount * 10, 0, 100);
+        }
+
+        /// <summary>
+        /// Phaseの残り時間をリセットする
+        /// </summary>
+        private void ResetRemainingTime() {
+            _phaseRemainingTime = PHASE_DURATION;
         }
 
         /// <summary>
@@ -202,7 +220,7 @@ namespace MemoryTranser.Scripts.Game.Phase {
                 nextQuestTypeInts.AddRange(questTypeInts);
             }
 
-            memoryBoxManager.AddProbability(nextQuestTypeInts);
+            memoryBoxManager.SetProbabilityList(nextQuestTypeInts);
         }
 
         #endregion

@@ -3,7 +3,8 @@ using MemoryTranser.Scripts.Game.GameManagers;
 using UnityEngine;
 
 namespace MemoryTranser.Scripts.Game.Concentration {
-    public class ConcentrationManager : MonoBehaviour {
+    public class ConcentrationManager : MonoBehaviour, IOnStateChangedToInitializing, IOnStateChangedToReady,
+        IOnStateChangedToPlaying, IOnStateChangedToResult {
         #region 変数の定義
 
         private float _remainingConcentration;
@@ -14,19 +15,10 @@ namespace MemoryTranser.Scripts.Game.Concentration {
         #endregion
 
 
-        #region プロパティーの定義
-
-        public bool DecreaseFlag {
-            get => _decreaseFlag;
-            set => _decreaseFlag = value;
-        }
-
-        #endregion
-
         #region Unityから呼ばれる
 
         private void Update() {
-            if (DecreaseFlag) DecreaseConcentration();
+            if (_decreaseFlag) _remainingConcentration -= Time.deltaTime;
 
             if (_remainingConcentration < 0) {
                 _remainingConcentration = 0;
@@ -36,13 +28,26 @@ namespace MemoryTranser.Scripts.Game.Concentration {
 
         #endregion
 
-        public void InitializeConcentration() {
+        #region interfaceの実装
+
+        public void OnStateChangedToInitializing() {
             _remainingConcentration = _maxConcentration;
         }
 
-        private void DecreaseConcentration() {
-            _remainingConcentration -= Time.deltaTime;
+        public void OnStateChangedToReady() {
+            _decreaseFlag = false;
         }
+
+        public void OnStateChangedToPlaying() {
+            _decreaseFlag = true;
+        }
+
+        public void OnStateChangedToResult() {
+            _decreaseFlag = false;
+        }
+
+        #endregion
+
 
         public void AddConcentration(float addition) {
             _remainingConcentration = Mathf.Min(_maxConcentration, _remainingConcentration + addition);

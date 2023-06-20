@@ -1,15 +1,14 @@
-using System;
 using MemoryTranser.Scripts.Game.Phase;
 using TMPro;
 using UnityEngine;
 
-namespace MemoryTranser.Scripts.Game.UI {
+namespace MemoryTranser.Scripts.Game.UI.Playing {
     public class PhaseTimerShower : MonoBehaviour {
         [SerializeField] private TextMeshProUGUI text;
         [SerializeField] private PhaseManager phaseManager;
 
         private void Update() {
-            text.text = $"PhaseRemainingTime : {phaseManager.RemainingTime:0}";
+            text.text = $"現在のフェイズの残り時間 : {phaseManager.RemainingTime:0}";
         }
     }
 }

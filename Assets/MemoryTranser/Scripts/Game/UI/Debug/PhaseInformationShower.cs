@@ -1,5 +1,6 @@
 using System;
 using MemoryTranser.Scripts.Game.Phase;
+using MemoryTranser.Scripts.Game.Util;
 using TMPro;
 using UnityEngine;
 
@@ -14,11 +15,12 @@ namespace MemoryTranser.Scripts.Game.UI.Debug {
             text.text = "";
             for (var i = 0; i < phaseCores.Length; i++) {
                 if (i == currentPhaseIndex) {
-                    text.text += $"CurrentPhase: {phaseCores[i].QuestType}, Score: {phaseCores[i].Score}\n";
+                    text.text +=
+                        $"現在のフェイズ: {phaseCores[i].QuestType.ToJapanese()}, 点数: {phaseCores[i].Score}\n";
                     continue;
                 }
 
-                text.text += $"Phase{i + 1}: {phaseCores[i].QuestType}, Score: {phaseCores[i].Score}\n";
+                text.text += $"フェイズ{i + 1}: {phaseCores[i].QuestType.ToJapanese()}, 点数: {phaseCores[i].Score}\n";
             }
         }
 

@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-namespace MemoryTranser.Scripts.Game.UI {
+namespace MemoryTranser.Scripts.Game.UI.Playing {
     public class ScoreShower : MonoBehaviour {
         [SerializeField] private TextMeshProUGUI scoreText;
 

@@ -1,12 +1,13 @@
 using System;
 using Cysharp.Threading.Tasks;
 using MemoryTranser.Scripts.Game.Fairy;
+using MemoryTranser.Scripts.Game.GameManagers;
 using UnityEngine;
 using UnityEngine.AI;
 using UniRx;
 
 namespace MemoryTranser.Scripts.Game.Desire {
-    public class DesireCore : MonoBehaviour {
+    public class DesireCore : MonoBehaviour, IOnStateChangedToInitializing, IOnStateChangedToPlaying {
         #region コンポーネントの定義
 
         [SerializeField] private BoxCollider2D boxCollider2D;
@@ -35,7 +36,7 @@ namespace MemoryTranser.Scripts.Game.Desire {
 
         #region プロパティーの定義
 
-        public bool FollowFlag => _myState == DesireState.FollowingFairy;
+        private bool FollowFlag => _myState == DesireState.FollowingFairy;
 
         public Rigidbody2D Rb2D {
             get {
@@ -68,6 +69,18 @@ namespace MemoryTranser.Scripts.Game.Desire {
 
         #endregion
 
+        #region interfaceの実装
+
+        public void OnStateChangedToInitializing() {
+            InitializeDesire();
+        }
+
+        public void OnStateChangedToPlaying() {
+            RestartFollowing();
+        }
+
+        #endregion
+
         private void Disappear() {
             //Desireを非表示にする
             gameObject.SetActive(false);
@@ -96,7 +109,7 @@ namespace MemoryTranser.Scripts.Game.Desire {
         /// <summary>
         /// Desireの初期化関数
         /// </summary>
-        public void InitializeDesire() {
+        private void InitializeDesire() {
             _myParameters = new DesireParameters();
             _myState = DesireState.Freeze;
 
@@ -104,7 +117,7 @@ namespace MemoryTranser.Scripts.Game.Desire {
             _myParameters.ActionRecoveryTime = 20f;
         }
 
-        public async void RestartFollowing() {
+        private async void RestartFollowing() {
             //指定した時間待機する
             await UniTask.Delay(TimeSpan.FromSeconds(_myParameters.ActionRecoveryTime));
 

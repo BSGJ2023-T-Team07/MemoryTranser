@@ -8,7 +8,8 @@ using UnityEngine.InputSystem;
 using Constant = MemoryTranser.Scripts.Game.Util.Constant;
 
 namespace MemoryTranser.Scripts.Game.Fairy {
-    public class FairyCore : MonoBehaviour, IOnStateChangedToInitializing, IOnStateChangedToPlaying,
+    public class FairyCore : MonoBehaviour, IOnStateChangedToInitializing, IOnStateChangedToReady,
+        IOnStateChangedToPlaying,
         IOnStateChangedToResult {
         #region コンポーネントの定義
 
@@ -28,6 +29,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         private bool _isControllable;
 
         private Vector2 _inputVelocity;
+        private Vector2 _inputThrowDirection;
 
         #endregion
 
@@ -90,13 +92,20 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             _inputVelocity = moveInput * MyParameters.WalkSpeed;
         }
 
+        public void OnSelectInputDirection(InputAction.CallbackContext context) {
+            if (!_isControllable) return;
+
+            var directionInput = context.ReadValue<Vector2>();
+            _inputThrowDirection = directionInput;
+        }
+
         public void OnThrowInput(InputAction.CallbackContext context) {
             //操作不能だったら何もしない
             if (!_isControllable) return;
 
             //何もMemoryBoxを持っていなければ何もしない
             if (!HasBox) return;
-            if (_inputVelocity == Vector2.zero) {
+            if (_inputThrowDirection == Vector2.zero) {
                 Debug.Log("もっと勢いを付けて投げてください");
                 return;
             }
@@ -160,7 +169,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         private void Throw() {
             _holdingBox.BeThrown(MyParameters.ThrowPower,
-                _inputVelocity.normalized);
+                _inputThrowDirection.normalized);
 
             Debug.Log($"IDが{_holdingBox.BoxId}の記憶を投げた");
             _holdingBox = null;
@@ -217,6 +226,8 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         public void OnStateChangedToInitializing() {
             InitializeFairy();
         }
+
+        public void OnStateChangedToReady() { }
 
         public void OnStateChangedToPlaying() {
             _isControllable = true;

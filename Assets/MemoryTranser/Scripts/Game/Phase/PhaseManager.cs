@@ -94,12 +94,30 @@ namespace MemoryTranser.Scripts.Game.Phase {
 
         #region public関数
 
-        /// <summary>
-        /// 現在のフェイズのスコアを正誤表から加算する
-        /// </summary>
-        /// <param name="errataList">正誤表</param>
-        public void AddCurrentScoreByErrataList(bool[] errataList) {
-            AddScore(_currentPhaseIndex, CalculateScoreByErrata(errataList));
+        public void AddCurrentScore(int score) {
+            AddScore(_currentPhaseIndex, score);
+        }
+
+        public (int, int, int) CalculateScoreInformation(MemoryBoxCore[] boxes) {
+            var currentQuest = GetCurrentQuestType();
+            var score = 0;
+            var trueCount = 0;
+            var falseCount = 0;
+
+            //先に正答数と誤答数だけ計算しておく
+            foreach (var box in boxes) {
+                if (box.BoxMemoryType == currentQuest) trueCount++;
+                else falseCount++;
+            }
+
+            //正答数が多い&誤答数が少ない&納品したMemoryBoxが重いほど高得点
+            foreach (var box in boxes) {
+                if (box.BoxMemoryType == currentQuest) score += Mathf.FloorToInt((20 + (trueCount - 1)) * box.Weight);
+                else
+                    score -= Mathf.FloorToInt((10 + (falseCount - 1)) * box.Weight);
+            }
+
+            return (score, trueCount, falseCount);
         }
 
         /// <summary>
@@ -119,11 +137,11 @@ namespace MemoryTranser.Scripts.Game.Phase {
         /// デバッグ用関数
         /// </summary>
         /// <returns></returns>
-        public (PhaseCore[], int) GetPhaseInformation() {
+        public (PhaseCore[], int, int) GetPhaseInformation() {
             // var viewablePhaseCores = _phaseCores.GetRange(_currentPhaseIndex, viewablePhaseCount).ToArray();
-            // return (viewablePhaseCores, 0);
+            // return (viewablePhaseCores, 0, viewablePhaseCount);
 
-            return (_phaseCores.ToArray(), _currentPhaseIndex);
+            return (_phaseCores.ToArray(), _currentPhaseIndex, viewablePhaseCount);
         }
 
         #endregion
@@ -152,23 +170,6 @@ namespace MemoryTranser.Scripts.Game.Phase {
             phaseCore.QuestType = randomPhaseType;
 
             return phaseCore;
-        }
-
-        /// <summary>
-        /// 正誤表からスコアを計算する
-        /// </summary>
-        /// <param name="errataList"></param>
-        /// <returns>スコアが返ってくる</returns>
-        private static int CalculateScoreByErrata(bool[] errataList) {
-            var trueCount = 0;
-            var falseCount = 0;
-
-            foreach (var errata in errataList) {
-                if (errata) trueCount++;
-                else falseCount++;
-            }
-
-            return Mathf.Clamp(trueCount * 20 - falseCount * 10, 0, 100);
         }
 
         /// <summary>

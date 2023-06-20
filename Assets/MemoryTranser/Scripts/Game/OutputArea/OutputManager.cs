@@ -4,6 +4,7 @@ using MemoryTranser.Scripts.Game.Fairy;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.MemoryBox;
 using MemoryTranser.Scripts.Game.Phase;
+using UniRx;
 using UnityEngine;
 
 namespace MemoryTranser.Scripts.Game.OutputArea {
@@ -17,6 +18,11 @@ namespace MemoryTranser.Scripts.Game.OutputArea {
         [SerializeField] private MemoryBoxManager memoryBoxManager;
         [SerializeField] private BoxCollider2D areaCollider;
 
+        #endregion
+        
+        #region eventの定義
+        private Subject<Unit> _onOutput = new();
+        public IObservable<Unit> OnOutput => _onOutput;
         #endregion
 
         private void OnTriggerEnter2D(Collider2D other) {
@@ -35,33 +41,31 @@ namespace MemoryTranser.Scripts.Game.OutputArea {
 
 
         public void OutputBoxes() {
-            //正誤表の作成
-            var outputableBoxes = memoryBoxManager.GetOutputableBoxes();
-            var errataList = new bool[outputableBoxes.Length];
-            var trueCount = 0;
-            for (var i = 0; i < outputableBoxes.Length; i++) {
-                if (outputableBoxes[i].BoxMemoryType == phaseManager.GetCurrentQuestType()) {
-                    errataList[i] = true;
-                    trueCount++;
-                }
-            }
+            _onOutput.OnNext(Unit.Default);
+            
+            //phaseManagerとmemoryBoxManagerを使って点数の情報を計算
+            var (score, trueCount, falseCount) =
+                phaseManager.CalculateScoreInformation(memoryBoxManager.GetOutputableBoxes());
 
             //MemoryBoxをDisappearさせる
             foreach (var box in memoryBoxManager.GetOutputableBoxes()) {
                 box.Disappear();
             }
 
-            memoryBoxManager.GetOutputableBoxes();
-
-            //正誤表を元にスコア加算
-            phaseManager.AddCurrentScoreByErrataList(errataList);
+            //点数の情報を元にスコア加算
+            phaseManager.AddCurrentScore(score);
             phaseManager.UpdatePhaseText();
 
-            //正誤表を元にコンボ加算
+            //点数の情報を元にコンボ加算
             fairyCore.ComboCount += trueCount;
 
-            //正誤表を元に集中力アップ
-            concentrationManager.AddConcentration(trueCount * 5f);
+            //点数の情報を元に集中力アップ
+            concentrationManager.AddConcentration(score / 10);
+        }
+
+        private void OnDestroy() {
+            _onOutput.OnCompleted();
+            _onOutput.Dispose();
         }
     }
 }

@@ -13,8 +13,8 @@ namespace MemoryTranser.Scripts.Game.UI.Debug {
 
         private void UpdateFairyText() {
             text.text = $"State: {fairyCore.MyState}\n" +
-                        $"WalkSpeed: {fairyCore.MyParameters.WalkSpeed}\n" +
-                        $"ThrowPower: {fairyCore.MyParameters.ThrowPower}\n" +
+                        $"WalkSpeed: {Mathf.Floor(fairyCore.MyParameters.WalkSpeed * 100) / 100}\n" +
+                        $"ThrowPower: {Mathf.Floor(fairyCore.MyParameters.ThrowPower * 100) / 100}\n" +
                         $"ComboCount: {fairyCore.ComboCount}\n";
         }
     }

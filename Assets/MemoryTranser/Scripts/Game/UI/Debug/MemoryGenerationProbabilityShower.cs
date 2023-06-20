@@ -8,11 +8,12 @@ using MemoryTranser.Scripts.Game.Util;
 namespace MemoryTranser.Scripts.Game.UI.Debug {
     public class MemoryGenerationProbabilityShower : MonoBehaviour {
         [SerializeField] private TextMeshProUGUI text;
+        private const string FIRST = "MemoryBoxの科目別抽選確率\n";
 
         public void SetMemoryGenerationProbabilityText(List<int> memoryGenerationList) {
             var probabilityArray = CalculateProbability(memoryGenerationList);
 
-            text.text = "";
+            text.text = FIRST;
             for (var i = 1; i < (int)BoxMemoryType.Count; i++) {
                 text.text +=
                     $"{((BoxMemoryType)i).ToJapanese()}: {Mathf.Floor(probabilityArray[i] * 1000) / 10}%\n";

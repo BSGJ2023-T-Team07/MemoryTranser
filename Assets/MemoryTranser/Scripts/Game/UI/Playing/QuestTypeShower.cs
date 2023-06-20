@@ -8,7 +8,7 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
         [SerializeField] private TextMeshProUGUI questTypeText;
 
         public void SetQuestTypeText(BoxMemoryType boxMemoryType) {
-            questTypeText.text = boxMemoryType.ToJapanese();
+            questTypeText.text = $"現在のクエスト：{boxMemoryType.ToJapanese()}";
         }
     }
 }

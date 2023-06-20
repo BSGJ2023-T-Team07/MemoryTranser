@@ -9,14 +9,28 @@ namespace MemoryTranser.Scripts.Game.UI.Debug {
         [SerializeField] private TextMeshProUGUI text;
         [SerializeField] private PhaseManager phaseManager;
 
-        private void SetPhaseText((PhaseCore[], int) information) {
+        private float _defaultFontSize;
+
+
+        private void Start() {
+            _defaultFontSize = text.fontSize;
+        }
+
+        private void SetPhaseText((PhaseCore[], int, int) information) {
             var phaseCores = information.Item1;
             var currentPhaseIndex = information.Item2;
+            var viewablePhaseCount = information.Item3;
             text.text = "";
             for (var i = 0; i < phaseCores.Length; i++) {
                 if (i == currentPhaseIndex) {
                     text.text +=
-                        $"現在のフェイズ: {phaseCores[i].QuestType.ToJapanese()}, 点数: {phaseCores[i].Score}\n";
+                        $"<size={_defaultFontSize + 10}>フェイズ{i + 1}: {phaseCores[i].QuestType.ToJapanese()}, 点数: {phaseCores[i].Score}</size>\n";
+                    continue;
+                }
+
+                if (i > currentPhaseIndex && i <= currentPhaseIndex + viewablePhaseCount) {
+                    text.text +=
+                        $"<size={_defaultFontSize + 5}>フェイズ{i + 1}: {phaseCores[i].QuestType.ToJapanese()}, 点数: {phaseCores[i].Score}</size>\n";
                     continue;
                 }
 

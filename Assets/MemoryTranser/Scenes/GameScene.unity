@@ -1544,8 +1544,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 100
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: f6de415c9da9ae2498998261a4798717, type: 2}
+  m_sharedMaterial: {fileID: 7674469110047751393, guid: f6de415c9da9ae2498998261a4798717, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2163,7 +2163,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u30D5\u30A7\u30FC\u30BA\u306E\u60C5\u5831\n"
+  m_text: "\u30D5\u30A7\u30A4\u30BA\u306E\u60C5\u5831\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f6de415c9da9ae2498998261a4798717, type: 2}
   m_sharedMaterial: {fileID: 7674469110047751393, guid: f6de415c9da9ae2498998261a4798717, type: 2}
@@ -2784,7 +2784,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -203, y: -40}
+  m_AnchoredPosition: {x: -203, y: 9}
   m_SizeDelta: {x: 600, y: 50}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1410846940
@@ -4309,6 +4309,46 @@ PrefabInstance:
       propertyPath: m_UIInputModule
       value: 
       objectReference: {fileID: 866366356}
+    - target: {fileID: 8073110865618226502, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
+      propertyPath: m_ActionEvents.Array.size
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 8073110865618226502, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
+      propertyPath: m_ActionEvents.Array.data[14].m_ActionId
+      value: db4296eb-65ee-44bb-adfc-777e02447f5b
+      objectReference: {fileID: 0}
+    - target: {fileID: 8073110865618226502, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
+      propertyPath: m_ActionEvents.Array.data[14].m_ActionName
+      value: Player/SelectThrowingDirection
+      objectReference: {fileID: 0}
+    - target: {fileID: 8073110865618226502, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
+      propertyPath: m_ActionEvents.Array.data[14].m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8073110865618226502, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
+      propertyPath: m_ActionEvents.Array.data[14].m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8073110865618226502, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
+      propertyPath: m_ActionEvents.Array.data[14].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 456238667}
+    - target: {fileID: 8073110865618226502, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
+      propertyPath: m_ActionEvents.Array.data[14].m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8073110865618226502, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
+      propertyPath: m_ActionEvents.Array.data[14].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnSelectInputDirection
+      objectReference: {fileID: 0}
+    - target: {fileID: 8073110865618226502, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
+      propertyPath: m_ActionEvents.Array.data[14].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: MemoryTranser.Scripts.Game.Fairy.FairyCore, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8073110865618226502, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
+      propertyPath: m_ActionEvents.Array.data[14].m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

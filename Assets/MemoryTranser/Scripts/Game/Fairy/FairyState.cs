@@ -1,16 +1,16 @@
 namespace MemoryTranser.Scripts.Game.Fairy {
     public enum FairyState {
         //待機状態
-        IdlingWithoutMemory,
+        IdlingWithoutBox,
 
         //記憶を持って待機
-        IdlingWithMemory,
+        IdlingWithBox,
 
         //持たないで歩いてる
-        WalkingWithoutMemory,
+        WalkingWithoutBox,
 
         //記憶を持って歩いてる
-        WalkingWithMemory,
+        WalkingWithBox,
 
         //構え状態
         PrepareThrowing,

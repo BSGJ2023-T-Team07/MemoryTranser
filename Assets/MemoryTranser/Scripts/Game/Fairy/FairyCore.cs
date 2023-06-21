@@ -2,6 +2,7 @@ using System;
 using Cysharp.Threading.Tasks;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.MemoryBox;
+using MemoryTranser.Scripts.Game.Sound;
 using Unity.Burst.CompilerServices;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -16,6 +17,9 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         [SerializeField] private Rigidbody2D rb2D;
         [SerializeField] private Animator animator;
         [SerializeField] private BoxCollider2D boxCollider2D;
+        [SerializeField] private AudioClip[] seClips;
+        GameObject SE_Manager;
+        SeManager seManager;
 
         #endregion
 
@@ -165,6 +169,8 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             MyParameters.UpdateWalkSpeedByWeightAndCombo(_holdingBox.Weight, ComboCount);
 
             Debug.Log($"IDが{_holdingBox.BoxId}の記憶を持った");
+
+            seManager.audioSource.PlayOneShot(seManager.seClips[0]);
         }
 
         private void Throw() {
@@ -174,6 +180,8 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             Debug.Log($"IDが{_holdingBox.BoxId}の記憶を投げた");
             _holdingBox = null;
             MyParameters.UpdateWalkSpeedByWeightAndCombo(0, ComboCount);
+
+            seManager.audioSource.PlayOneShot(seManager.seClips[1]);
         }
 
         private void Put() {
@@ -182,6 +190,8 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             Debug.Log($"IDが{_holdingBox.BoxId}の記憶を置いた");
             _holdingBox = null;
             MyParameters.UpdateWalkSpeedByWeightAndCombo(0, ComboCount);
+
+            seManager.audioSource.PlayOneShot(seManager.seClips[0]);
         }
 
         #endregion
@@ -219,6 +229,9 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             MyParameters = new FairyParameters();
 
             MyParameters.InitializeParameters();
+
+            SE_Manager = GameObject.Find("SE_Manager");
+            seManager = SE_Manager.GetComponent<SeManager>();
         }
 
         #region interfaceの実装

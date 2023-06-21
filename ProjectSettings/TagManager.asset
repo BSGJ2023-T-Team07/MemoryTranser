@@ -21,8 +21,8 @@ TagManager:
   - MemoryBox
   - OutputArea
   - LostWall
-  - 
-  - 
+  - FiaryNotTrgger
+  - Wall
   - 
   - 
   - 

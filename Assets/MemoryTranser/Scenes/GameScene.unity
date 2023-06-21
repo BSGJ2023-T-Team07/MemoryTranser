@@ -467,7 +467,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 265722269}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 17.51, y: 0, z: 0}
+  m_LocalPosition: {x: 18.25, y: -13.18, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -687,7 +687,7 @@ GameObject:
   - component: {fileID: 278252060}
   - component: {fileID: 278252061}
   - component: {fileID: 278252062}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: WallRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1023,7 +1023,7 @@ GameObject:
   - component: {fileID: 402944542}
   - component: {fileID: 402944543}
   - component: {fileID: 402944544}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: WallLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2339,7 +2339,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1143683196}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -17.51, y: 0, z: 0}
+  m_LocalPosition: {x: -18.1, y: 13.24, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2738,7 +2738,7 @@ GameObject:
   - component: {fileID: 1288957708}
   - component: {fileID: 1288957709}
   - component: {fileID: 1288957710}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: WallDown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3508,7 +3508,7 @@ GameObject:
   - component: {fileID: 1548241025}
   - component: {fileID: 1548241026}
   - component: {fileID: 1548241027}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: WallUp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4583,18 +4583,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 958714052861761041, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 958714052861761041, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
-      propertyPath: m_Color.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 958714052861761041, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3476403440198354191, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
       propertyPath: m_Name
       value: Fairy
@@ -4651,46 +4639,6 @@ PrefabInstance:
       propertyPath: m_UIInputModule
       value: 
       objectReference: {fileID: 866366356}
-    - target: {fileID: 8073110865618226502, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
-      propertyPath: m_ActionEvents.Array.size
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 8073110865618226502, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
-      propertyPath: m_ActionEvents.Array.data[14].m_ActionId
-      value: db4296eb-65ee-44bb-adfc-777e02447f5b
-      objectReference: {fileID: 0}
-    - target: {fileID: 8073110865618226502, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
-      propertyPath: m_ActionEvents.Array.data[14].m_ActionName
-      value: Player/SelectThrowingDirection
-      objectReference: {fileID: 0}
-    - target: {fileID: 8073110865618226502, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
-      propertyPath: m_ActionEvents.Array.data[14].m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8073110865618226502, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
-      propertyPath: m_ActionEvents.Array.data[14].m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8073110865618226502, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
-      propertyPath: m_ActionEvents.Array.data[14].m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 456238667}
-    - target: {fileID: 8073110865618226502, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
-      propertyPath: m_ActionEvents.Array.data[14].m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8073110865618226502, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
-      propertyPath: m_ActionEvents.Array.data[14].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnSelectInputDirection
-      objectReference: {fileID: 0}
-    - target: {fileID: 8073110865618226502, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
-      propertyPath: m_ActionEvents.Array.data[14].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: MemoryTranser.Scripts.Game.Fairy.FairyCore, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 8073110865618226502, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
-      propertyPath: m_ActionEvents.Array.data[14].m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

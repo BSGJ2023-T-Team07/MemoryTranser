@@ -80,8 +80,8 @@ namespace MemoryTranser.Scripts.Game.Desire {
         private async void Start() {
             //ステージ上にDesireを生成する
             for (var i = 0; i < maxSpawnCount; i++) {
-                SpawnDesire(GetSpawnPosition());
                 await UniTask.Delay(TimeSpan.FromSeconds(15f));
+                SpawnDesire(GetSpawnPosition());
             }
         }
 
@@ -93,10 +93,10 @@ namespace MemoryTranser.Scripts.Game.Desire {
         /// <returns></returns>
         private Vector3 GetSpawnPosition() {
             var notInCameraSpawnPoints = spawnPointObjects
-                .Where((t, i) => !_spawnPointRenderers[i].isVisible && canSpawnFlags[i]).ToList();
+                .Where((t, i) => !_spawnPointRenderers[i].isVisible && canSpawnFlags[i]).ToArray();
 
             var nearestSpawnPointPos = Vector3.zero;
-            for (var i = 0; i < notInCameraSpawnPoints.Count; i++) {
+            for (var i = 0; i < notInCameraSpawnPoints.Length; i++) {
                 if (i == 0) {
                     nearestSpawnPointPos = notInCameraSpawnPoints[i].position;
                 }

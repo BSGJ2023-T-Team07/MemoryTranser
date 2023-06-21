@@ -25,13 +25,14 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         private List<int> _initialBoxTypeProbabilityList = new();
         private List<int> _boxTypeProbabilityList = new();
 
-        #endregion
+        [Header("MemoryBoxの最大生成数")] [SerializeField]
+        private int maxBoxGenerateCount = 20;
 
-        #region 定数の定義
+        [Header("MemoryBoxの重さの最大値")] [SerializeField]
+        private float maxWeight = 2f;
 
-        [SerializeField] private int maxBoxGenerateCount = 20;
-        [SerializeField] private float maxWeight = 2f;
-        [SerializeField] private float minWeight = 0.8f;
+        [Header("MemoryBoxの重さの最小値")] [SerializeField]
+        private float minWeight = 0.8f;
 
         #endregion
 

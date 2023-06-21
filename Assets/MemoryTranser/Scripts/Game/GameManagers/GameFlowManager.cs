@@ -1,19 +1,9 @@
 using System;
 using Cysharp.Threading.Tasks;
-using MemoryTranser.Scripts.Game.Concentration;
-using MemoryTranser.Scripts.Game.Desire;
-using MemoryTranser.Scripts.Game.Fairy;
-using MemoryTranser.Scripts.Game.MemoryBox;
-using MemoryTranser.Scripts.Game.Phase;
-using MemoryTranser.Scripts.Game.Sound;
 using MemoryTranser.Scripts.Game.Util;
-using UnityEngine;
 using Debug = UnityEngine.Debug;
 
 namespace MemoryTranser.Scripts.Game.GameManagers {
-    [RequireComponent(typeof(PhaseManager))]
-    [RequireComponent(typeof(ConcentrationManager))]
-    [RequireComponent(typeof(MemoryBoxManager))]
     public class GameFlowManager : SingletonMonoBehaviour<GameFlowManager> {
         protected override bool DontDestroy => false;
 

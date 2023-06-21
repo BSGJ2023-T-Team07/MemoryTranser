@@ -1,10 +1,16 @@
-using System;
 using MemoryTranser.Scripts.Game.GameManagers;
+using MemoryTranser.Scripts.Game.UI.Playing;
 using UnityEngine;
 
 namespace MemoryTranser.Scripts.Game.Concentration {
     public class ConcentrationManager : MonoBehaviour, IOnStateChangedToInitializing, IOnStateChangedToReady,
         IOnStateChangedToPlaying, IOnStateChangedToResult {
+        #region コンポーネントの定義
+
+        [SerializeField] private ConcentrationShower concentrationShower;
+
+        #endregion
+
         #region 変数の定義
 
         private float _remainingConcentration;
@@ -18,6 +24,8 @@ namespace MemoryTranser.Scripts.Game.Concentration {
         #region Unityから呼ばれる
 
         private void Update() {
+            concentrationShower.SetValue(GetRemainingConcentrationValue());
+
             if (_decreaseFlag) _remainingConcentration -= Time.deltaTime;
 
             if (_remainingConcentration < 0) {
@@ -53,7 +61,7 @@ namespace MemoryTranser.Scripts.Game.Concentration {
             _remainingConcentration = Mathf.Min(_maxConcentration, _remainingConcentration + addition);
         }
 
-        public float GetRemainingConcentrationValue() {
+        private float GetRemainingConcentrationValue() {
             return _remainingConcentration / _maxConcentration;
         }
     }

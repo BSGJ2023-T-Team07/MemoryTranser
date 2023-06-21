@@ -1,13 +1,9 @@
 using System;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using MemoryTranser.Scripts.Game.Desire;
-using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.Util;
 using UniRx;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Unit = UniRx.Unit;
 
 namespace MemoryTranser.Scripts.Game.MemoryBox {
@@ -154,7 +150,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
         private void AttackDesire(DesireCore desire) {
             //Desireの命中時の処理を実行する
-            desire.BeEliminated();
+            desire.BeAttacked();
         }
 
         public async void Disappear() {

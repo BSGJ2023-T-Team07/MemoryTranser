@@ -57,7 +57,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
             //決まったパラメーターに対して色々変更する
             memoryBox.SpRr.sprite = randomBoxType.ToMemoryBoxSprite();
-            memoryBox.transform.localScale = Vector3.one * memoryBox.Weight / (maxWeight - minWeight);
+            memoryBox.transform.localScale = Vector3.one * memoryBox.Weight / 1.2f;
             memoryBox.SetDiff();
 
             //コンポーネントのプロパティー初期化

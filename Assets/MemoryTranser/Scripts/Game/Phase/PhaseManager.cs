@@ -1,13 +1,8 @@
-using System;
 using System.Collections.Generic;
-using MemoryTranser.Scripts.Game.Desire;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.MemoryBox;
-using MemoryTranser.Scripts.Game.UI;
-using MemoryTranser.Scripts.Game.UI.Debug;
 using MemoryTranser.Scripts.Game.UI.Playing;
 using UnityEngine;
-using UniRx;
 
 namespace MemoryTranser.Scripts.Game.Phase {
     public class PhaseManager : MonoBehaviour, IOnStateChangedToInitializing, IOnStateChangedToReady {
@@ -15,12 +10,14 @@ namespace MemoryTranser.Scripts.Game.Phase {
 
         [SerializeField] private QuestTypeShower questTypeShower;
         [SerializeField] private ScoreShower scoreShower;
-        [SerializeField] private DesireCore desireCore;
         [SerializeField] private MemoryBoxManager memoryBoxManager;
 
         #endregion
 
         #region 変数の定義
+
+        [Header("Desireを倒したときに加算される点数")] [SerializeField]
+        private int additionalScoreOnDefeatDesire;
 
         [Header("最初に生成されるフェイスの数")] [SerializeField]
         private int initialPhaseCount = 20;
@@ -42,6 +39,7 @@ namespace MemoryTranser.Scripts.Game.Phase {
 
         #region 定数の定義
 
+        //フェイズの長さ
         public const float PHASE_DURATION = 30f;
 
         #endregion
@@ -57,18 +55,16 @@ namespace MemoryTranser.Scripts.Game.Phase {
         #region Unityから呼ばれる
 
         private void Awake() {
-            //DesireCoreが攻撃されたらスコアを加算する
-            desireCore.OnAttacked.Subscribe(_ => { scoreShower.SetScoreText(AddScore(_currentPhaseIndex, 5)); });
-        }
-
-        private void Start() {
             _phaseRemainingTime = PHASE_DURATION;
         }
 
         private void Update() {
             if (GameFlowManager.I.NowGameState != GameState.Playing) return;
 
+            //NowGameStateがPlayingの時のみ残り時間を減らす
             _phaseRemainingTime -= Time.deltaTime;
+
+            //フェイズの残り時間が0になったら、次のフェイズに移行する
             if (_phaseRemainingTime <= 0) {
                 TransitToNextPhase();
                 _phaseRemainingTime = PHASE_DURATION;
@@ -94,10 +90,26 @@ namespace MemoryTranser.Scripts.Game.Phase {
 
         #region public関数
 
+        /// <summary>
+        /// 現在のフェイズの点数を加算する
+        /// </summary>
+        /// <param name="score"></param>
         public void AddCurrentScore(int score) {
             AddScore(_currentPhaseIndex, score);
         }
 
+        /// <summary>
+        /// Desireを倒したときに点数を加算する
+        /// </summary>
+        public void AddCurrentScoreOnDefeatDesire() {
+            AddScore(_currentPhaseIndex, additionalScoreOnDefeatDesire);
+        }
+
+        /// <summary>
+        /// 納品されたMemoryBoxの情報をもとにスコアを計算する
+        /// </summary>
+        /// <param name="boxes"></param>
+        /// <returns>点数、正答数、誤答数の組を返す</returns>
         public (int, int, int) CalculateScoreInformation(MemoryBoxCore[] boxes) {
             var currentQuest = GetCurrentQuestType();
             var score = 0;
@@ -121,13 +133,8 @@ namespace MemoryTranser.Scripts.Game.Phase {
         }
 
         /// <summary>
-        /// 現在のPhaseのQuestTypeを取得する
+        /// UIにフェイズの情報を反映させる
         /// </summary>
-        /// <returns></returns>
-        public BoxMemoryType GetCurrentQuestType() {
-            return GetQuestType(_currentPhaseIndex);
-        }
-
         public void UpdatePhaseText() {
             scoreShower.SetScoreText(_phaseCores[_currentPhaseIndex].Score);
             questTypeShower.SetQuestTypeText(GetCurrentQuestType());
@@ -138,6 +145,7 @@ namespace MemoryTranser.Scripts.Game.Phase {
         /// </summary>
         /// <returns></returns>
         public (PhaseCore[], int, int) GetPhaseInformation() {
+            //実際のゲーム画面だとこっちの処理を使う
             // var viewablePhaseCores = _phaseCores.GetRange(_currentPhaseIndex, viewablePhaseCount).ToArray();
             // return (viewablePhaseCores, 0, viewablePhaseCount);
 
@@ -147,6 +155,14 @@ namespace MemoryTranser.Scripts.Game.Phase {
         #endregion
 
         #region private関数
+
+        /// <summary>
+        /// 現在のPhaseのQuestTypeを取得する
+        /// </summary>
+        /// <returns></returns>
+        private BoxMemoryType GetCurrentQuestType() {
+            return GetQuestType(_currentPhaseIndex);
+        }
 
         /// <summary>
         /// フェイズの初期化
@@ -207,6 +223,9 @@ namespace MemoryTranser.Scripts.Game.Phase {
             return _phaseCores[phaseIndex].QuestType;
         }
 
+        /// <summary>
+        /// 今あるフェイズを元にBoxの生成確率を設定する
+        /// </summary>
         private void SetBoxGenerationProbability() {
             var nextQuestTypeInts = new List<int>();
             for (var i = _currentPhaseIndex; i <= _currentPhaseIndex + memoryBoxProbabilityPhaseCount; i++) {

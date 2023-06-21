@@ -8,7 +8,7 @@ using UnityEngine;
 using UniRx;
 
 namespace MemoryTranser.Scripts.Game.Desire {
-    public class DesireManager : MonoBehaviour, IOnStateChangedToResult {
+    public class DesireManager : MonoBehaviour, IOnStateChangedToResult, IOnStateChangedToFinished {
         [SerializeField] private PhaseManager phaseManager;
         [SerializeField] private GameObject desirePrefab;
 
@@ -63,13 +63,32 @@ namespace MemoryTranser.Scripts.Game.Desire {
                 //つくったDesireのOnDisappearを購読して、消えたらまた生成するようにする
                 async void OnNext(Unit _) {
                     CollectDesire(desireCore);
-                    await UniTask.Delay(TimeSpan.FromSeconds(spawnIntervalSec));
-                    SpawnDesire(GetSpawnPosition());
+                    Vector3 spawnPos;
+                    bool isResult;
+
+                    while (true) {
+                        await UniTask.Delay(TimeSpan.FromSeconds(spawnIntervalSec));
+                        var info = GetCanSpawnAndSpawnPosition();
+
+                        isResult = GameFlowManager.I.NowGameState == GameState.Result;
+
+                        if (isResult) {
+                            spawnPos = Vector3.zero;
+                            break;
+                        }
+
+                        if (info.Item1) {
+                            spawnPos = info.Item2;
+                            break;
+                        }
+                    }
+
+                    if (!isResult) SpawnDesire(spawnPos);
                 }
 
                 desireCore.OnDisappear.Subscribe(OnNext);
 
-                //つくったDesireのOnBeAttackedを購読して、
+                //つくったDesireのOnBeAttackedを購読して、そのDesireが倒されたらスコアを加算する
                 desireCore.OnBeAttacked.Subscribe(_ => { phaseManager.AddCurrentScoreOnDefeatDesire(); });
 
                 //最初はすべて非アクティブにしておく
@@ -81,7 +100,7 @@ namespace MemoryTranser.Scripts.Game.Desire {
             //ステージ上にDesireを生成する
             for (var i = 0; i < maxSpawnCount; i++) {
                 await UniTask.Delay(TimeSpan.FromSeconds(15f));
-                SpawnDesire(GetSpawnPosition());
+                SpawnDesire(GetCanSpawnAndSpawnPosition().Item2);
             }
         }
 
@@ -91,7 +110,7 @@ namespace MemoryTranser.Scripts.Game.Desire {
         /// カメラに写っていないspawnPointのうち、最もtargetTransformに近いspawnPointの座標を返す
         /// </summary>
         /// <returns></returns>
-        private Vector3 GetSpawnPosition() {
+        private (bool, Vector3) GetCanSpawnAndSpawnPosition() {
             var notInCameraSpawnPoints = spawnPointObjects
                 .Where((t, i) => !_spawnPointRenderers[i].isVisible && canSpawnFlags[i]).ToArray();
 
@@ -107,7 +126,7 @@ namespace MemoryTranser.Scripts.Game.Desire {
                 }
             }
 
-            return nearestSpawnPointPos;
+            return (nearestSpawnPointPos != Vector3.zero, nearestSpawnPointPos);
         }
 
         /// <summary>
@@ -142,6 +161,8 @@ namespace MemoryTranser.Scripts.Game.Desire {
                 canSpawnFlags[i] = false;
             }
         }
+
+        public void OnStateChangedToFinished() { }
 
         #endregion
     }

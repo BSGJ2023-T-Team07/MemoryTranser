@@ -13,7 +13,6 @@ namespace MemoryTranser.Scripts.Game.Desire {
         public float FollowSpeed => Mathf.Clamp(_followSpeed, minFollowSpeed, maxFollowSpeed);
 
         public void InitializeParameters() {
-            Debug.Log("FairyのInitializeParametersが呼ばれました");
             _followSpeed = initialFollowSpeed;
         }
     }

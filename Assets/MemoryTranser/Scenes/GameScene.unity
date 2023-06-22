@@ -2991,9 +2991,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   phaseManager: {fileID: 871197807}
   desirePrefab: {fileID: 6621696765332445999, guid: 64473ae47219dba4da337a6c1053c310, type: 3}
-  initialSpawnIntervalSec: 0
-  spawnIntervalSec: 5
-  maxSpawnCount: 5
+  initialSpawnIntervalSec: 3
+  spawnIntervalSec: 7
+  maxSpawnCount: 1
   spawnPointObjects:
   - {fileID: 1143683197}
   - {fileID: 265722270}

@@ -6,6 +6,7 @@ using MemoryTranser.Scripts.Game.Sound;
 using Unity.Burst.CompilerServices;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 using Constant = MemoryTranser.Scripts.Game.Util.Constant;
 
 namespace MemoryTranser.Scripts.Game.Fairy {
@@ -23,8 +24,9 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         #region 変数の定義
 
+        [SerializeField] private FairyParameters myParameters;
+
         private FairyState _myState;
-        private FairyParameters _myParameters = new();
         private MemoryBoxCore _holdingBox;
         private int _comboCount;
 
@@ -45,10 +47,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         public bool HasBox => _holdingBox;
 
-        public FairyParameters MyParameters {
-            get => _myParameters;
-            private set => _myParameters = value;
-        }
+        public FairyParameters MyParameters => myParameters;
 
         public FairyState MyState {
             get => _myState;
@@ -60,8 +59,8 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             set {
                 _comboCount = value;
 
-                if (HasBox) MyParameters.UpdateWalkSpeedByWeightAndCombo(_holdingBox.Weight, value);
-                else MyParameters.UpdateWalkSpeedByWeightAndCombo(0, value);
+                if (HasBox) myParameters.UpdateWalkSpeedByWeightAndCombo(_holdingBox.Weight, value);
+                else myParameters.UpdateWalkSpeedByWeightAndCombo(0, value);
             }
         }
 
@@ -91,7 +90,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             }
 
             var moveInput = context.ReadValue<Vector2>();
-            _inputVelocity = moveInput * MyParameters.WalkSpeed;
+            _inputVelocity = moveInput * myParameters.WalkSpeed;
         }
 
         public void OnSelectInputDirection(InputAction.CallbackContext context) {
@@ -164,7 +163,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             memoryBoxCore.BeHeld(transform);
             _holdingBox = memoryBoxCore;
 
-            MyParameters.UpdateWalkSpeedByWeightAndCombo(_holdingBox.Weight, ComboCount);
+            myParameters.UpdateWalkSpeedByWeightAndCombo(_holdingBox.Weight, ComboCount);
 
             Debug.Log($"IDが{_holdingBox.BoxId}の記憶を持った");
 
@@ -172,12 +171,12 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         }
 
         private void Throw() {
-            _holdingBox.BeThrown(MyParameters.ThrowPower,
+            _holdingBox.BeThrown(myParameters.ThrowPower,
                 _inputThrowDirection.normalized);
 
             Debug.Log($"IDが{_holdingBox.BoxId}の記憶を投げた");
             _holdingBox = null;
-            MyParameters.UpdateWalkSpeedByWeightAndCombo(0, ComboCount);
+            myParameters.UpdateWalkSpeedByWeightAndCombo(0, ComboCount);
 
             seManager.Play(SEs.ThrowBox);
         }
@@ -187,7 +186,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
             Debug.Log($"IDが{_holdingBox.BoxId}の記憶を置いた");
             _holdingBox = null;
-            MyParameters.UpdateWalkSpeedByWeightAndCombo(0, ComboCount);
+            myParameters.UpdateWalkSpeedByWeightAndCombo(0, ComboCount);
 
             seManager.Play(SEs.PutBox);
         }
@@ -224,9 +223,9 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         }
 
         private void InitializeFairy() {
-            MyParameters = new FairyParameters();
+            myParameters = new FairyParameters();
 
-            MyParameters.InitializeParameters();
+            myParameters.InitializeParameters();
         }
 
         #region interfaceの実装

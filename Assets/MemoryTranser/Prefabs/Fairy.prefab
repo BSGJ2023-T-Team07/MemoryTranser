@@ -198,6 +198,14 @@ MonoBehaviour:
   rb2D: {fileID: 8220344965258797477}
   animator: {fileID: 3581967026774715049}
   boxCollider2D: {fileID: 4914608097843609349}
+  seManager: {fileID: 3043404059194860603, guid: 70740b46c3cea514288136fb49b440ff, type: 3}
+  myParameters:
+    MAX_WALK_SPEED: 30
+    MIN_WALK_SPEED: 0
+    INITIAL_WALK_SPEED: 8
+    MAX_THROW_POWER: 10
+    MIN_THROW_POWER: 0
+    INITIAL_THROW_POWER: 10
 --- !u!114 &8073110865618226502
 MonoBehaviour:
   m_ObjectHideFlags: 0

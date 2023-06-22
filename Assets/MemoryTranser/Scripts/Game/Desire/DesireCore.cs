@@ -4,6 +4,7 @@ using MemoryTranser.Scripts.Game.GameManagers;
 using UnityEngine;
 using UnityEngine.AI;
 using UniRx;
+using UnityEngine.Serialization;
 
 namespace MemoryTranser.Scripts.Game.Desire {
     public class DesireCore : MonoBehaviour, IOnStateChangedToResult {
@@ -20,9 +21,10 @@ namespace MemoryTranser.Scripts.Game.Desire {
 
         #region 変数の定義
 
+        [SerializeField] private DesireParameters myParameters;
+
         private DesireState _myState;
         private DesireType _myType;
-        private DesireParameters _myParameters;
         private Vector3 _followPos;
 
         private bool _followFlag;
@@ -41,6 +43,8 @@ namespace MemoryTranser.Scripts.Game.Desire {
 
         #region プロパティーの定義
 
+        public DesireParameters MyParameters => myParameters;
+
         public Rigidbody2D Rb2D {
             get {
                 if (!rb2D) rb2D = GetComponent<Rigidbody2D>();
@@ -58,7 +62,7 @@ namespace MemoryTranser.Scripts.Game.Desire {
                 Vector2 direction = (targetTransform.position - transform.position).normalized;
 
                 //移動処理
-                Rb2D.velocity = direction * _myParameters.FollowSpeed;
+                Rb2D.velocity = direction * myParameters.FollowSpeed;
             }
         }
 
@@ -107,10 +111,9 @@ namespace MemoryTranser.Scripts.Game.Desire {
         /// Desireの初期化関数
         /// </summary>
         private void InitializeDesire() {
-            _myParameters = new DesireParameters();
+            myParameters = new DesireParameters();
+            myParameters.InitializeParameters();
             _myState = DesireState.Freeze;
-
-            _myParameters.FollowSpeed = FairyParameters.INITIAL_WALK_SPEED * 0.8f;
         }
 
         private void OnDestroy() {

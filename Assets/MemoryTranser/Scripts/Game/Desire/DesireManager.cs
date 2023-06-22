@@ -12,6 +12,9 @@ namespace MemoryTranser.Scripts.Game.Desire {
         [SerializeField] private PhaseManager phaseManager;
         [SerializeField] private GameObject desirePrefab;
 
+        [Header("Desireが最初にスポーンする間隔(秒)")] [SerializeField]
+        private float initialSpawnIntervalSec;
+
         [Header("Desireが再スポーンするまでの時間(秒)")] [SerializeField]
         private float spawnIntervalSec;
 
@@ -99,7 +102,7 @@ namespace MemoryTranser.Scripts.Game.Desire {
         private async void Start() {
             //ステージ上にDesireを生成する
             for (var i = 0; i < maxSpawnCount; i++) {
-                await UniTask.Delay(TimeSpan.FromSeconds(15f));
+                await UniTask.Delay(TimeSpan.FromSeconds(initialSpawnIntervalSec));
                 SpawnDesire(GetCanSpawnAndSpawnPosition().Item2);
             }
         }

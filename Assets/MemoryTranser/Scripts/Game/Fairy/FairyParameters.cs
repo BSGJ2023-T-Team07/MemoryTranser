@@ -1,6 +1,8 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace MemoryTranser.Scripts.Game.Fairy {
+    [System.Serializable]
     public class FairyParameters {
         #region 変数の定義
 
@@ -11,21 +13,21 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         #region 定数の定義
 
-        public const float MAX_WALK_SPEED = 30f;
-        public const float MIN_WALK_SPEED = 0f;
-        public const float INITIAL_WALK_SPEED = 8f;
+        [SerializeField] private float maxWalkSpeed = 30f;
+        [SerializeField] private float minWalkSpeed = 0f;
+        [SerializeField] private float initialWalkSpeed = 8f;
 
-        public const float MAX_THROW_POWER = 10f;
-        public const float MIN_THROW_POWER = 0f;
-        public const float INITIAL_THROW_POWER = 10f;
+        [SerializeField] private float maxThrowPower = 10f;
+        [SerializeField] private float minThrowPower = 0f;
+        [SerializeField] private float initialThrowPower = 10f;
 
         #endregion
 
         #region プロパティーの定義
 
-        public float WalkSpeed => Mathf.Clamp(_walkSpeed, MIN_WALK_SPEED, MAX_WALK_SPEED);
+        public float WalkSpeed => Mathf.Clamp(_walkSpeed, minWalkSpeed, maxWalkSpeed);
 
-        public float ThrowPower => Mathf.Clamp(_throwPower, MIN_THROW_POWER, MAX_THROW_POWER);
+        public float ThrowPower => Mathf.Clamp(_throwPower, minThrowPower, maxThrowPower);
 
         #endregion
 
@@ -33,13 +35,13 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         public void InitializeParameters() {
             Debug.Log("FairyのInitializeParametersが呼ばれました");
-            _walkSpeed = INITIAL_WALK_SPEED;
-            _throwPower = INITIAL_THROW_POWER;
+            _walkSpeed = initialWalkSpeed;
+            _throwPower = initialThrowPower;
         }
 
         public void UpdateWalkSpeedByWeightAndCombo(float weight, int comboCount) {
             //TODO: 重さとコンボ数によって歩く速さを変化させる式の吟味
-            _walkSpeed = INITIAL_WALK_SPEED - weight + comboCount / 10f;
+            _walkSpeed = initialWalkSpeed - weight + comboCount / 10f;
         }
 
         #endregion

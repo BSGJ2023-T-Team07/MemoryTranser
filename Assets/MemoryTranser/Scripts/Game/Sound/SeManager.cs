@@ -1,39 +1,25 @@
 using UnityEngine;
-//using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 namespace MemoryTranser.Scripts.Game.Sound {
     public class SeManager : MonoBehaviour {
-        [SerializeField] public AudioClip[] seClips;
-        public AudioSource audioSource;
-
-        void Start()
-        {
-            audioSource = GetComponent<AudioSource>();  // AudioSourceのコンポーネントを取得
+        [System.Serializable]
+        public class SeData {
+            public SEs se;
+            public AudioClip audioClip;
         }
-        
-        private void Update()
-        {
-            //// Eキーを押したときの処理
-            //if (Input.GetKeyDown(KeyCode.E))
-            //{
-            //    audioSource.PlayOneShot(seClips[0]);
-            //}
 
-            //// Qキーを押したときの処理
-            //if (Input.GetKeyDown(KeyCode.Q))
-            //{
-            //    audioSource.PlayOneShot(seClips[0]);
-            //}
+        [SerializeField] private SeData[] seDatas;
+        [SerializeField] private AudioSource audioSource;
 
-            //// マウスの左クリックしたときの処理
-            //if (Input.GetKeyDown(KeyCode.Mouse0))
-            //{
-            //    audioSource.PlayOneShot(seClips[1]);
-            //}
+        public void Play(SEs seType) {
+            audioSource.PlayOneShot(seDatas[(int)seType].audioClip);
         }
     }
 
     public enum SEs {
+        PutBox,
+        HoldBox,
         ThrowBox
     }
 }

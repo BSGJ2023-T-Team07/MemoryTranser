@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using Color = System.Drawing.Color;
 
-public class TitleAnimation : MonoBehaviour
+public class TitleLogoAnimation : MonoBehaviour
 {
     [SerializeField] private Image _titleImage;
     [SerializeField] private Gradient _gradient;

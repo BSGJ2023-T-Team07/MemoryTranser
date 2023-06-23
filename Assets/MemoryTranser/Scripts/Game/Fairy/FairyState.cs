@@ -12,9 +12,6 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         //記憶を持って歩いてる
         WalkingWithBox,
 
-        //構え状態
-        PrepareThrowing,
-
         //操作不能状態
         Freeze
     }

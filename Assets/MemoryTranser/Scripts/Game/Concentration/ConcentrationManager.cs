@@ -24,7 +24,7 @@ namespace MemoryTranser.Scripts.Game.Concentration {
         #region Unityから呼ばれる
 
         private void Update() {
-            concentrationShower.SetValue(GetRemainingConcentrationValue());
+            concentrationShower.SetValue(_remainingConcentration / _maxConcentration);
 
             if (_decreaseFlag) _remainingConcentration -= Time.deltaTime;
 
@@ -59,10 +59,6 @@ namespace MemoryTranser.Scripts.Game.Concentration {
 
         public void AddConcentration(float addition) {
             _remainingConcentration = Mathf.Min(_maxConcentration, _remainingConcentration + addition);
-        }
-
-        private float GetRemainingConcentrationValue() {
-            return _remainingConcentration / _maxConcentration;
         }
     }
 }

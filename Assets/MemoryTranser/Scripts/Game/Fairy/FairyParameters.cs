@@ -34,7 +34,6 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         #region パラメーター変化関連
 
         public void InitializeParameters() {
-            Debug.Log("FairyのInitializeParametersが呼ばれました");
             _walkSpeed = initialWalkSpeed;
             _throwPower = initialThrowPower;
         }

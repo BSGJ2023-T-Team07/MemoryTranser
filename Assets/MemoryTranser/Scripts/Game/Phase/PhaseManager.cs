@@ -32,7 +32,6 @@ namespace MemoryTranser.Scripts.Game.Phase {
         private int memoryBoxProbabilityWeight = 5;
 
         private List<PhaseCore> _phaseCores = new();
-        private int _maxPhaseTypeCount = (int)BoxMemoryType.Count;
 
         private int _currentPhaseIndex = 0;
         private float _phaseRemainingTime;
@@ -182,8 +181,10 @@ namespace MemoryTranser.Scripts.Game.Phase {
         /// <param name="phaseCore"></param>
         /// <returns>設定されたPhaseCoreが返ってくる</returns>
         private PhaseCore GenerateRandomPhase(PhaseCore phaseCore) {
-            var randomPhaseType = (BoxMemoryType)UnityEngine.Random.Range(1, _maxPhaseTypeCount);
+            var randomPhaseType = (BoxMemoryType)Random.Range(1, (int)BoxMemoryType.Count);
+            var randomPhaseGimmick = (PhaseGimmickType)Random.Range(1, (int)PhaseGimmickType.Count);
             phaseCore.QuestType = randomPhaseType;
+            phaseCore.GimmickType = randomPhaseGimmick;
 
             return phaseCore;
         }

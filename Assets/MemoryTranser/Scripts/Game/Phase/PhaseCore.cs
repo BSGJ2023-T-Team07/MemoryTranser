@@ -6,6 +6,7 @@ namespace MemoryTranser.Scripts.Game.Phase {
         #region 変数の定義
 
         private BoxMemoryType _questType = new();
+        private PhaseGimmickType _gimmickType = new();
         private int _score;
 
         #endregion
@@ -16,6 +17,11 @@ namespace MemoryTranser.Scripts.Game.Phase {
         public BoxMemoryType QuestType {
             get => _questType;
             set => _questType = value;
+        }
+
+        public PhaseGimmickType GimmickType {
+            get => _gimmickType;
+            set => _gimmickType = value;
         }
 
         public int Score {

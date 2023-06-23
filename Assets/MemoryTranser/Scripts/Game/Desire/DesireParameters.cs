@@ -8,7 +8,7 @@ namespace MemoryTranser.Scripts.Game.Desire {
 
         [SerializeField] private float maxFollowSpeed = 10f;
         [SerializeField] private float minFollowSpeed = 0f;
-        [SerializeField] private float initialFollowSpeed = 7f;
+        [SerializeField] private float initialFollowSpeed = 3.5f;
 
         public float FollowSpeed => Mathf.Clamp(_followSpeed, minFollowSpeed, maxFollowSpeed);
 

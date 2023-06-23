@@ -15,6 +15,10 @@ namespace MemoryTranser.Scripts.Game.Sound {
         public void Play(SEs seType) {
             audioSource.PlayOneShot(seDatas[(int)seType].audioClip);
         }
+
+        public void SetSeVolume(float volume) {
+            audioSource.volume = volume;
+        }
     }
 
     public enum SEs {

@@ -4543,9 +4543,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   memoryBoxPrefab: {fileID: 5175419891693762498, guid: f29cc8924997b514480750551dfbdf40, type: 3}
   memoryGenerationProbabilityShower: {fileID: 1410846942}
+  desireManager: {fileID: 1392480215}
   maxBoxGenerateCount: 20
   maxWeight: 2
   minWeight: 0.8
+  generateIntervalSec: 3
 --- !u!4 &2077243977
 Transform:
   m_ObjectHideFlags: 0

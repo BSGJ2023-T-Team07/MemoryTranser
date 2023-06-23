@@ -9,6 +9,7 @@ namespace MemoryTranser.Scripts.Game.Phase {
         #region コンポーネントの定義
 
         [SerializeField] private QuestTypeShower questTypeShower;
+        [SerializeField] private PhaseGimmickTypeShower phaseGimmickTypeShower;
         [SerializeField] private ScoreShower scoreShower;
         [SerializeField] private MemoryBoxManager memoryBoxManager;
 
@@ -135,8 +136,9 @@ namespace MemoryTranser.Scripts.Game.Phase {
         /// UIにフェイズの情報を反映させる
         /// </summary>
         public void UpdatePhaseText() {
-            scoreShower.SetScoreText(_phaseCores[_currentPhaseIndex].Score);
+            scoreShower.SetScoreText(GetCurrentScore());
             questTypeShower.SetQuestTypeText(GetCurrentQuestType());
+            phaseGimmickTypeShower.SetPhaseGimmickTypeText(GetCurrentPhaseGimmickType());
         }
 
         /// <summary>
@@ -156,14 +158,6 @@ namespace MemoryTranser.Scripts.Game.Phase {
         #region private関数
 
         /// <summary>
-        /// 現在のPhaseのQuestTypeを取得する
-        /// </summary>
-        /// <returns></returns>
-        private BoxMemoryType GetCurrentQuestType() {
-            return GetQuestType(_currentPhaseIndex);
-        }
-
-        /// <summary>
         /// フェイズの初期化
         /// </summary>
         private void InitializePhases() {
@@ -180,7 +174,7 @@ namespace MemoryTranser.Scripts.Game.Phase {
         /// </summary>
         /// <param name="phaseCore"></param>
         /// <returns>設定されたPhaseCoreが返ってくる</returns>
-        private PhaseCore GenerateRandomPhase(PhaseCore phaseCore) {
+        private static PhaseCore GenerateRandomPhase(PhaseCore phaseCore) {
             var randomPhaseType = (BoxMemoryType)Random.Range(1, (int)BoxMemoryType.Count);
             var randomPhaseGimmick = (PhaseGimmickType)Random.Range(0, (int)PhaseGimmickType.Count);
             phaseCore.QuestType = randomPhaseType;
@@ -189,22 +183,22 @@ namespace MemoryTranser.Scripts.Game.Phase {
             return phaseCore;
         }
 
-        /// <summary>
-        /// Phaseの残り時間をリセットする
-        /// </summary>
         private void ResetRemainingTime() {
             _phaseRemainingTime = PHASE_DURATION;
         }
 
-        /// <summary>
-        /// スコアを足す
-        /// </summary>
-        /// <param name="phaseIndex">スコアを足すフェイズのインデックス</param>
-        /// <param name="score">足すスコア</param>
         private int AddScore(int phaseIndex, int score) {
             var phaseCore = _phaseCores[phaseIndex];
             phaseCore.Score += score;
             return phaseCore.Score;
+        }
+
+        private int GetScore(int phaseIndex) {
+            return _phaseCores[phaseIndex].Score;
+        }
+
+        private int GetCurrentScore() {
+            return GetScore(_currentPhaseIndex);
         }
 
         /// <summary>
@@ -215,13 +209,20 @@ namespace MemoryTranser.Scripts.Game.Phase {
             SetBoxGenerationProbability();
         }
 
-        /// <summary>
-        /// QuestTypeを取得する
-        /// </summary>
-        /// <param name="phaseIndex">取得するPhaseのインデックス</param>
-        /// <returns></returns>
         private BoxMemoryType GetQuestType(int phaseIndex) {
             return _phaseCores[phaseIndex].QuestType;
+        }
+
+        private BoxMemoryType GetCurrentQuestType() {
+            return GetQuestType(_currentPhaseIndex);
+        }
+
+        private PhaseGimmickType GetPhaseGimmickType(int phaseIndex) {
+            return _phaseCores[phaseIndex].GimmickType;
+        }
+
+        private PhaseGimmickType GetCurrentPhaseGimmickType() {
+            return GetPhaseGimmickType(_currentPhaseIndex);
         }
 
         /// <summary>

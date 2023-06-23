@@ -1,5 +1,5 @@
 namespace MemoryTranser.Scripts.Game.Phase {
-    public enum PhaseMemoryTyp {
+    public enum PhaseMemoryType {
         None = 0,
         Math,
         Japanese,

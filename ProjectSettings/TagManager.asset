@@ -46,3 +46,33 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: BackGround
+    uniqueID: 563596165
+    locked: 0
+  - name: ForeBackGround
+    uniqueID: 13121085
+    locked: 0
+  - name: Level0
+    uniqueID: 925273145
+    locked: 0
+  - name: Level1
+    uniqueID: 3795941131
+    locked: 0
+  - name: Output
+    uniqueID: 3756236271
+    locked: 0
+  - name: MemoryBox
+    uniqueID: 3996918459
+    locked: 0
+  - name: ForeMemoryBox
+    uniqueID: 4137388827
+    locked: 0
+  - name: Fiary
+    uniqueID: 3673235947
+    locked: 0
+  - name: Desire
+    uniqueID: 411586109
+    locked: 0
+  - name: UI
+    uniqueID: 3431614697
+    locked: 0

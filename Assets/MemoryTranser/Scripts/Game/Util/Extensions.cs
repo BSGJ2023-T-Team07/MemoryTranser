@@ -26,6 +26,22 @@ namespace MemoryTranser.Scripts.Game.Util {
                 _ => ""
             };
         }
+
+        public static string ToJapanese(this PhaseMemoryType phaseMemoryType) {
+            return phaseMemoryType switch {
+                PhaseMemoryType.English => "英語",
+                PhaseMemoryType.Habit => "趣味",
+                PhaseMemoryType.Japanese => "国語",
+                PhaseMemoryType.Life => "生活",
+                PhaseMemoryType.Math => "数学",
+                PhaseMemoryType.Moral => "道徳",
+                PhaseMemoryType.Music => "音楽",
+                PhaseMemoryType.Science => "理科",
+                PhaseMemoryType.Trivia => "雑学",
+                PhaseMemoryType.SocialStudies => "社会",
+                _ => ""
+            };
+        }
     }
 
     public static class PhaseGimmickTypeExtensions {

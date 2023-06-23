@@ -34,8 +34,15 @@ namespace MemoryTranser.Scripts.Game.Desire {
         private float delaySecWhenDesireExist;
 
 
-        private Queue<DesireCore> _desireCores = new();
+        private readonly Queue<DesireCore> _desireCorePool = new();
         private Renderer[] _spawnPointRenderers;
+
+        #region eventの定義
+
+        private readonly ReactiveProperty<int> _existingDesireCount = new(0);
+        public IReadOnlyReactiveProperty<int> ExistingDesireCount => _existingDesireCount;
+
+        #endregion
 
         #region Unityから呼ばれる
 
@@ -61,7 +68,7 @@ namespace MemoryTranser.Scripts.Game.Desire {
                 desireCore.targetTransform = targetTransform;
 
                 //生成したDesireをキューに入れておく
-                _desireCores.Enqueue(desireCore);
+                _desireCorePool.Enqueue(desireCore);
 
                 //つくったDesireのOnDisappearを購読して、消えたらまた生成するようにする
                 async void OnNext(Unit _) {
@@ -137,12 +144,13 @@ namespace MemoryTranser.Scripts.Game.Desire {
         /// </summary>
         /// <param name="spawnPos"></param>
         private async void SpawnDesire(Vector3 spawnPos) {
-            if (_desireCores.Count == 0) return;
+            if (_desireCorePool.Count == 0) return;
 
-            if (_desireCores.Count < maxSpawnCount)
+            if (_desireCorePool.Count < maxSpawnCount)
                 //もしステージ上に既にDesireが居たら、しばらく待つ
                 await UniTask.Delay(TimeSpan.FromSeconds(delaySecWhenDesireExist));
-            var desireCore = _desireCores.Dequeue();
+            var desireCore = _desireCorePool.Dequeue();
+            _existingDesireCount.Value++;
 
             desireCore.gameObject.SetActive(true);
             desireCore.Appear(spawnPos);
@@ -153,7 +161,8 @@ namespace MemoryTranser.Scripts.Game.Desire {
         /// </summary>
         /// <param name="desireCore"></param>
         private void CollectDesire(DesireCore desireCore) {
-            _desireCores.Enqueue(desireCore);
+            _desireCorePool.Enqueue(desireCore);
+            _existingDesireCount.Value--;
         }
 
         #region interfaceの実装
@@ -163,6 +172,8 @@ namespace MemoryTranser.Scripts.Game.Desire {
             for (var i = 0; i < canSpawnFlags.Length; i++) {
                 canSpawnFlags[i] = false;
             }
+
+            _existingDesireCount.Dispose();
         }
 
         public void OnStateChangedToFinished() { }

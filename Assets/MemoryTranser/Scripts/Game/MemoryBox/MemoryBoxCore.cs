@@ -72,7 +72,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
         public MemoryBoxState MyState {
             get => _myState;
-            private set => _myState = value;
+            set => _myState = value;
         }
 
         public float Weight {
@@ -148,30 +148,24 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
         #region 能動的行動の定義
 
-        private void AttackDesire(DesireCore desire) {
+        private static void AttackDesire(DesireCore desire) {
             //Desireの命中時の処理を実行する
             desire.BeAttacked();
         }
 
-        public async void Disappear() {
+        public void Disappear() {
             _myState = MemoryBoxState.Disappeared;
             SpRr.enabled = false;
             Bc2D.enabled = false;
             Rb2D.velocity = Vector2.zero;
 
-            //消えてから3秒後にMemoryBoxManagerへ再生成通知をする
-            await UniTask.Delay(TimeSpan.FromSeconds(3f));
-            SpRr.enabled = true;
-            Bc2D.isTrigger = false;
-            Bc2D.enabled = true;
-            _myState = MemoryBoxState.PlacedOnLevel;
             _onDisappear.OnNext(Unit.Default);
         }
 
         #endregion
 
         public void SetDiff() {
-            _diff = Bc2D.size.y * transform.localScale.y;
+            _diff = Bc2D.size.y * transform.localScale.y / 1.2f;
         }
 
         private void OnDisable() {

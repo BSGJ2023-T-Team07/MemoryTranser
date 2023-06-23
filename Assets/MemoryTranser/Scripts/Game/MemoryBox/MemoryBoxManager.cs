@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using MemoryTranser.Scripts.Game.GameManagers;
+using Cysharp.Threading.Tasks;
+using MemoryTranser.Scripts.Game.Desire;
 using MemoryTranser.Scripts.Game.UI.Debug;
 using MemoryTranser.Scripts.Game.Util;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using UniRx;
-using UnityEngine.Serialization;
 
 namespace MemoryTranser.Scripts.Game.MemoryBox {
     public class MemoryBoxManager : MonoBehaviour {
@@ -14,16 +14,11 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
         [SerializeField] private GameObject memoryBoxPrefab;
         [SerializeField] private MemoryGenerationProbabilityShower memoryGenerationProbabilityShower;
+        [SerializeField] private DesireManager desireManager;
 
         #endregion
 
         #region 変数の定義
-
-        private MemoryBoxCore[] _allBoxes;
-        private bool[] _outputable;
-
-        private List<int> _initialBoxTypeProbabilityList = new();
-        private List<int> _boxTypeProbabilityList = new();
 
         [Header("MemoryBoxの最大生成数")] [SerializeField]
         private int maxBoxGenerateCount = 20;
@@ -34,6 +29,16 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         [Header("MemoryBoxの重さの最小値")] [SerializeField]
         private float minWeight = 0.8f;
 
+        [Header("MemoryBoxが消えてから再生成されるまでの時間(秒)")] [SerializeField]
+        private float generateIntervalSec = 3f;
+
+        private MemoryBoxCore[] _allBoxes;
+        private Queue<MemoryBoxCore> _appliedDisappearedBoxes = new();
+        private bool[] _outputable;
+
+        private List<int> _initialBoxTypeProbabilityList = new();
+        private List<int> _boxTypeProbabilityList = new();
+
         #endregion
 
         #region Unityから呼ばれる
@@ -41,9 +46,25 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         private void Awake() {
             _outputable = new bool[maxBoxGenerateCount];
             InitializeGenerationProbability();
+
+            //ステージ上のDesireの数が0になったら、消えていたMemoryBoxをAppearさせるeventを購読する
+            desireManager.ExistingDesireCount.Where(x => x == 0).Subscribe(_ => {
+                for (var i = 0; i < _appliedDisappearedBoxes.Count; i++) {
+                    var box = _appliedDisappearedBoxes.Dequeue();
+                    MakeBoxAppear(box);
+                }
+            });
         }
 
         #endregion
+
+        private static void MakeBoxAppear(MemoryBoxCore box) {
+            Debug.Log($"ID{box.BoxId}のMemoryBoxをAppearさせます");
+            box.SpRr.enabled = true;
+            box.Bc2D.isTrigger = false;
+            box.Bc2D.enabled = true;
+            box.MyState = MemoryBoxState.PlacedOnLevel;
+        }
 
 
         private void ApplyRandomParameterForMemoryBox(MemoryBoxCore memoryBox) {
@@ -55,7 +76,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             memoryBox.BoxMemoryType = randomBoxType;
             memoryBox.Weight = randomWeight;
 
-            //決まったパラメーターに対して色々変更する
+            //決定したパラメーターを反映させる
             memoryBox.SpRr.sprite = randomBoxType.ToMemoryBoxSprite();
             memoryBox.transform.localScale = Vector3.one * memoryBox.Weight / 1.2f;
             memoryBox.SetDiff();
@@ -63,12 +84,21 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             //コンポーネントのプロパティー初期化
             memoryBox.Bc2D.isTrigger = false;
 
-            //つくったMemoryBoxを監視する
-            //このBoxが消えた時に新しく生成するように購読している
-            memoryBox.OnDisappear.Subscribe(_ => {
+            async void OnNext(Unit _) {
+                //MemoryBoxが消えてからは一定時間処理を待機
+                await UniTask.Delay(TimeSpan.FromSeconds(generateIntervalSec));
+
+                //待機後、MemoryBoxをAppearさせる準備を完了する
                 ApplyRandomParameterForMemoryBox(memoryBox);
                 memoryBox.transform.position = GetRandomSpawnPosition();
-            });
+                _appliedDisappearedBoxes.Enqueue(memoryBox);
+
+                //もしDesireが存在しないなら、MemoryBoxをAppearさせる
+                if (desireManager.ExistingDesireCount.Value == 0) MakeBoxAppear(memoryBox);
+            }
+
+            //↑の処理をMemoryBoxがDisappearするときのイベントに登録する
+            memoryBox.OnDisappear.Subscribe(OnNext);
         }
 
 

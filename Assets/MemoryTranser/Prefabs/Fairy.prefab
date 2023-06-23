@@ -241,6 +241,7 @@ MonoBehaviour:
     maxThrowPower: 10
     minThrowPower: 0
     initialThrowPower: 10
+  selectDirectionArrowThreshold: 0.1
 --- !u!114 &8073110865618226502
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -28,6 +28,9 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         [SerializeField] private FairyParameters myParameters;
 
+        [Header("投げる方向の入力の閾値")] [SerializeField]
+        private float selectDirectionArrowThreshold;
+
         private FairyState _myState;
         private MemoryBoxCore _holdingBox;
         private int _comboCount;
@@ -105,7 +108,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             var directionInput = context.ReadValue<Vector2>();
 
             //MemoryBoxを持っていないか、投げるための入力が不十分だったら何もしない
-            if (!HasBox || directionInput.sqrMagnitude < 0.3f) {
+            if (!HasBox || directionInput.sqrMagnitude < selectDirectionArrowThreshold) {
                 _inputThrowDirection = Vector2.zero;
                 throwDirectionArrowSpRr.enabled = false;
             }

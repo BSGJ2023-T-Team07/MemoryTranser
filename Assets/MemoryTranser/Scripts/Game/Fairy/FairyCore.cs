@@ -19,6 +19,8 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         [SerializeField] private Animator animator;
         [SerializeField] private BoxCollider2D boxCollider2D;
         [SerializeField] private SeManager seManager;
+        [SerializeField] private Transform memoryBoxHolderBottom;
+        [SerializeField] private SpriteRenderer throwDirectionArrowSpRr;
 
         #endregion
 
@@ -68,6 +70,10 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         #region Unityから呼ばれる
 
+        private void Awake() {
+            throwDirectionArrowSpRr.enabled = false;
+        }
+
         private void FixedUpdate() {
             Move();
         }
@@ -97,7 +103,18 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             if (!_isControllable) return;
 
             var directionInput = context.ReadValue<Vector2>();
-            _inputThrowDirection = directionInput;
+
+            //MemoryBoxを持っていないか、投げるための入力が不十分だったら何もしない
+            if (!HasBox || directionInput.sqrMagnitude < 0.3f) {
+                _inputThrowDirection = Vector2.zero;
+                throwDirectionArrowSpRr.enabled = false;
+            }
+            else {
+                _inputThrowDirection = directionInput.normalized;
+                throwDirectionArrowSpRr.transform.rotation = Quaternion.Euler(0, 0,
+                    Vector2.SignedAngle(Vector2.right, _inputThrowDirection));
+                throwDirectionArrowSpRr.enabled = true;
+            }
         }
 
         public void OnThrowInput(InputAction.CallbackContext context) {
@@ -160,8 +177,9 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         }
 
         private void Hold(MemoryBoxCore memoryBoxCore) {
-            memoryBoxCore.BeHeld(transform);
+            memoryBoxCore.BeHeld(memoryBoxHolderBottom);
             _holdingBox = memoryBoxCore;
+            throwDirectionArrowSpRr.transform.position = _holdingBox.transform.position;
 
             myParameters.UpdateWalkSpeedByWeightAndCombo(_holdingBox.Weight, ComboCount);
 
@@ -172,10 +190,11 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         private void Throw() {
             _holdingBox.BeThrown(myParameters.ThrowPower,
-                _inputThrowDirection.normalized);
+                _inputThrowDirection);
 
             Debug.Log($"IDが{_holdingBox.BoxId}の記憶を投げた");
             _holdingBox = null;
+            throwDirectionArrowSpRr.enabled = false;
             myParameters.UpdateWalkSpeedByWeightAndCombo(0, ComboCount);
 
             seManager.Play(SEs.ThrowBox);

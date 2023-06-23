@@ -124,9 +124,11 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
         #region 受動的行動の定義
 
-        public void BeHeld(Transform holderTransform) {
+        public void BeHeld(Transform holderBottomTransform) {
             _myState = MemoryBoxState.Held;
-            _holderTransform = holderTransform;
+            _holderTransform = holderBottomTransform;
+            _diff = Bc2D.size.y / 2 * transform.localScale.y;
+            transform.position = _holderTransform.position + (Vector3)Vector2.up * _diff;
             Rb2D.velocity = Vector2.zero;
             Bc2D.enabled = false;
         }
@@ -163,10 +165,6 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         }
 
         #endregion
-
-        public void SetDiff() {
-            _diff = Bc2D.size.y * transform.localScale.y / 1.2f;
-        }
 
         private void OnDisable() {
             _onDisappear.OnCompleted();

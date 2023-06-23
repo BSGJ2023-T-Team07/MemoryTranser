@@ -182,7 +182,7 @@ namespace MemoryTranser.Scripts.Game.Phase {
         /// <returns>設定されたPhaseCoreが返ってくる</returns>
         private PhaseCore GenerateRandomPhase(PhaseCore phaseCore) {
             var randomPhaseType = (BoxMemoryType)Random.Range(1, (int)BoxMemoryType.Count);
-            var randomPhaseGimmick = (PhaseGimmickType)Random.Range(1, (int)PhaseGimmickType.Count);
+            var randomPhaseGimmick = (PhaseGimmickType)Random.Range(0, (int)PhaseGimmickType.Count);
             phaseCore.QuestType = randomPhaseType;
             phaseCore.GimmickType = randomPhaseGimmick;
 

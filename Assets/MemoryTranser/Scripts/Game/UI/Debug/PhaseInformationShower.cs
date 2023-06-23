@@ -22,19 +22,22 @@ namespace MemoryTranser.Scripts.Game.UI.Debug {
             var viewablePhaseCount = information.Item3;
             text.text = "";
             for (var i = 0; i < phaseCores.Length; i++) {
+                var coreText =
+                    $"フェイズ{i + 1}: {phaseCores[i].QuestType.ToJapanese()}, ギミック: {phaseCores[i].GimmickType.ToJapanese()}, 点数: {phaseCores[i].Score}";
                 if (i == currentPhaseIndex) {
                     text.text +=
-                        $"<size={_defaultFontSize + 10}>フェイズ{i + 1}: {phaseCores[i].QuestType.ToJapanese()}, 点数: {phaseCores[i].Score}</size>\n";
+                        $"<size={_defaultFontSize + 10}>{coreText}</size>\n";
                     continue;
                 }
 
                 if (i > currentPhaseIndex && i <= currentPhaseIndex + viewablePhaseCount) {
                     text.text +=
-                        $"<size={_defaultFontSize + 5}>フェイズ{i + 1}: {phaseCores[i].QuestType.ToJapanese()}, 点数: {phaseCores[i].Score}</size>\n";
+                        $"<size={_defaultFontSize + 5}>{coreText}</size>\n";
                     continue;
                 }
 
-                text.text += $"フェイズ{i + 1}: {phaseCores[i].QuestType.ToJapanese()}, 点数: {phaseCores[i].Score}\n";
+                text.text +=
+                    $"{coreText}\n";
             }
         }
 

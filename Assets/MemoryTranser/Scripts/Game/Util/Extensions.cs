@@ -1,4 +1,6 @@
+using System.Linq;
 using MemoryTranser.Scripts.Game.MemoryBox;
+using MemoryTranser.Scripts.Game.Phase;
 using UnityEngine;
 
 namespace MemoryTranser.Scripts.Game.Util {
@@ -23,6 +25,22 @@ namespace MemoryTranser.Scripts.Game.Util {
                 BoxMemoryType.SocialStudies => "社会",
                 _ => ""
             };
+        }
+    }
+
+    public static class PhaseGimmickTypeExtensions {
+        public static string ToJapanese(this PhaseGimmickType phaseGimmickType) {
+            return phaseGimmickType switch {
+                PhaseGimmickType.Normal => "なし",
+                PhaseGimmickType.Blind => "ド忘れ",
+                _ => ""
+            };
+        }
+    }
+
+    public static class GameObjectExtensions {
+        public static T[] FindObjectsByInterface<T>() where T : class {
+            return Object.FindObjectsByType<Component>(FindObjectsSortMode.None).OfType<T>().ToArray();
         }
     }
 }

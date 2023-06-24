@@ -14,23 +14,24 @@ namespace MemoryTranser.Scripts.Game.UI.Debug {
             var probabilityArray = CalculateProbability(memoryGenerationList);
 
             text.text = FIRST;
-            for (var i = 1; i < (int)BoxMemoryType.Count; i++) {
+            for (var i = 1; i <= (int)BoxMemoryType.Count; i++) {
                 text.text +=
-                    $"{((BoxMemoryType)i).ToJapanese()}: {Mathf.Floor(probabilityArray[i] * 1000) / 10}%\n";
+                    $"{((BoxMemoryType)i).ToJapanese()}: {Mathf.Floor(probabilityArray[i] * 1000) / 10}%, ";
+                if (i % 2 == 0) text.text += "\n";
             }
         }
 
         private static float[] CalculateProbability(List<int> memoryGenerationList) {
-            var memoryIntArray = new int[(int)BoxMemoryType.Count];
-            var probabilityArray = new float[(int)BoxMemoryType.Count];
+            var memoryIntArray = new int[(int)BoxMemoryType.Count + 1];
+            var probabilityArray = new float[(int)BoxMemoryType.Count + 1];
 
-            for (var i = 0; i < (int)BoxMemoryType.Count; i++) {
+            for (var i = 0; i <= (int)BoxMemoryType.Count; i++) {
                 foreach (var type in memoryGenerationList) {
                     if (type == i) memoryIntArray[i]++;
                 }
             }
 
-            for (var i = 0; i < (int)BoxMemoryType.Count; i++) {
+            for (var i = 0; i <= (int)BoxMemoryType.Count; i++) {
                 probabilityArray[i] = (float)memoryIntArray[i] / memoryGenerationList.Count;
             }
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using MemoryTranser.Scripts.Game.Fairy;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.Phase;
 using UnityEngine;
@@ -11,6 +12,7 @@ namespace MemoryTranser.Scripts.Game.Desire {
     public class DesireManager : MonoBehaviour, IOnStateChangedToResult, IOnStateChangedToFinished {
         [SerializeField] private PhaseManager phaseManager;
         [SerializeField] private GameObject desirePrefab;
+        [SerializeField] private FairyCore fairyCore;
 
         [Header("Desireが最初にスポーンする間隔(秒)")] [SerializeField]
         private float initialSpawnIntervalSec;
@@ -99,7 +101,10 @@ namespace MemoryTranser.Scripts.Game.Desire {
                 desireCore.OnDisappear.Subscribe(OnNext);
 
                 //つくったDesireのOnBeAttackedを購読して、そのDesireが倒されたらスコアを加算する
-                desireCore.OnBeAttacked.Subscribe(_ => { phaseManager.AddCurrentScoreOnDefeatDesire(); });
+                desireCore.OnBeAttacked.Subscribe(_ => {
+                    phaseManager.AddCurrentScoreOnDefeatDesire();
+                    fairyCore.AddBlinkTicket(1);
+                });
 
                 //最初はすべて非アクティブにしておく
                 desireObj.SetActive(false);

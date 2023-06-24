@@ -175,6 +175,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 4072904129013745719}
   bc2D: {fileID: 5246627466657464656}
   rb2D: {fileID: 3859592962435303256}
+  smokeParticle: {fileID: 8125797145271640509}
 --- !u!1 &5504482971775084837
 GameObject:
   m_ObjectHideFlags: 0

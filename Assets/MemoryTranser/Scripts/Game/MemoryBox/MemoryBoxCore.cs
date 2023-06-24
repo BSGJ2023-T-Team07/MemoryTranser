@@ -1,6 +1,6 @@
 using System;
-using Cysharp.Threading.Tasks;
 using MemoryTranser.Scripts.Game.Desire;
+using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.Util;
 using UniRx;
 using UnityEngine;
@@ -10,12 +10,13 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
     [RequireComponent(typeof(SpriteRenderer))]
     [RequireComponent(typeof(BoxCollider2D))]
     [RequireComponent(typeof(Rigidbody2D))]
-    public class MemoryBoxCore : MonoBehaviour {
+    public class MemoryBoxCore : MonoBehaviour, IOnStateChangedToResult {
         #region コンポーネントの定義
 
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private BoxCollider2D bc2D;
         [SerializeField] private Rigidbody2D rb2D;
+        [SerializeField] private ParticleSystem smokeParticle;
 
         #endregion
 
@@ -63,6 +64,14 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
                 return rb2D;
             }
             set => rb2D = value;
+        }
+
+        public ParticleSystem SmokeParticle {
+            get {
+                if (!smokeParticle) smokeParticle = transform.GetComponent<ParticleSystem>();
+                return smokeParticle;
+            }
+            set => smokeParticle = value;
         }
 
         public BoxMemoryType BoxMemoryType {
@@ -127,8 +136,9 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         public void BeHeld(Transform holderBottomTransform) {
             _myState = MemoryBoxState.Held;
             _holderTransform = holderBottomTransform;
-            _diff = Bc2D.size.y / 2 * transform.localScale.y;
-            transform.position = _holderTransform.position + (Vector3)Vector2.up * _diff;
+            var myTransform = transform;
+            _diff = Bc2D.size.y / 2 * myTransform.localScale.y;
+            myTransform.position = _holderTransform.position + (Vector3)Vector2.up * _diff;
             Rb2D.velocity = Vector2.zero;
             Bc2D.enabled = false;
         }
@@ -160,15 +170,20 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             SpRr.enabled = false;
             Bc2D.enabled = false;
             Rb2D.velocity = Vector2.zero;
+            smokeParticle.Stop();
 
             _onDisappear.OnNext(Unit.Default);
         }
 
         #endregion
 
-        private void OnDisable() {
+        #region interfaceの実装
+
+        public void OnStateChangedToResult() {
             _onDisappear.OnCompleted();
             _onDisappear.Dispose();
         }
+
+        #endregion
     }
 }

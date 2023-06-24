@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.MemoryBox;
 using MemoryTranser.Scripts.Game.UI.Playing;
+using UniRx;
 using UnityEngine;
 
 namespace MemoryTranser.Scripts.Game.Phase {
@@ -16,6 +17,8 @@ namespace MemoryTranser.Scripts.Game.Phase {
         #endregion
 
         #region 変数の定義
+
+        [Header("1つのフェイズの長さ")] public float phaseDuration = 30f;
 
         [Header("Desireを倒したときに加算される点数")] [SerializeField]
         private int additionalScoreOnDefeatDesire;
@@ -37,13 +40,6 @@ namespace MemoryTranser.Scripts.Game.Phase {
         private int _currentPhaseIndex = 0;
         private float _phaseRemainingTime;
 
-        #region 定数の定義
-
-        //フェイズの長さ
-        public const float PHASE_DURATION = 30f;
-
-        #endregion
-
         #endregion
 
         #region プロパティーの定義
@@ -52,10 +48,17 @@ namespace MemoryTranser.Scripts.Game.Phase {
 
         #endregion
 
+        #region eventの定義
+
+        private readonly ReactiveProperty<PhaseGimmickType> _onPhaseTransition = new(PhaseGimmickType.Normal);
+        public IReadOnlyReactiveProperty<PhaseGimmickType> OnPhaseTransition => _onPhaseTransition;
+
+        #endregion
+
         #region Unityから呼ばれる
 
         private void Awake() {
-            _phaseRemainingTime = PHASE_DURATION;
+            _phaseRemainingTime = phaseDuration;
         }
 
         private void Update() {
@@ -67,7 +70,7 @@ namespace MemoryTranser.Scripts.Game.Phase {
             //フェイズの残り時間が0になったら、次のフェイズに移行する
             if (_phaseRemainingTime <= 0) {
                 TransitToNextPhase();
-                _phaseRemainingTime = PHASE_DURATION;
+                _phaseRemainingTime = phaseDuration;
                 GameFlowManager.I.ChangeGameState(GameState.Ready);
             }
         }
@@ -79,6 +82,7 @@ namespace MemoryTranser.Scripts.Game.Phase {
 
         public void OnStateChangedToInitializing() {
             InitializePhases();
+            _onPhaseTransition.Value = GetCurrentPhaseGimmickType();
         }
 
         public void OnStateChangedToReady() {
@@ -162,29 +166,23 @@ namespace MemoryTranser.Scripts.Game.Phase {
         /// </summary>
         private void InitializePhases() {
             for (var i = 0; i < initialPhaseCount; i++) {
-                _phaseCores.Add(GenerateRandomPhase(ScriptableObject.CreateInstance<PhaseCore>()));
+                var phaseCore = ScriptableObject.CreateInstance<PhaseCore>();
+
+
+                var randomPhaseType = (BoxMemoryType)Random.Range(1, (int)BoxMemoryType.Count);
+                var randomPhaseGimmick = (PhaseGimmickType)Random.Range(0, (int)PhaseGimmickType.Count);
+                phaseCore.QuestType = randomPhaseType;
+                phaseCore.GimmickType = randomPhaseGimmick;
+
+                _phaseCores.Add(phaseCore);
             }
 
             SetBoxGenerationProbability();
             memoryBoxManager.GenerateMemoryBoxes();
         }
 
-        /// <summary>
-        /// 引数のPhaseCoreにランダムなQuestTypeを設定する
-        /// </summary>
-        /// <param name="phaseCore"></param>
-        /// <returns>設定されたPhaseCoreが返ってくる</returns>
-        private static PhaseCore GenerateRandomPhase(PhaseCore phaseCore) {
-            var randomPhaseType = (BoxMemoryType)Random.Range(1, (int)BoxMemoryType.Count);
-            var randomPhaseGimmick = (PhaseGimmickType)Random.Range(0, (int)PhaseGimmickType.Count);
-            phaseCore.QuestType = randomPhaseType;
-            phaseCore.GimmickType = randomPhaseGimmick;
-
-            return phaseCore;
-        }
-
         private void ResetRemainingTime() {
-            _phaseRemainingTime = PHASE_DURATION;
+            _phaseRemainingTime = phaseDuration;
         }
 
         private int AddScore(int phaseIndex, int score) {
@@ -206,7 +204,9 @@ namespace MemoryTranser.Scripts.Game.Phase {
         /// </summary>
         private void TransitToNextPhase() {
             _currentPhaseIndex++;
+
             SetBoxGenerationProbability();
+            _onPhaseTransition.Value = GetCurrentPhaseGimmickType();
         }
 
         private BoxMemoryType GetQuestType(int phaseIndex) {

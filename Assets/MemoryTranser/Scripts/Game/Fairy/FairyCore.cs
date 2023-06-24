@@ -77,6 +77,10 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             throwDirectionArrowSpRr.enabled = false;
         }
 
+        private void Update() {
+            UpdateFairyState();
+        }
+
         private void FixedUpdate() {
             Move();
         }
@@ -220,11 +224,13 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         public async void BeAttackedByDesire() {
             _isControllable = false;
             ComboCount = 0;
+            _myState = FairyState.Freeze;
 
             //Desireに当たると3秒停止
             await UniTask.Delay(TimeSpan.FromSeconds(3f));
 
             _isControllable = true;
+            _myState = HasBox ? FairyState.IdlingWithBox : FairyState.IdlingWithoutBox;
         }
 
         #endregion
@@ -248,6 +254,19 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             myParameters = new FairyParameters();
 
             myParameters.InitializeParameters();
+        }
+
+        private void UpdateFairyState() {
+            if (_myState == FairyState.Freeze) return;
+
+            if (HasBox)
+                _myState = rb2D.velocity.sqrMagnitude < Constant.DELTA
+                    ? FairyState.IdlingWithBox
+                    : FairyState.WalkingWithBox;
+            else
+                _myState = rb2D.velocity.sqrMagnitude < Constant.DELTA
+                    ? FairyState.IdlingWithoutBox
+                    : FairyState.WalkingWithoutBox;
         }
 
         #region interfaceの実装

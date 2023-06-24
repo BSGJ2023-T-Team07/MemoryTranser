@@ -1,4 +1,5 @@
 using System.Linq;
+using MemoryTranser.Scripts.Game.Desire;
 using MemoryTranser.Scripts.Game.MemoryBox;
 using MemoryTranser.Scripts.Game.Phase;
 using UnityEngine;
@@ -11,9 +12,14 @@ namespace MemoryTranser.Scripts.Game.Util {
             var path = $"Sprites/MemoryBox/{memoryTypeName}{shapeName}MemoryBoxSprite";
             return Resources.Load<Sprite>(path);
         }
+
+        public static Sprite ToDesireSprite(this DesireType desireType) {
+            var path = $"Sprites/Desire/{desireType}DesireSprite";
+            return Resources.Load<Sprite>(path);
+        }
     }
 
-    public static class MemoryTypeExtensions {
+    public static class StringExtensions {
         public static string ToJapanese(this BoxMemoryType boxMemoryType) {
             return boxMemoryType switch {
                 BoxMemoryType.English => "英語",
@@ -45,14 +51,22 @@ namespace MemoryTranser.Scripts.Game.Util {
                 _ => "error"
             };
         }
-    }
 
-    public static class PhaseGimmickTypeExtensions {
         public static string ToJapanese(this PhaseGimmickType phaseGimmickType) {
             return phaseGimmickType switch {
                 PhaseGimmickType.Normal => "なし",
                 PhaseGimmickType.Blind => "ド忘れ",
                 _ => ""
+            };
+        }
+
+        public static string ToJapanese(this DesireType desireType) {
+            return desireType switch {
+                DesireType.Game => "ゲーム",
+                DesireType.Comic => "漫画",
+                DesireType.Karaoke => "カラオケ",
+                DesireType.Ramen => "ラーメン",
+                _ => "error"
             };
         }
     }

@@ -54,8 +54,9 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
                 for (var i = 0; i < _appliedDisappearedBoxes.Count; i++) {
                     var box = _appliedDisappearedBoxes.Dequeue();
                     MakeBoxAppear(box);
-                    if (phaseManager.OnPhaseTransition.Value == PhaseGimmickType.Blind)
+                    if (phaseManager.OnPhaseTransition.Value == PhaseGimmickType.Blind) {
                         box.SmokeParticle.Play();
+                    }
                 }
             });
         }
@@ -71,22 +72,25 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         }
 
 
-        private void ApplyRandomParameterForMemoryBox(MemoryBoxCore memoryBoxCore) {
+        private MemoryBoxCore ApplyRandomParameterForMemoryBox(MemoryBoxCore memoryBoxCore) {
+            //ランダムにパラメーターを決める
             var randomBoxType =
                 (BoxMemoryType)_initialBoxTypeProbabilityList[Random.Range(0, _initialBoxTypeProbabilityList.Count)];
             var randomWeight = Random.Range(minWeight, maxWeight);
             var randomBoxShape = (MemoryBoxShapeType)Random.Range(0, (int)MemoryBoxShapeType.Count);
 
-            //ランダムで科目と重さを決める
+            //決定したパラメーターを代入する
             memoryBoxCore.BoxMemoryType = randomBoxType;
             memoryBoxCore.BoxShapeType = randomBoxShape;
             memoryBoxCore.Weight = randomWeight;
 
-            //決定したパラメーターを反映させる
+            //決定したパラメーターから他の値に反映させる
             memoryBoxCore.SpRr.sprite = randomBoxType.ToMemoryBoxSprite(randomBoxShape);
             memoryBoxCore.transform.localScale = Vector3.one * memoryBoxCore.Weight / 1.2f;
             memoryBoxCore.Cc2D.isTrigger = false;
             memoryBoxCore.gameObject.layer = LayerMask.NameToLayer($"{randomBoxShape.ToString()}MemoryBox");
+
+            return memoryBoxCore;
         }
 
 
@@ -104,7 +108,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
                 var obj = Instantiate(memoryBoxPrefab, GetRandomSpawnPosition(), Quaternion.identity);
                 var memoryBoxCore = obj.GetComponent<MemoryBoxCore>();
 
-                //MemoryBoxの初期化
+                //MemoryBoxにランダムなパラメーターを設定する
                 ApplyRandomParameterForMemoryBox(memoryBoxCore);
 
                 //MemoryBoxがDisappearするときのイベントに登録する
@@ -119,8 +123,9 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
                     //もしDesireが存在しないなら、MemoryBoxをAppearさせる
                     if (desireManager.ExistingDesireCount.Value == 0) {
                         MakeBoxAppear(memoryBoxCore);
-                        if (phaseManager.OnPhaseTransition.Value == PhaseGimmickType.Blind)
+                        if (phaseManager.OnPhaseTransition.Value == PhaseGimmickType.Blind) {
                             memoryBoxCore.SmokeParticle.Play();
+                        }
                     }
                     else {
                         _appliedDisappearedBoxes.Enqueue(memoryBoxCore);
@@ -145,7 +150,9 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             //遷移したPhaseがド忘れなら煙のパーティクルを再生するイベントを購読する
             phaseManager.OnPhaseTransition.Where(x => x == PhaseGimmickType.Blind).Subscribe(_ => {
                 foreach (var box in _allBoxes) {
-                    if (box.MyState != MemoryBoxState.Disappeared) box.SmokeParticle.Play();
+                    if (box.MyState != MemoryBoxState.Disappeared) {
+                        box.SmokeParticle.Play();
+                    }
                 }
             });
         }
@@ -170,7 +177,9 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         public MemoryBoxCore[] GetOutputableBoxes() {
             var outputableBoxes = new List<MemoryBoxCore>();
             for (var i = 0; i < maxBoxGenerateCount; i++) {
-                if (_outputable[i]) outputableBoxes.Add(_allBoxes[i]);
+                if (_outputable[i]) {
+                    outputableBoxes.Add(_allBoxes[i]);
+                }
             }
 
             return outputableBoxes.ToArray();

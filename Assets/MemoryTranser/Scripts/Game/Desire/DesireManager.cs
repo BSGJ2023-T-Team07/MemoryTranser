@@ -5,8 +5,10 @@ using Cysharp.Threading.Tasks;
 using MemoryTranser.Scripts.Game.Fairy;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.Phase;
+using MemoryTranser.Scripts.Game.Util;
 using UnityEngine;
 using UniRx;
+using Random = UnityEngine.Random;
 
 namespace MemoryTranser.Scripts.Game.Desire {
     public class DesireManager : MonoBehaviour, IOnStateChangedToResult, IOnStateChangedToFinished {
@@ -69,11 +71,14 @@ namespace MemoryTranser.Scripts.Game.Desire {
                 //Desireの追跡対象を指定
                 desireCore.targetTransform = targetTransform;
 
+                //Desireにランダムなパラメーターを設定する
+                ApplyRandomParametersForDesire(desireCore);
+
                 //生成したDesireをキューに入れておく
                 _desireCorePool.Enqueue(desireCore);
 
                 //つくったDesireのOnDisappearを購読して、消えたらまた生成するようにする
-                async void OnNext(Unit _) {
+                desireCore.OnDisappear.Subscribe(async _ => {
                     CollectDesire(desireCore);
                     Vector3 spawnPos;
                     bool isResult;
@@ -95,10 +100,11 @@ namespace MemoryTranser.Scripts.Game.Desire {
                         }
                     }
 
-                    if (!isResult) SpawnDesire(spawnPos);
-                }
-
-                desireCore.OnDisappear.Subscribe(OnNext);
+                    if (!isResult) {
+                        ApplyRandomParametersForDesire(desireCore);
+                        SpawnDesire(spawnPos);
+                    }
+                });
 
                 //つくったDesireのOnBeAttackedを購読して、そのDesireが倒されたらスコアを加算する
                 desireCore.OnBeAttacked.Subscribe(_ => {
@@ -121,6 +127,21 @@ namespace MemoryTranser.Scripts.Game.Desire {
 
         #endregion
 
+        private DesireCore ApplyRandomParametersForDesire(DesireCore desireCore) {
+            //ランダムにDesireのパラメータを決める
+            var randomDesireType = (DesireType)Random.Range(0, (int)DesireType.Count);
+
+            //決定したパラメーターを代入する
+            desireCore.MyType = randomDesireType;
+
+            //決定したパラメーターから他の値に反映させる
+            desireCore.SpRr.sprite = randomDesireType.ToDesireSprite();
+            desireCore.MyParameters.InitializeParameters(randomDesireType);
+
+
+            return desireCore;
+        }
+
         /// <summary>
         /// カメラに写っていないspawnPointのうち、最もtargetTransformに近いspawnPointの座標を返す
         /// </summary>
@@ -136,8 +157,9 @@ namespace MemoryTranser.Scripts.Game.Desire {
                 }
                 else {
                     if (Vector3.Distance(targetTransform.position, notInCameraSpawnPoints[i].position) <
-                        Vector3.Distance(targetTransform.position, nearestSpawnPointPos))
+                        Vector3.Distance(targetTransform.position, nearestSpawnPointPos)) {
                         nearestSpawnPointPos = notInCameraSpawnPoints[i].position;
+                    }
                 }
             }
 
@@ -149,11 +171,15 @@ namespace MemoryTranser.Scripts.Game.Desire {
         /// </summary>
         /// <param name="spawnPos"></param>
         private async void SpawnDesire(Vector3 spawnPos) {
-            if (_desireCorePool.Count == 0) return;
+            if (_desireCorePool.Count == 0) {
+                return;
+            }
 
-            if (_desireCorePool.Count < maxSpawnCount)
+            if (_desireCorePool.Count < maxSpawnCount) {
                 //もしステージ上に既にDesireが居たら、しばらく待つ
                 await UniTask.Delay(TimeSpan.FromSeconds(delaySecWhenDesireExist));
+            }
+
             var desireCore = _desireCorePool.Dequeue();
             _existingDesireCount.Value++;
 

@@ -7,6 +7,8 @@ using UniRx;
 using UnityEngine.Serialization;
 
 namespace MemoryTranser.Scripts.Game.Desire {
+    [RequireComponent(typeof(SpriteRenderer))]
+    [RequireComponent(typeof(Rigidbody2D))]
     public class DesireCore : MonoBehaviour, IOnStateChangedToResult {
         #region コンポーネントの定義
 
@@ -14,16 +16,16 @@ namespace MemoryTranser.Scripts.Game.Desire {
 
         [SerializeField] private BoxCollider2D boxCollider2D;
         [SerializeField] private Rigidbody2D rb2D;
-        [SerializeField] private SpriteRenderer spriteRenderer;
+        [SerializeField] private SpriteRenderer spRr;
         [SerializeField] private NavMeshAgent navMeshAgent;
 
         #endregion
 
         #region 変数の定義
 
-        [SerializeField] private DesireParameters myParameters;
+        [SerializeField] private DesireParameters myParameters = new();
 
-        private DesireState _myState;
+        private DesireState _myState = DesireState.Freeze;
         private DesireType _myType;
         private Vector3 _followPos;
 
@@ -43,13 +45,34 @@ namespace MemoryTranser.Scripts.Game.Desire {
 
         #region プロパティーの定義
 
-        public DesireParameters MyParameters => myParameters;
+        public DesireParameters MyParameters {
+            get => myParameters;
+            set => myParameters = value;
+        }
 
         public Rigidbody2D Rb2D {
             get {
-                if (!rb2D) rb2D = GetComponent<Rigidbody2D>();
+                if (!rb2D) {
+                    rb2D = GetComponent<Rigidbody2D>();
+                }
+
                 return rb2D;
             }
+        }
+
+        public SpriteRenderer SpRr {
+            get {
+                if (!spRr) {
+                    spRr = GetComponent<SpriteRenderer>();
+                }
+
+                return spRr;
+            }
+        }
+
+        public DesireType MyType {
+            get => _myType;
+            set => _myType = value;
         }
 
         #endregion
@@ -67,7 +90,9 @@ namespace MemoryTranser.Scripts.Game.Desire {
         }
 
         private void OnTriggerEnter2D(Collider2D other) {
-            if (!other.gameObject.CompareTag("Fairy")) return;
+            if (!other.gameObject.CompareTag("Fairy")) {
+                return;
+            }
 
             other.GetComponent<FairyCore>().BeAttackedByDesire();
             Disappear();
@@ -79,12 +104,17 @@ namespace MemoryTranser.Scripts.Game.Desire {
 
         public void OnStateChangedToResult() {
             _followFlag = false;
+
+            _onBeAttacked.OnCompleted();
+            _onDisappear.OnCompleted();
+
+            _onDisappear.Dispose();
+            _onBeAttacked.Dispose();
         }
 
         #endregion
 
         public void Appear(Vector3 spawnPos) {
-            InitializeDesire();
             transform.position = spawnPos;
             _myState = DesireState.FollowingFairy;
             _followFlag = true;
@@ -105,23 +135,6 @@ namespace MemoryTranser.Scripts.Game.Desire {
         public void BeAttacked() {
             _onBeAttacked.OnNext(Unit.Default);
             Disappear();
-        }
-
-        /// <summary>
-        /// Desireの初期化関数
-        /// </summary>
-        private void InitializeDesire() {
-            myParameters = new DesireParameters();
-            myParameters.InitializeParameters();
-            _myState = DesireState.Freeze;
-        }
-
-        private void OnDestroy() {
-            _onBeAttacked.OnCompleted();
-            _onDisappear.OnCompleted();
-
-            _onDisappear.Dispose();
-            _onBeAttacked.Dispose();
         }
     }
 }

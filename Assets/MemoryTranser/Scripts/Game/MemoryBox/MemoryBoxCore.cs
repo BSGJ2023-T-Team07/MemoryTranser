@@ -8,21 +8,22 @@ using Unit = UniRx.Unit;
 
 namespace MemoryTranser.Scripts.Game.MemoryBox {
     [RequireComponent(typeof(SpriteRenderer))]
-    [RequireComponent(typeof(BoxCollider2D))]
     [RequireComponent(typeof(Rigidbody2D))]
     public class MemoryBoxCore : MonoBehaviour, IOnStateChangedToResult {
         #region コンポーネントの定義
 
         [SerializeField] private SpriteRenderer spriteRenderer;
-        [SerializeField] private BoxCollider2D bc2D;
         [SerializeField] private Rigidbody2D rb2D;
         [SerializeField] private ParticleSystem smokeParticle;
+
+        [SerializeField] private CircleCollider2D cc2D;
 
         #endregion
 
         #region 変数の定義
 
         private BoxMemoryType _boxMemoryType = new();
+        private MemoryBoxShapeType _boxShapeType = new();
         private MemoryBoxState _myState = new();
         private float _weight;
         private int _boxId;
@@ -50,12 +51,13 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             set => spriteRenderer = value;
         }
 
-        public BoxCollider2D Bc2D {
+        public CircleCollider2D Cc2D {
             get {
-                if (!bc2D) bc2D = GetComponent<BoxCollider2D>();
-                return bc2D;
+                if (!cc2D) cc2D = GetComponent<CircleCollider2D>();
+
+                return cc2D;
             }
-            set => bc2D = value;
+            set => cc2D = value;
         }
 
         public Rigidbody2D Rb2D {
@@ -77,6 +79,11 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         public BoxMemoryType BoxMemoryType {
             get => _boxMemoryType;
             set => _boxMemoryType = value;
+        }
+
+        public MemoryBoxShapeType BoxShapeType {
+            get => _boxShapeType;
+            set => _boxShapeType = value;
         }
 
         public MemoryBoxState MyState {
@@ -104,7 +111,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
             if (_myState == MemoryBoxState.PlacedOnLevel) {
                 //地面に置かれてる状態で大きい速度を持っていたら毎フレーム減速する
-                if (rb2D.velocity.magnitude > Constant.DELTA)
+                if (rb2D.velocity.sqrMagnitude > Constant.DELTA)
                     rb2D.velocity *= 0.98f;
                 //速度が一定以下になったら、速度を0にする
                 else
@@ -137,23 +144,23 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             _myState = MemoryBoxState.Held;
             _holderTransform = holderBottomTransform;
             var myTransform = transform;
-            _diff = Bc2D.size.y / 2 * myTransform.localScale.y;
+            _diff = Cc2D.radius / 2 * myTransform.localScale.y;
             myTransform.position = _holderTransform.position + (Vector3)Vector2.up * _diff;
             Rb2D.velocity = Vector2.zero;
-            Bc2D.enabled = false;
+            Cc2D.enabled = false;
         }
 
         public void BeThrown(float throwPower, Vector2 throwDirection) {
             _myState = MemoryBoxState.Thrown;
-            Bc2D.enabled = true;
-            Bc2D.isTrigger = true;
+            Cc2D.enabled = true;
+            Cc2D.isTrigger = true;
             Rb2D.velocity = throwDirection * throwPower / Weight * 2f;
         }
 
         public void BePut() {
             _myState = MemoryBoxState.PlacedOnLevel;
-            Bc2D.enabled = true;
-            Bc2D.isTrigger = false;
+            Cc2D.enabled = true;
+            Cc2D.isTrigger = false;
         }
 
         #endregion
@@ -168,7 +175,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         public void Disappear() {
             _myState = MemoryBoxState.Disappeared;
             SpRr.enabled = false;
-            Bc2D.enabled = false;
+            Cc2D.enabled = false;
             Rb2D.velocity = Vector2.zero;
             smokeParticle.Stop();
 

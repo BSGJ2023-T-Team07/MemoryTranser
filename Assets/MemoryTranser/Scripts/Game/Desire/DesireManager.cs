@@ -103,7 +103,7 @@ namespace MemoryTranser.Scripts.Game.Desire {
                 //つくったDesireのOnBeAttackedを購読して、そのDesireが倒されたらスコアを加算する
                 desireCore.OnBeAttacked.Subscribe(_ => {
                     phaseManager.AddCurrentScoreOnDefeatDesire();
-                    fairyCore.AddBlinkTicket(1);
+                    fairyCore.AddBlinkTicketOnDefeatDesire();
                 });
 
                 //最初はすべて非アクティブにしておく

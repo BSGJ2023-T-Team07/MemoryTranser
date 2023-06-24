@@ -128,9 +128,18 @@ namespace MemoryTranser.Scripts.Game.Phase {
 
             //正答数が多い&誤答数が少ない&納品したMemoryBoxが重いほど高得点
             foreach (var box in boxes) {
-                if (box.BoxMemoryType == currentQuest) score += Mathf.FloorToInt((20 + (trueCount - 1)) * box.Weight);
-                else
-                    score -= Mathf.FloorToInt((10 + (falseCount - 1)) * box.Weight);
+                if (box.BoxMemoryType == currentQuest) {
+                    if (box.BoxShapeType == MemoryBoxShapeType.Cube)
+                        score += Mathf.FloorToInt((20 + (trueCount - 1)) * box.Weight);
+                    else
+                        score += Mathf.FloorToInt((20 + (trueCount - 1)) * box.Weight * 2);
+                }
+                else {
+                    if (box.BoxShapeType == MemoryBoxShapeType.Cube)
+                        score -= Mathf.FloorToInt((10 + (falseCount - 1)) * box.Weight);
+                    else
+                        score -= Mathf.FloorToInt((10 + (falseCount - 1)) * box.Weight * 2);
+                }
             }
 
             return (score, trueCount, falseCount);

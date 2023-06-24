@@ -65,8 +65,8 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         private static void MakeBoxAppear(MemoryBoxCore box) {
             Debug.Log($"ID{box.BoxId}のMemoryBoxをAppearさせます");
             box.SpRr.enabled = true;
-            box.Bc2D.isTrigger = false;
-            box.Bc2D.enabled = true;
+            box.Cc2D.isTrigger = false;
+            box.Cc2D.enabled = true;
             box.MyState = MemoryBoxState.PlacedOnLevel;
         }
 
@@ -75,14 +75,18 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             var randomBoxType =
                 (BoxMemoryType)_initialBoxTypeProbabilityList[Random.Range(0, _initialBoxTypeProbabilityList.Count)];
             var randomWeight = Random.Range(minWeight, maxWeight);
+            var randomBoxShape = (MemoryBoxShapeType)Random.Range(0, (int)MemoryBoxShapeType.Count);
 
             //ランダムで科目と重さを決める
             memoryBoxCore.BoxMemoryType = randomBoxType;
+            memoryBoxCore.BoxShapeType = randomBoxShape;
             memoryBoxCore.Weight = randomWeight;
 
             //決定したパラメーターを反映させる
-            memoryBoxCore.SpRr.sprite = randomBoxType.ToMemoryBoxSprite();
+            memoryBoxCore.SpRr.sprite = randomBoxType.ToMemoryBoxSprite(randomBoxShape);
             memoryBoxCore.transform.localScale = Vector3.one * memoryBoxCore.Weight / 1.2f;
+            memoryBoxCore.Cc2D.isTrigger = false;
+            memoryBoxCore.gameObject.layer = LayerMask.NameToLayer($"{randomBoxShape.ToString()}MemoryBox");
         }
 
 
@@ -123,9 +127,6 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
                     }
                 });
 
-                //コンポーネントのプロパティー初期化
-                memoryBoxCore.Bc2D.isTrigger = false;
-
                 //IDの生成
                 //_allBoxesのインデックスがIDとなる
                 memoryBoxCore.BoxId = i;
@@ -150,7 +151,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         }
 
         private void InitializeGenerationProbability() {
-            for (var i = 1; i <= (int)BoxMemoryType.Count; i++) {
+            for (var i = 1; i < (int)BoxMemoryType.Count; i++) {
                 //BoxTypeの確率リストを作成
                 _initialBoxTypeProbabilityList.Add(i);
                 _boxTypeProbabilityList.Add(i);

@@ -4,13 +4,16 @@ using MemoryTranser.Scripts.Game.Phase;
 using UnityEngine;
 
 namespace MemoryTranser.Scripts.Game.Util {
-    public static class MemoryTypeExtensions {
-        public static Sprite ToMemoryBoxSprite(this BoxMemoryType boxMemoryType) {
+    public static class SpriteExtensions {
+        public static Sprite ToMemoryBoxSprite(this BoxMemoryType boxMemoryType, MemoryBoxShapeType boxShape) {
             var memoryTypeName = boxMemoryType.ToString();
-            var path = $"Sprites/MemoryBox/{memoryTypeName}MemorySprite";
+            var shapeName = boxShape.ToString();
+            var path = $"Sprites/MemoryBox/{memoryTypeName}{shapeName}MemoryBoxSprite";
             return Resources.Load<Sprite>(path);
         }
+    }
 
+    public static class MemoryTypeExtensions {
         public static string ToJapanese(this BoxMemoryType boxMemoryType) {
             return boxMemoryType switch {
                 BoxMemoryType.English => "英語",
@@ -23,7 +26,7 @@ namespace MemoryTranser.Scripts.Game.Util {
                 BoxMemoryType.Science => "理科",
                 BoxMemoryType.Trivia => "雑学",
                 BoxMemoryType.SocialStudies => "社会",
-                _ => ""
+                _ => "error"
             };
         }
 
@@ -39,7 +42,7 @@ namespace MemoryTranser.Scripts.Game.Util {
                 PhaseMemoryType.Science => "理科",
                 PhaseMemoryType.Trivia => "雑学",
                 PhaseMemoryType.SocialStudies => "社会",
-                _ => ""
+                _ => "error"
             };
         }
     }

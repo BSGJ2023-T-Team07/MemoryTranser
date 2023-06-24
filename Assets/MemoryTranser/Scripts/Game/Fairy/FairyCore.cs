@@ -34,6 +34,9 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         [Header("MemoryBoxをHoldできる最大距離(円の半径)")] [SerializeField]
         private float holdableDistance = 4f;
 
+        [Header("煩悩を倒したときにもらえるブリンクチケットの数")] [SerializeField]
+        private int additionalBlinkTicketOnDefeatDesire = 1;
+
         [Header("ブリンク可能回数")] [SerializeField] private int blinkTicketCount;
 
         [Header("ブリンクの距離")] public float blinkDistance = 0.5f;
@@ -275,7 +278,11 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         #endregion
 
-        public int AddBlinkTicket(int add) {
+        public int AddBlinkTicketOnDefeatDesire() {
+            return AddBlinkTicket(additionalBlinkTicketOnDefeatDesire);
+        }
+
+        private int AddBlinkTicket(int add) {
             blinkTicketCount += add;
             return blinkTicketCount;
         }

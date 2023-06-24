@@ -1,12 +1,12 @@
 using System;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
+using MemoryTranser.Scripts.Game.Desire;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.MemoryBox;
 using MemoryTranser.Scripts.Game.Sound;
-using Unity.Burst.CompilerServices;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Serialization;
 using Constant = MemoryTranser.Scripts.Game.Util.Constant;
 
 namespace MemoryTranser.Scripts.Game.Fairy {
@@ -20,6 +20,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         [SerializeField] private BoxCollider2D boxCollider2D;
         [SerializeField] private Transform memoryBoxHolderBottom;
         [SerializeField] private SpriteRenderer throwDirectionArrowSpRr;
+        [SerializeField] private DesireManager desireManager;
 
         #endregion
 
@@ -30,28 +31,41 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         [Header("投げる方向の入力の閾値")] [SerializeField]
         private float selectDirectionArrowThreshold;
 
+        [Header("MemoryBoxをHoldできる最大距離(円の半径)")] [SerializeField]
+        private float holdableDistance = 4f;
+
+        [Header("ブリンク可能回数")] [SerializeField] private int blinkTicketCount;
+
+        [Header("ブリンクの距離")] public float blinkDistance = 0.5f;
+
+        [Header("ブリンクで移動しきるまでの時間(秒)")] public float blinkDurationSec = 0.5f;
+
+        [Header("ブリンクし終わってから操作可能になるまでの時間(秒)")] public float reControllableSecAfterBlink = 0.3f;
+
+        [Header("ブリンクし終わってから再度ブリンクできるまでの時間(秒)")]
+        public float blinkRecoverSec = 0.7f;
+
+
         private FairyState _myState;
         private MemoryBoxCore _holdingBox;
         private int _comboCount;
 
         private bool _isControllable;
+        private bool _isBlinkRecovered = true;
 
         private Vector2 _inputVelocity;
         private Vector2 _inputThrowDirection;
 
         #endregion
 
-        #region 定数の定義
-
-        private const float HOLDABLE_DISTANCE = 4f;
-
-        #endregion
-
         #region プロパティーの定義
 
-        public bool HasBox => _holdingBox;
+        private bool HasBox => _holdingBox;
+        private bool CanBlink => blinkTicketCount > 0 && _isBlinkRecovered && _isControllable;
 
         public FairyParameters MyParameters => myParameters;
+
+        public int BlinkTicketCount => blinkTicketCount;
 
         public FairyState MyState {
             get => _myState;
@@ -147,7 +161,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             //もし既にBoxを持ってたら何もしない
             if (HasBox) return;
 
-            var casts = Physics2D.CircleCastAll(transform.position, HOLDABLE_DISTANCE, Vector2.zero,
+            var casts = Physics2D.CircleCastAll(transform.position, holdableDistance, Vector2.zero,
                 0, Constant.MEMORY_BOX_LAYER_MASK);
 
             //もし近くにBoxがなかったら何もしない
@@ -172,6 +186,16 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             if (!HasBox) return;
 
             Put();
+        }
+
+        public void OnBlinkInput(InputAction.CallbackContext context) {
+            //このフレームに完全に押されてなければ何もしない
+            if (!context.action.WasPressedThisFrame()) return;
+
+            //ブリンク不可能だったら何もしない
+            if (!CanBlink) return;
+
+            Blink();
         }
 
         #endregion
@@ -216,6 +240,23 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             SeManager.I.Play(SEs.PutBox);
         }
 
+        private async void Blink() {
+            _isControllable = false;
+            blinkTicketCount--;
+            _isBlinkRecovered = false;
+
+            transform.DOMove(_inputVelocity * blinkDistance, blinkDurationSec)
+                .SetRelative().SetEase(Ease.OutExpo);
+
+            await UniTask.Delay(
+                TimeSpan.FromSeconds(blinkDurationSec + reControllableSecAfterBlink));
+            _isControllable = true;
+
+            await UniTask.Delay(
+                TimeSpan.FromSeconds(blinkRecoverSec - reControllableSecAfterBlink));
+            _isBlinkRecovered = true;
+        }
+
         #endregion
 
         #region 受動的行動の定義
@@ -233,6 +274,11 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         }
 
         #endregion
+
+        public int AddBlinkTicket(int add) {
+            blinkTicketCount += add;
+            return blinkTicketCount;
+        }
 
         private MemoryBoxCore GetNearestMemoryBoxCore(RaycastHit2D[] castArray) {
             var nearestDistance = float.MaxValue;

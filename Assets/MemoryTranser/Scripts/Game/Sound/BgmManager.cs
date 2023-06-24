@@ -24,8 +24,8 @@ namespace MemoryTranser.Scripts.Game.Sound {
 
         private void Start() {
             DontDestroyOnLoad(gameObject);
-            bgmIntroSource.volume = 0.5f;
-            bgmMainSource.volume = 0.5f;
+            // bgmIntroSource.volume = 0.5f;
+            // bgmMainSource.volume = 0.5f;
         }
 
         #endregion

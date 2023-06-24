@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using MemoryTranser.Scripts.Game.Fairy;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.Phase;
+using MemoryTranser.Scripts.Game.UI.Debug;
 using MemoryTranser.Scripts.Game.Util;
 using UnityEngine;
 using UniRx;
@@ -15,6 +16,7 @@ namespace MemoryTranser.Scripts.Game.Desire {
         [SerializeField] private PhaseManager phaseManager;
         [SerializeField] private GameObject desirePrefab;
         [SerializeField] private FairyCore fairyCore;
+        [SerializeField] private DesireInformationShower desireInformationShower;
 
         [Header("Desireが最初にスポーンする間隔(秒)")] [SerializeField]
         private float initialSpawnIntervalSec;
@@ -40,6 +42,7 @@ namespace MemoryTranser.Scripts.Game.Desire {
 
         private readonly Queue<DesireCore> _desireCorePool = new();
         private Renderer[] _spawnPointRenderers;
+        private List<DesireCore> _existingDesireCores = new();
 
         #region eventの定義
 
@@ -181,6 +184,8 @@ namespace MemoryTranser.Scripts.Game.Desire {
             }
 
             var desireCore = _desireCorePool.Dequeue();
+            _existingDesireCores.Add(desireCore);
+            desireInformationShower.SetDesireInformationText(_existingDesireCores.ToArray());
             _existingDesireCount.Value++;
 
             desireCore.gameObject.SetActive(true);
@@ -193,6 +198,8 @@ namespace MemoryTranser.Scripts.Game.Desire {
         /// <param name="desireCore"></param>
         private void CollectDesire(DesireCore desireCore) {
             _desireCorePool.Enqueue(desireCore);
+            _existingDesireCores.Remove(desireCore);
+            desireInformationShower.SetDesireInformationText(_existingDesireCores.ToArray());
             _existingDesireCount.Value--;
         }
 

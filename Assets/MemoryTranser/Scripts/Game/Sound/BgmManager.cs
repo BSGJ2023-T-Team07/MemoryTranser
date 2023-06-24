@@ -1,12 +1,15 @@
 using System;
 using Cysharp.Threading.Tasks;
 using MemoryTranser.Scripts.Game.GameManagers;
+using MemoryTranser.Scripts.Game.Util;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
 namespace MemoryTranser.Scripts.Game.Sound {
-    public class BgmManager : MonoBehaviour, IOnStateChangedToInitializing {
+    public class BgmManager : SingletonMonoBehaviour<BgmManager>, IOnStateChangedToInitializing {
+        protected override bool DontDestroy => true;
+
         #region コンポーネントの定義
 
         [SerializeField] private AudioClip bgmIntro;

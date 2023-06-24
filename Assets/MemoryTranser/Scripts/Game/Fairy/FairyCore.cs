@@ -18,7 +18,6 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         [SerializeField] private Rigidbody2D rb2D;
         [SerializeField] private Animator animator;
         [SerializeField] private BoxCollider2D boxCollider2D;
-        [SerializeField] private SeManager seManager;
         [SerializeField] private Transform memoryBoxHolderBottom;
         [SerializeField] private SpriteRenderer throwDirectionArrowSpRr;
 
@@ -192,7 +191,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
             Debug.Log($"IDが{_holdingBox.BoxId}の記憶を持った");
 
-            seManager.Play(SEs.HoldBox);
+            SeManager.I.Play(SEs.HoldBox);
         }
 
         private void Throw() {
@@ -204,7 +203,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             throwDirectionArrowSpRr.enabled = false;
             myParameters.UpdateWalkSpeedByWeightAndCombo(0, ComboCount);
 
-            seManager.Play(SEs.ThrowBox);
+            SeManager.I.Play(SEs.ThrowBox);
         }
 
         private void Put() {
@@ -214,7 +213,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             _holdingBox = null;
             myParameters.UpdateWalkSpeedByWeightAndCombo(0, ComboCount);
 
-            seManager.Play(SEs.PutBox);
+            SeManager.I.Play(SEs.PutBox);
         }
 
         #endregion

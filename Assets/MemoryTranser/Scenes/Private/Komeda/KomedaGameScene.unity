@@ -539,7 +539,7 @@ GameObject:
   - component: {fileID: 274158314}
   - component: {fileID: 274158313}
   m_Layer: 5
-  m_Name: QuestTypeText
+  m_Name: NextQuestTypeText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -598,7 +598,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u73FE\u5728\u306E\u30AF\u30A8\u30B9\u30C8"
+  m_text: NEXT
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f6de415c9da9ae2498998261a4798717, type: 2}
   m_sharedMaterial: {fileID: 7674469110047751393, guid: f6de415c9da9ae2498998261a4798717, type: 2}
@@ -607,8 +607,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 16777215
+  m_fontColor: {r: 1, g: 1, b: 1, a: 0}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2052,11 +2052,11 @@ MonoBehaviour:
   phaseGimmickTypeShower: {fileID: 856542674}
   scoreShower: {fileID: 837535591}
   memoryBoxManager: {fileID: 2077243976}
-  phaseDuration: 30
+  phaseDuration: 2
   additionalScoreOnDefeatDesire: 0
   initialPhaseCount: 20
   viewablePhaseCount: 3
-  memoryBoxProbabilityPhaseCount: 3
+  memoryBoxProbabilityPhaseCount: 5
   memoryBoxProbabilityWeight: 10
 --- !u!4 &871197808
 Transform:
@@ -2551,6 +2551,63 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1167872111
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1167872112}
+  - component: {fileID: 1167872113}
+  m_Layer: 5
+  m_Name: QuestTypeUI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1167872112
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1167872111}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1942797156}
+  - {fileID: 1288795480}
+  m_Father: {fileID: 1582666808}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1167872113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1167872111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4107cf4d2d5aeb843ba3d519be31501e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _currentQuestTypeBack: {fileID: 1288795481}
+  _currentQuestTypeText: {fileID: 1811096021}
+  _nextQuestTypeBack: {fileID: 1942797157}
+  _nextQuestTypeText: {fileID: 274158314}
+  _currentQuestDuration: 90
+  _nextQuestDuration: 90
 --- !u!114 &1191921330
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2891,7 +2948,7 @@ GameObject:
   - component: {fileID: 1288795482}
   - component: {fileID: 1288795481}
   m_Layer: 5
-  m_Name: QuestTypeBack (1)
+  m_Name: CurrentQuestTypeBack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2904,18 +2961,18 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1288795479}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1811096019}
-  m_Father: {fileID: 1582666808}
+  m_Father: {fileID: 1167872112}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -228, y: 272.61}
+  m_AnchoredPosition: {x: 341.75, y: 81.39499}
   m_SizeDelta: {x: 569.75, y: 162.79}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1288795481
@@ -3921,8 +3978,7 @@ RectTransform:
   - {fileID: 856542677}
   - {fileID: 924286933}
   - {fileID: 411497212}
-  - {fileID: 1942797156}
-  - {fileID: 1288795480}
+  - {fileID: 1167872112}
   m_Father: {fileID: 971717267}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4263,7 +4319,7 @@ GameObject:
   - component: {fileID: 1811096021}
   - component: {fileID: 1811096020}
   m_Layer: 5
-  m_Name: QuestTypeText
+  m_Name: CurrentQuestTypeText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4322,7 +4378,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u73FE\u5728\u306E\u30AF\u30A8\u30B9\u30C8"
+  m_text: NOW
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f6de415c9da9ae2498998261a4798717, type: 2}
   m_sharedMaterial: {fileID: 7674469110047751393, guid: f6de415c9da9ae2498998261a4798717, type: 2}
@@ -4659,7 +4715,7 @@ GameObject:
   - component: {fileID: 1942797158}
   - component: {fileID: 1942797157}
   m_Layer: 5
-  m_Name: QuestTypeBack
+  m_Name: NextQuestTypeBack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4672,18 +4728,18 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1942797155}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 274158312}
-  m_Father: {fileID: 1582666808}
+  m_Father: {fileID: 1167872112}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 353, y: 272.61}
+  m_AnchoredPosition: {x: 341.75, y: 258.61}
   m_SizeDelta: {x: 569.75, y: 162.79}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1942797157
@@ -4699,7 +4755,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

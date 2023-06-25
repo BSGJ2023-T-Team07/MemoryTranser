@@ -273,6 +273,7 @@ namespace MemoryTranser.Scripts.Game.Phase
 
         private BoxMemoryType GetQuestType(int phaseIndex)
         {
+            Debug.Log($"{phaseIndex}");
             return _phaseCores[phaseIndex].QuestType;
         }
 

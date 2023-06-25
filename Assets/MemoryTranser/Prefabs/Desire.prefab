@@ -53,9 +53,19 @@ MonoBehaviour:
   spRr: {fileID: 4525056134812398192}
   navMeshAgent: {fileID: 0}
   myParameters:
-    maxFollowSpeed: 10
-    minFollowSpeed: 0
-    initialFollowSpeed: 3.5
+    maxGameFollowSpeed: 10
+    minGameFollowSpeed: 0.1
+    initialGameFollowSpeed: 3.5
+    maxComicFollowSpeed: 10
+    minComicFollowSpeed: 0.1
+    initialComicFollowSpeed: 3.5
+    maxKaraokeFollowSpeed: 10
+    minKaraokeFollowSpeed: 0.1
+    initialKaraokeFollowSpeed: 3.5
+    maxRamenFollowSpeed: 10
+    minRamenFollowSpeed: 0.1
+    initialRamenFollowSpeed: 3.5
+  pushBoxPower: 20
 --- !u!61 &7740366700348969660
 BoxCollider2D:
   m_ObjectHideFlags: 0

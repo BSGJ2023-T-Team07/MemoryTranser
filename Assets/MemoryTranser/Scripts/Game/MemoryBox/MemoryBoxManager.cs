@@ -83,6 +83,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             memoryBoxCore.BoxMemoryType = randomBoxType;
             memoryBoxCore.BoxShapeType = randomBoxShape;
             memoryBoxCore.Weight = randomWeight;
+            memoryBoxCore.Rb2D.mass = randomWeight;
 
             //決定したパラメーターから他の値に反映させる
             memoryBoxCore.SpRr.sprite = randomBoxType.ToMemoryBoxSprite(randomBoxShape);

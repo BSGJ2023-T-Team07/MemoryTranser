@@ -25,6 +25,9 @@ namespace MemoryTranser.Scripts.Game.Desire {
 
         [SerializeField] private DesireParameters myParameters = new();
 
+        [Header("MemoryBoxを押し出す強さ")] [SerializeField]
+        private float pushBoxPower = 20f;
+
         private DesireState _myState = DesireState.Freeze;
         private DesireType _myType;
         private Vector3 _followPos;
@@ -96,6 +99,26 @@ namespace MemoryTranser.Scripts.Game.Desire {
 
             other.GetComponent<FairyCore>().BeAttackedByDesire();
             Disappear();
+        }
+
+        private void OnCollisionEnter2D(Collision2D other) {
+            if (!other.gameObject.CompareTag("MemoryBox")) {
+                return;
+            }
+
+            var distanceVec = (other.transform.position - transform.position).normalized;
+            var myVel = Rb2D.velocity.normalized;
+            var dot = Vector3.Dot(myVel, distanceVec);
+            var cross = Vector3.Cross(myVel, distanceVec);
+
+            var angle = 0f;
+
+            if (dot > 0.2f) {
+                angle = cross.z > 0 ? 90f : -90f;
+            }
+
+            other.rigidbody.AddForce((Vector2)(Quaternion.Euler(0, 0, angle) * myVel) * pushBoxPower,
+                ForceMode2D.Impulse);
         }
 
         #endregion

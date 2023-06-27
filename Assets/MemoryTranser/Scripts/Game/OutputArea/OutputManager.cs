@@ -1,7 +1,6 @@
 using System;
 using MemoryTranser.Scripts.Game.Concentration;
 using MemoryTranser.Scripts.Game.Fairy;
-using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.MemoryBox;
 using MemoryTranser.Scripts.Game.Phase;
 using UniRx;
@@ -19,30 +18,44 @@ namespace MemoryTranser.Scripts.Game.OutputArea {
         [SerializeField] private BoxCollider2D areaCollider;
 
         #endregion
-        
+
         #region eventの定義
+
         private Subject<Unit> _onOutput = new();
         public IObservable<Unit> OnOutput => _onOutput;
+
         #endregion
+
+        #region Unityから呼ばれる
+
+        private void Awake() {
+            fairyCore.OnOutputInput.Subscribe(_ => { OutputBoxes(); });
+        }
 
         private void OnTriggerEnter2D(Collider2D other) {
             var memoryBoxCore = other.GetComponent<MemoryBoxCore>();
-            if (!memoryBoxCore) return;
+            if (!memoryBoxCore) {
+                return;
+            }
 
             memoryBoxManager.AddOutputableId(memoryBoxCore.BoxId);
         }
 
         private void OnTriggerExit2D(Collider2D other) {
             var memoryBoxCore = other.GetComponent<MemoryBoxCore>();
-            if (!memoryBoxCore) return;
+            if (!memoryBoxCore) {
+                return;
+            }
 
             memoryBoxManager.RemoveOutputableId(memoryBoxCore.BoxId);
         }
 
+        #endregion
 
-        public void OutputBoxes() {
+
+        private void OutputBoxes() {
             _onOutput.OnNext(Unit.Default);
-            
+
             //phaseManagerとmemoryBoxManagerを使って点数の情報を計算
             var (score, trueCount, falseCount) =
                 phaseManager.CalculateScoreInformation(memoryBoxManager.GetOutputableBoxes());
@@ -60,7 +73,7 @@ namespace MemoryTranser.Scripts.Game.OutputArea {
             fairyCore.ComboCount += trueCount;
 
             //点数の情報を元に集中力アップ
-            concentrationManager.AddConcentration(score / 10);
+            concentrationManager.AddConcentration(score);
         }
 
         private void OnDestroy() {

@@ -24,7 +24,14 @@ namespace MemoryTranser.Scripts.Game.UI.Debug {
                         $"WalkSpeed: {Mathf.Floor(fairyCore.MyParameters.WalkSpeed * 100) / 100}\n" +
                         $"ThrowPower: {Mathf.Floor(fairyCore.MyParameters.ThrowPower * 100) / 100}\n" +
                         $"ComboCount: {fairyCore.ComboCount}\n" +
-                        $"BlinkTicketCount: {fairyCore.BlinkTicketCount}\n";
+                        $"BlinkTicketCount: {fairyCore.BlinkTicketCount}\n" +
+                        $"InputVelocity: {fairyCore.InputWalkDirection}\n" +
+                        $"InputVelocityBeforeZero: {fairyCore.InputWalkDirectionBeforeZero}\n" +
+                        $"IsBlinking: {fairyCore.IsBlinking}\n" +
+                        $"IsBlinkRecovered: {fairyCore.IsBlinkRecovered}\n" +
+                        $"IsTouchingSphereBox: {fairyCore.ApplyCancelingBlink}\n" +
+                        $"IsControllable: {fairyCore.IsControllable}\n" +
+                        $"NowInputSecToOutput: {Mathf.Floor(fairyCore.NowInputSecToOutput * 100) / 100}\n";
         }
     }
 }

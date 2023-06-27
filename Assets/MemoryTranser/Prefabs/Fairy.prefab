@@ -233,7 +233,6 @@ MonoBehaviour:
   boxCollider2D: {fileID: 4914608097843609349}
   memoryBoxHolderBottom: {fileID: 1085378162422806380}
   throwDirectionArrowSpRr: {fileID: 136847129894747462}
-  desireManager: {fileID: 0}
   myParameters:
     maxWalkSpeed: 30
     minWalkSpeed: 0
@@ -241,13 +240,18 @@ MonoBehaviour:
     maxThrowPower: 10
     minThrowPower: 0
     initialThrowPower: 10
+  stunDurationSec: 3
   selectDirectionArrowThreshold: 0.1
-  holdableDistance: 4
-  blinkTicketCount: 0
-  blinkDistance: 0.7
-  blinkDurationSec: 0.5
+  holdableDistance: 2.5
+  additionalBlinkTicketOnDefeatDesire: 1
+  blinkTicketCount: 100
+  blinkDistance: 8
+  blinkDurationSec: 0.8
   reControllableSecAfterBlink: 0.1
-  blinkRecoverSec: 0.3
+  blinkRecoverSec: 0.2
+  pushBoxPowerMultiplier: 4
+  precedeBlinkDirectionInputSec: 0.3
+  necessaryInputSecToOutput: 0.6
 --- !u!114 &8073110865618226502
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -425,7 +429,7 @@ GameObject:
   - component: {fileID: 2826913958173845447}
   - component: {fileID: 2838558495295697588}
   m_Layer: 11
-  m_Name: NotTriggerCollider
+  m_Name: FairyNotTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -455,7 +459,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 4496104870537621104}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 015786ebd8334e54188e8d14724845ce, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0

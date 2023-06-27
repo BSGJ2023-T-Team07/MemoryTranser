@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using MemoryTranser.Scripts.Game.BrainEvent;
 using MemoryTranser.Scripts.Game.Desire;
 using MemoryTranser.Scripts.Game.Phase;
 using MemoryTranser.Scripts.Game.UI.Debug;
@@ -14,6 +15,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         #region ゲームオブジェクトの定義
 
         [SerializeField] private GameObject memoryBoxPrefab;
+        [SerializeField] private GameObject spawnArea;
         [SerializeField] private MemoryGenerationProbabilityShower memoryGenerationProbabilityShower;
         [SerializeField] private DesireManager desireManager;
         [SerializeField] private PhaseManager phaseManager;
@@ -34,6 +36,9 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         [Header("MemoryBoxが消えてから再生成されるまでの時間(秒)")] [SerializeField]
         private float generateIntervalSec = 3f;
 
+        [Header("SphereBoxの重さの倍率")] [SerializeField]
+        private float sphereBoxWeightMagnification = 1.5f;
+
         private MemoryBoxCore[] _allBoxes;
         private Queue<MemoryBoxCore> _appliedDisappearedBoxes = new();
         private bool[] _outputable;
@@ -46,6 +51,8 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         #region Unityから呼ばれる
 
         private void Awake() {
+            spawnArea.GetComponent<SpriteRenderer>().enabled = false;
+
             _outputable = new bool[maxBoxGenerateCount];
             InitializeGenerationProbability();
 
@@ -54,7 +61,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
                 for (var i = 0; i < _appliedDisappearedBoxes.Count; i++) {
                     var box = _appliedDisappearedBoxes.Dequeue();
                     MakeBoxAppear(box);
-                    if (phaseManager.OnPhaseTransition.Value == PhaseGimmickType.Blind) {
+                    if (phaseManager.OnPhaseTransition.Value == BrainEventType.Blind) {
                         box.SmokeParticle.Play();
                     }
                 }
@@ -83,7 +90,12 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             memoryBoxCore.BoxMemoryType = randomBoxType;
             memoryBoxCore.BoxShapeType = randomBoxShape;
             memoryBoxCore.Weight = randomWeight;
-            memoryBoxCore.Rb2D.mass = randomWeight;
+            if (memoryBoxCore.BoxShapeType == MemoryBoxShapeType.Cube) {
+                memoryBoxCore.Rb2D.mass = randomWeight;
+            }
+            else {
+                memoryBoxCore.Rb2D.mass = randomWeight * sphereBoxWeightMagnification;
+            }
 
             //決定したパラメーターから他の値に反映させる
             memoryBoxCore.SpRr.sprite = randomBoxType.ToMemoryBoxSprite(randomBoxShape);
@@ -95,9 +107,14 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         }
 
 
-        private static Vector3 GetRandomSpawnPosition() {
-            var randomX = Random.Range(-15f, 15f);
-            var randomY = Random.Range(5f, 10f);
+        private Vector3 GetRandomSpawnPosition() {
+            var spawnAreaOrigin = (Vector2)spawnArea.transform.position;
+            var spawnAreaSize = (Vector2)spawnArea.transform.localScale;
+
+            var randomX = Random.Range(spawnAreaOrigin.x - spawnAreaSize.x / 2,
+                spawnAreaOrigin.x + spawnAreaSize.x / 2);
+            var randomY = Random.Range(spawnAreaOrigin.y - spawnAreaSize.y / 2,
+                spawnAreaOrigin.y + spawnAreaSize.y / 2);
             return new Vector3(randomX, randomY, 0);
         }
 
@@ -124,7 +141,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
                     //もしDesireが存在しないなら、MemoryBoxをAppearさせる
                     if (desireManager.ExistingDesireCount.Value == 0) {
                         MakeBoxAppear(memoryBoxCore);
-                        if (phaseManager.OnPhaseTransition.Value == PhaseGimmickType.Blind) {
+                        if (phaseManager.OnPhaseTransition.Value == BrainEventType.Blind) {
                             memoryBoxCore.SmokeParticle.Play();
                         }
                     }
@@ -149,7 +166,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             });
 
             //遷移したPhaseがド忘れなら煙のパーティクルを再生するイベントを購読する
-            phaseManager.OnPhaseTransition.Where(x => x == PhaseGimmickType.Blind).Subscribe(_ => {
+            phaseManager.OnPhaseTransition.Where(x => x == BrainEventType.Blind).Subscribe(_ => {
                 foreach (var box in _allBoxes) {
                     if (box.MyState != MemoryBoxState.Disappeared) {
                         box.SmokeParticle.Play();

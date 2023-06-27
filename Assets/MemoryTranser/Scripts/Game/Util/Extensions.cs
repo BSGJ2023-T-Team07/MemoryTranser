@@ -1,4 +1,5 @@
 using System.Linq;
+using MemoryTranser.Scripts.Game.BrainEvent;
 using MemoryTranser.Scripts.Game.Desire;
 using MemoryTranser.Scripts.Game.MemoryBox;
 using MemoryTranser.Scripts.Game.Phase;
@@ -52,10 +53,11 @@ namespace MemoryTranser.Scripts.Game.Util {
             };
         }
 
-        public static string ToJapanese(this PhaseGimmickType phaseGimmickType) {
-            return phaseGimmickType switch {
-                PhaseGimmickType.Normal => "なし",
-                PhaseGimmickType.Blind => "ド忘れ",
+        public static string ToJapanese(this BrainEventType brainEventType) {
+            return brainEventType switch {
+                BrainEventType.Normal => "なし",
+                BrainEventType.Blind => "ド忘れ",
+                BrainEventType.DesireOutbreak => "煩悩大量発生",
                 _ => ""
             };
         }

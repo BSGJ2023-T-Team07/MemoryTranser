@@ -7,7 +7,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         Held,
 
         //Fairyに投げられた
-        Thrown,
+        Flying,
 
         //消えてる
         Disappeared

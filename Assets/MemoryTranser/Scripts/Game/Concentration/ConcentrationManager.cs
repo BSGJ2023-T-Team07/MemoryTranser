@@ -13,8 +13,9 @@ namespace MemoryTranser.Scripts.Game.Concentration {
 
         #region 変数の定義
 
+        [SerializeField] private float maxConcentration = 60f;
+
         private float _remainingConcentration;
-        private float _maxConcentration = 60f;
 
         private bool _decreaseFlag;
 
@@ -24,9 +25,11 @@ namespace MemoryTranser.Scripts.Game.Concentration {
         #region Unityから呼ばれる
 
         private void Update() {
-            concentrationShower.SetValue(_remainingConcentration / _maxConcentration);
+            concentrationShower.SetValue(_remainingConcentration / maxConcentration);
 
-            if (_decreaseFlag) _remainingConcentration -= Time.deltaTime;
+            if (_decreaseFlag) {
+                _remainingConcentration -= Time.deltaTime;
+            }
 
             if (_remainingConcentration < 0) {
                 _remainingConcentration = 0;
@@ -39,7 +42,7 @@ namespace MemoryTranser.Scripts.Game.Concentration {
         #region interfaceの実装
 
         public void OnStateChangedToInitializing() {
-            _remainingConcentration = _maxConcentration;
+            _remainingConcentration = maxConcentration;
         }
 
         public void OnStateChangedToReady() {
@@ -58,7 +61,7 @@ namespace MemoryTranser.Scripts.Game.Concentration {
 
 
         public void AddConcentration(float addition) {
-            _remainingConcentration = Mathf.Min(_maxConcentration, _remainingConcentration + addition);
+            _remainingConcentration = Mathf.Min(maxConcentration, _remainingConcentration + addition);
         }
     }
 }

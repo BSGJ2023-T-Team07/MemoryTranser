@@ -45,7 +45,10 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
         public SpriteRenderer SpRr {
             get {
-                if (!spriteRenderer) spriteRenderer = GetComponent<SpriteRenderer>();
+                if (!spriteRenderer) {
+                    spriteRenderer = GetComponent<SpriteRenderer>();
+                }
+
                 return spriteRenderer;
             }
             set => spriteRenderer = value;
@@ -53,7 +56,9 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
         public CircleCollider2D Cc2D {
             get {
-                if (!cc2D) cc2D = GetComponent<CircleCollider2D>();
+                if (!cc2D) {
+                    cc2D = GetComponent<CircleCollider2D>();
+                }
 
                 return cc2D;
             }
@@ -62,7 +67,10 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
         public Rigidbody2D Rb2D {
             get {
-                if (!rb2D) rb2D = GetComponent<Rigidbody2D>();
+                if (!rb2D) {
+                    rb2D = GetComponent<Rigidbody2D>();
+                }
+
                 return rb2D;
             }
             set => rb2D = value;
@@ -70,7 +78,10 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
         public ParticleSystem SmokeParticle {
             get {
-                if (!smokeParticle) smokeParticle = transform.GetComponent<ParticleSystem>();
+                if (!smokeParticle) {
+                    smokeParticle = transform.GetComponent<ParticleSystem>();
+                }
+
                 return smokeParticle;
             }
             set => smokeParticle = value;
@@ -106,21 +117,36 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         #region Unityから呼ばれる
 
         private void Update() {
-            if (_myState == MemoryBoxState.Held)
+            if (_myState == MemoryBoxState.Held) {
                 transform.position = _holderTransform.position + (Vector3)Vector2.up * _diff;
+            }
 
             if (_myState == MemoryBoxState.PlacedOnLevel) {
                 //地面に置かれてる状態で大きい速度を持っていたら毎フレーム減速する
-                if (rb2D.velocity.sqrMagnitude > Constant.DELTA)
-                    rb2D.velocity *= 0.98f;
+                if (Rb2D.velocity.sqrMagnitude > Constant.DELTA) {
+                    Rb2D.velocity *= 0.98f;
+                }
                 //速度が一定以下になったら、速度を0にする
-                else
-                    rb2D.velocity = Vector2.zero;
+                else {
+                    Rb2D.velocity = Vector2.zero;
+                }
+            }
+
+            if (_boxShapeType == MemoryBoxShapeType.Sphere && _myState == MemoryBoxState.Flying) {
+                if (Rb2D.velocity.sqrMagnitude > Constant.DELTA) {
+                    Rb2D.velocity *= 0.99f;
+                }
+                else {
+                    Rb2D.velocity = Vector2.zero;
+                    _myState = MemoryBoxState.PlacedOnLevel;
+                }
             }
         }
 
         private void OnTriggerEnter2D(Collider2D other) {
-            if (_myState != MemoryBoxState.Thrown) return;
+            if (_myState != MemoryBoxState.Flying) {
+                return;
+            }
 
 
             if (other.gameObject.layer == LayerMask.NameToLayer("Desire")) {
@@ -133,6 +159,12 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             if (other.gameObject.layer == LayerMask.NameToLayer("LostWall")) {
                 Disappear();
                 return;
+            }
+        }
+
+        private void OnCollisionEnter2D(Collision2D other) {
+            if (_myState == MemoryBoxState.Flying && other.gameObject.layer == LayerMask.NameToLayer("Desire")) {
+                AttackDesire(other.gameObject.GetComponent<DesireCore>());
             }
         }
 
@@ -151,10 +183,16 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         }
 
         public void BeThrown(float throwPower, Vector2 throwDirection) {
-            _myState = MemoryBoxState.Thrown;
+            _myState = MemoryBoxState.Flying;
             Cc2D.enabled = true;
             Cc2D.isTrigger = true;
             Rb2D.velocity = throwDirection * throwPower / Weight * 2f;
+        }
+
+        public void BePushed(Vector2 pushedDirection, float pushPower) {
+            _myState = MemoryBoxState.Flying;
+            Debug.Log($"pushedDirection: {pushedDirection}, pushedPower: {pushPower}");
+            Rb2D.velocity = pushedDirection * pushPower / Weight;
         }
 
         public void BePut() {

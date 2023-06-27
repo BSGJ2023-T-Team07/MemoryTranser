@@ -48,10 +48,7 @@ namespace MemoryTranser.Scripts.Game.Desire {
 
         #region プロパティーの定義
 
-        public DesireParameters MyParameters {
-            get => myParameters;
-            set => myParameters = value;
-        }
+        public DesireParameters MyParameters => myParameters;
 
         public Rigidbody2D Rb2D {
             get {
@@ -106,10 +103,10 @@ namespace MemoryTranser.Scripts.Game.Desire {
                 return;
             }
 
-            var distanceVec = (other.transform.position - transform.position).normalized;
+            var distanceVector = (other.transform.position - transform.position).normalized;
             var myVel = Rb2D.velocity.normalized;
-            var dot = Vector3.Dot(myVel, distanceVec);
-            var cross = Vector3.Cross(myVel, distanceVec);
+            var dot = Vector3.Dot(myVel, distanceVector);
+            var cross = Vector3.Cross(myVel, distanceVector);
 
             var angle = 0f;
 

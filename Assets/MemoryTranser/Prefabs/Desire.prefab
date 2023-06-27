@@ -65,7 +65,7 @@ MonoBehaviour:
     maxRamenFollowSpeed: 10
     minRamenFollowSpeed: 0.1
     initialRamenFollowSpeed: 3.5
-  pushBoxPower: 20
+  pushBoxPower: 100
 --- !u!61 &7740366700348969660
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -127,7 +127,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 015786ebd8334e54188e8d14724845ce, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0

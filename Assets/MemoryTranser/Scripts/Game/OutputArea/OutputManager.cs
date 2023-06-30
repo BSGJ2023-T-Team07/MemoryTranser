@@ -70,7 +70,13 @@ namespace MemoryTranser.Scripts.Game.OutputArea {
             phaseManager.UpdatePhaseText();
 
             //点数の情報を元にコンボ加算
-            fairyCore.ComboCount += trueCount;
+            if (falseCount > 0) {
+                //1つでも誤答してたらコンボリセット
+                fairyCore.ComboCount = 0;
+            }
+            else {
+                fairyCore.ComboCount += trueCount;
+            }
 
             //点数の情報を元に集中力アップ
             concentrationManager.AddConcentration(score);

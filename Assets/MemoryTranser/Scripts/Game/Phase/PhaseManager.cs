@@ -133,21 +133,13 @@ namespace MemoryTranser.Scripts.Game.Phase {
 
             //正答数が多い&誤答数が少ない&納品したMemoryBoxが重いほど高得点
             foreach (var box in boxes) {
+                var basicScore = box.BoxShapeType == MemoryBoxShapeType.Cube ? cubeBoxBasicScore : sphereBoxBasicScore;
+
                 if (box.BoxMemoryType == currentQuest) {
-                    if (box.BoxShapeType == MemoryBoxShapeType.Cube) {
-                        score += Mathf.FloorToInt((cubeBoxBasicScore + (trueCount - 1)) * box.Weight);
-                    }
-                    else {
-                        score += Mathf.FloorToInt((sphereBoxBasicScore + (trueCount - 1)) * box.Weight);
-                    }
+                    score += Mathf.FloorToInt((basicScore + (trueCount - 1)) * box.Weight);
                 }
                 else {
-                    if (box.BoxShapeType == MemoryBoxShapeType.Cube) {
-                        score -= Mathf.FloorToInt((cubeBoxBasicScore + (falseCount - 1)) * box.Weight);
-                    }
-                    else {
-                        score -= Mathf.FloorToInt((sphereBoxBasicScore + (falseCount - 1)) * box.Weight);
-                    }
+                    score -= Mathf.FloorToInt((basicScore + (falseCount - 1)) * box.Weight);
                 }
             }
 

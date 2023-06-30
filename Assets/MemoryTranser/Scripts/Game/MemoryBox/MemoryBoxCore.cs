@@ -51,7 +51,6 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
                 return spriteRenderer;
             }
-            set => spriteRenderer = value;
         }
 
         public CircleCollider2D Cc2D {
@@ -62,7 +61,6 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
                 return cc2D;
             }
-            set => cc2D = value;
         }
 
         public Rigidbody2D Rb2D {
@@ -73,7 +71,6 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
                 return rb2D;
             }
-            set => rb2D = value;
         }
 
         public ParticleSystem SmokeParticle {
@@ -84,7 +81,6 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
                 return smokeParticle;
             }
-            set => smokeParticle = value;
         }
 
         public BoxMemoryType BoxMemoryType {
@@ -116,7 +112,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
         #region Unityから呼ばれる
 
-        private void Update() {
+        private void FixedUpdate() {
             if (_myState == MemoryBoxState.Held) {
                 transform.position = _holderTransform.position + (Vector3)Vector2.up * _diff;
             }
@@ -180,6 +176,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             myTransform.position = _holderTransform.position + (Vector3)Vector2.up * _diff;
             Rb2D.velocity = Vector2.zero;
             Cc2D.enabled = false;
+            SpRr.sortingLayerID = SortingLayer.NameToID("ForeMemoryBox");
         }
 
         public void BeThrown(float throwPower, Vector2 throwDirection) {
@@ -193,12 +190,14 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             _myState = MemoryBoxState.Flying;
             Debug.Log($"pushedDirection: {pushedDirection}, pushedPower: {pushPower}");
             Rb2D.velocity = pushedDirection * pushPower / Weight;
+            SpRr.sortingLayerID = SortingLayer.NameToID("ForeMemoryBox");
         }
 
         public void BePut() {
             _myState = MemoryBoxState.PlacedOnLevel;
             Cc2D.enabled = true;
             Cc2D.isTrigger = false;
+            SpRr.sortingLayerID = SortingLayer.NameToID("MemoryBox");
         }
 
         #endregion

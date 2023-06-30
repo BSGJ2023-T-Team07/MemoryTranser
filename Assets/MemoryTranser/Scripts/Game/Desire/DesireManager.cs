@@ -130,7 +130,7 @@ namespace MemoryTranser.Scripts.Game.Desire {
 
         #endregion
 
-        private DesireCore ApplyRandomParametersForDesire(DesireCore desireCore) {
+        private static DesireCore ApplyRandomParametersForDesire(DesireCore desireCore) {
             //ランダムにDesireのパラメータを決める
             var randomDesireType = (DesireType)Random.Range(0, (int)DesireType.Count);
 

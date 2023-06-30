@@ -1,13 +1,20 @@
 using System;
 using MemoryTranser.Scripts.Game.GameManagers;
+using MemoryTranser.Scripts.Game.Util;
 using UniRx;
 using UnityEngine;
 
 namespace MemoryTranser.Scripts.Game.BrainEvent {
     public class BrainEventManager : MonoBehaviour, IOnStateChangedToResult {
-        private readonly ReactiveProperty<BrainEventType> _brainEventType = new();
+        private AliasMethod _aliasMethod;
 
-        public IReadOnlyReactiveProperty<BrainEventType> BrainEventType => _brainEventType;
+        #region eventの定義
+
+        private readonly ReactiveProperty<BrainEventType> _onBrainEventTransition = new();
+
+        public IReadOnlyReactiveProperty<BrainEventType> OnBrainEventTransition => _onBrainEventTransition;
+
+        #endregion
 
         #region Unityから呼ばれる
 

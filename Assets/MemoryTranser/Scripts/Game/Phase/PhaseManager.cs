@@ -1,17 +1,17 @@
+using System;
 using System.Collections.Generic;
-using MemoryTranser.Scripts.Game.BrainEvent;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.MemoryBox;
 using MemoryTranser.Scripts.Game.UI.Playing;
 using UniRx;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace MemoryTranser.Scripts.Game.Phase {
     public class PhaseManager : MonoBehaviour, IOnStateChangedToInitializing, IOnStateChangedToReady {
         #region コンポーネントの定義
 
         [SerializeField] private QuestTypeShower questTypeShower;
-        [SerializeField] private BrainEventTypeShower brainEventTypeShower;
         [SerializeField] private ScoreShower scoreShower;
         [SerializeField] private MemoryBoxManager memoryBoxManager;
 
@@ -37,10 +37,10 @@ namespace MemoryTranser.Scripts.Game.Phase {
         private int viewablePhaseCount = 3;
 
         [Header("MemoryBoxの発生確率に関わるフェイズの数")] [SerializeField]
-        private int memoryBoxProbabilityPhaseCount = 5;
+        private int boxTypeWeighRange = 5;
 
         [Header("値が大きいほど直近のフェイズに対応するMemoryBoxが増える")] [SerializeField]
-        private int memoryBoxProbabilityWeight = 5;
+        private float boxTypeProbWeightMultiplier = 5;
 
         private List<PhaseCore> _phaseCores = new();
 
@@ -52,13 +52,6 @@ namespace MemoryTranser.Scripts.Game.Phase {
         #region プロパティーの定義
 
         public float RemainingTime => _phaseRemainingTime;
-
-        #endregion
-
-        #region eventの定義
-
-        private readonly ReactiveProperty<BrainEventType> _onPhaseTransition = new(BrainEventType.Normal);
-        public IReadOnlyReactiveProperty<BrainEventType> OnPhaseTransition => _onPhaseTransition;
 
         #endregion
 
@@ -192,14 +185,14 @@ namespace MemoryTranser.Scripts.Game.Phase {
             for (var i = 0; i < initialPhaseCount; i++) {
                 var phaseCore = ScriptableObject.CreateInstance<PhaseCore>();
 
-
-                var randomPhaseType = (BoxMemoryType)Random.Range(1, (int)BoxMemoryType.Count);
+                var randomPhaseType = (BoxMemoryType)Random.Range(0, (int)BoxMemoryType.Count);
                 phaseCore.QuestType = randomPhaseType;
 
                 _phaseCores.Add(phaseCore);
             }
 
-            SetBoxGenerationProbability();
+            SetBoxTypeProbWeights();
+
             memoryBoxManager.GenerateMemoryBoxes();
         }
 
@@ -227,7 +220,7 @@ namespace MemoryTranser.Scripts.Game.Phase {
         private void TransitToNextPhase() {
             _currentPhaseIndex++;
 
-            SetBoxGenerationProbability();
+            SetBoxTypeProbWeights();
         }
 
         private BoxMemoryType GetQuestType(int phaseIndex) {
@@ -238,24 +231,16 @@ namespace MemoryTranser.Scripts.Game.Phase {
             return GetQuestType(_currentPhaseIndex);
         }
 
-        /// <summary>
-        /// 今あるフェイズを元にBoxの生成確率を設定する
-        /// </summary>
-        private void SetBoxGenerationProbability() {
-            var nextQuestTypeInts = new List<int>();
-            for (var i = _currentPhaseIndex; i <= _currentPhaseIndex + memoryBoxProbabilityPhaseCount; i++) {
-                var questTypeInt = (int)GetQuestType(i);
-                var questTypeInts = new List<int>();
+        private void SetBoxTypeProbWeights() {
+            var boxTypeWeights = new float[(int)BoxMemoryType.Count];
+            Array.Fill(boxTypeWeights, 1f);
 
-                //直近のフェイズになるほど対応するMemoryBoxが出やすくなる
-                for (var j = 0; j < memoryBoxProbabilityWeight * 2 - (i - _currentPhaseIndex); j++) {
-                    questTypeInts.Add(questTypeInt);
-                }
-
-                nextQuestTypeInts.AddRange(questTypeInts);
+            for (var i = _currentPhaseIndex; i <= _currentPhaseIndex + boxTypeWeighRange; i++) {
+                var boxTypeWeightI = (_currentPhaseIndex + boxTypeWeighRange - (i - 1)) * boxTypeProbWeightMultiplier;
+                boxTypeWeights[(int)_phaseCores[i].QuestType] += boxTypeWeightI;
             }
 
-            memoryBoxManager.SetProbabilityList(nextQuestTypeInts);
+            memoryBoxManager.SetBoxTypeWeights(boxTypeWeights);
         }
 
         #endregion

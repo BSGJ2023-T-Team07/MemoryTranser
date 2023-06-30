@@ -24,7 +24,7 @@ namespace MemoryTranser.Scripts.Game.Util {
         public static string ToJapanese(this BoxMemoryType boxMemoryType) {
             return boxMemoryType switch {
                 BoxMemoryType.English => "英語",
-                BoxMemoryType.Habit => "趣味",
+                // BoxMemoryType.Habit => "趣味",
                 BoxMemoryType.Japanese => "国語",
                 BoxMemoryType.Life => "生活",
                 BoxMemoryType.Math => "数学",

@@ -10,15 +10,18 @@ namespace MemoryTranser.Scripts.Game.Util {
         public static T I {
             get {
                 // 値が参照されたタイミングで判定
-                if (_instance == null) {
-                    // nullだった場合は全オブジェクトを探索
-                    // 名前が一致するクラスがあった場合は取得する
-                    _instance = FindObjectOfType<T>();
+                if (_instance) {
+                    return _instance;
+                }
 
-                    // 名前が一致するものがなかった場合
-                    if (_instance == null)
-                        // コンソールウィンドウにエラーを出力
-                        Debug.LogError($"{typeof(T)}のインスタンスが存在しません。");
+                // nullだった場合は全オブジェクトを探索
+                // 名前が一致するクラスがあった場合は取得する
+                _instance = FindObjectOfType<T>();
+
+                // 名前が一致するものがなかった場合
+                if (!_instance) {
+                    // コンソールウィンドウにエラーを出力
+                    Debug.LogError($"{typeof(T)}のインスタンスが存在しません。");
                 }
 
                 return _instance;
@@ -34,7 +37,9 @@ namespace MemoryTranser.Scripts.Game.Util {
                 return;
             }
 
-            if (DontDestroy) DontDestroyOnLoad(gameObject);
+            if (DontDestroy) {
+                DontDestroyOnLoad(gameObject);
+            }
         }
     }
 }

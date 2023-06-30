@@ -68,22 +68,18 @@ namespace MemoryTranser.Scripts.Game.GameManagers {
             }
         }
 
-        private async void OnStateInitializing() {
+        private void OnStateInitializing() {
             foreach (var onStateChangedToInitializing in _onStateChangedToInitializings) {
                 onStateChangedToInitializing.OnStateChangedToInitializing();
             }
 
-            await UniTask.Delay(TimeSpan.FromTicks(1));
-
             ChangeGameState(GameState.Ready);
         }
 
-        private async void OnStateReady() {
+        private void OnStateReady() {
             foreach (var onStateChangedToReady in _onStateChangedToReadys) {
                 onStateChangedToReady.OnStateChangedToReady();
             }
-
-            await UniTask.Delay(TimeSpan.FromSeconds(1f));
 
             ChangeGameState(GameState.Playing);
         }

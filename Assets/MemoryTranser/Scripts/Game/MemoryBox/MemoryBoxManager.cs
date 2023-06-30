@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using MemoryTranser.Scripts.Game.BrainEvent;
 using MemoryTranser.Scripts.Game.Desire;
-using MemoryTranser.Scripts.Game.Phase;
 using MemoryTranser.Scripts.Game.UI.Debug;
 using MemoryTranser.Scripts.Game.Util;
 using UnityEngine;
@@ -16,9 +15,9 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
         [SerializeField] private GameObject memoryBoxPrefab;
         [SerializeField] private GameObject spawnArea;
-        [SerializeField] private MemoryGenerationProbabilityShower memoryGenerationProbabilityShower;
+        [SerializeField] private BoxTypeProbabilityShower boxTypeProbabilityShower;
         [SerializeField] private DesireManager desireManager;
-        [SerializeField] private PhaseManager phaseManager;
+        [SerializeField] private BrainEventManager brainEventManager;
 
         #endregion
 
@@ -43,8 +42,9 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         private Queue<MemoryBoxCore> _appliedDisappearedBoxes = new();
         private bool[] _outputable;
 
-        private List<int> _initialBoxTypeProbabilityList = new();
-        private List<int> _boxTypeProbabilityList = new();
+        private float[] _initialBoxTypeWeights;
+        private float[] _currentBoxTypeWeights;
+        private AliasMethod _aliasMethod;
 
         #endregion
 
@@ -54,14 +54,14 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             spawnArea.GetComponent<SpriteRenderer>().enabled = false;
 
             _outputable = new bool[maxBoxGenerateCount];
-            InitializeGenerationProbability();
+            InitializeBoxTypeWeights();
 
             //ステージ上のDesireの数が0になったら消えていたMemoryBoxをAppearさせる、というeventを購読する
             desireManager.ExistingDesireCount.Where(x => x == 0).Subscribe(_ => {
                 for (var i = 0; i < _appliedDisappearedBoxes.Count; i++) {
                     var box = _appliedDisappearedBoxes.Dequeue();
                     MakeBoxAppear(box);
-                    if (phaseManager.OnPhaseTransition.Value == BrainEventType.Blind) {
+                    if (brainEventManager.OnBrainEventTransition.Value == BrainEventType.Blind) {
                         box.SmokeParticle.Play();
                     }
                 }
@@ -81,10 +81,9 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
         private MemoryBoxCore ApplyRandomParameterForMemoryBox(MemoryBoxCore memoryBoxCore) {
             //ランダムにパラメーターを決める
-            var randomBoxType =
-                (BoxMemoryType)_initialBoxTypeProbabilityList[Random.Range(0, _initialBoxTypeProbabilityList.Count)];
+            var randomBoxType = GetRandomBoxType();
             var randomWeight = Random.Range(minWeight, maxWeight);
-            var randomBoxShape = (MemoryBoxShapeType)Random.Range(0, (int)MemoryBoxShapeType.Count);
+            var randomBoxShape = (MemoryBoxShapeType)new List<int> { 0, 0, 1 }[Random.Range(0, 3)];
 
             //決定したパラメーターを代入する
             memoryBoxCore.BoxMemoryType = randomBoxType;
@@ -141,7 +140,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
                     //もしDesireが存在しないなら、MemoryBoxをAppearさせる
                     if (desireManager.ExistingDesireCount.Value == 0) {
                         MakeBoxAppear(memoryBoxCore);
-                        if (phaseManager.OnPhaseTransition.Value == BrainEventType.Blind) {
+                        if (brainEventManager.OnBrainEventTransition.Value == BrainEventType.Blind) {
                             memoryBoxCore.SmokeParticle.Play();
                         }
                     }
@@ -158,15 +157,15 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
                 _allBoxes[i] = memoryBoxCore;
             }
 
-            //Phaseが遷移したら煙のパーティクルを止めるイベントを購読する
-            phaseManager.OnPhaseTransition.Subscribe(_ => {
+            //BrainEventが遷移したら煙のパーティクルを止める、というイベントを購読する
+            brainEventManager.OnBrainEventTransition.Subscribe(_ => {
                 foreach (var box in _allBoxes) {
                     box.SmokeParticle.Stop();
                 }
             });
 
-            //遷移したPhaseがド忘れなら煙のパーティクルを再生するイベントを購読する
-            phaseManager.OnPhaseTransition.Where(x => x == BrainEventType.Blind).Subscribe(_ => {
+            //遷移したBrainEventがド忘れなら煙のパーティクルを再生する、というイベントを購読する
+            brainEventManager.OnBrainEventTransition.Where(x => x == BrainEventType.Blind).Subscribe(_ => {
                 foreach (var box in _allBoxes) {
                     if (box.MyState != MemoryBoxState.Disappeared) {
                         box.SmokeParticle.Play();
@@ -175,12 +174,24 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             });
         }
 
-        private void InitializeGenerationProbability() {
-            for (var i = 1; i < (int)BoxMemoryType.Count; i++) {
-                //BoxTypeの確率リストを作成
-                _initialBoxTypeProbabilityList.Add(i);
-                _boxTypeProbabilityList.Add(i);
-            }
+        private void InitializeBoxTypeWeights() {
+            _aliasMethod = new AliasMethod();
+            _initialBoxTypeWeights = new float[(int)BoxMemoryType.Count];
+            Array.Fill(_initialBoxTypeWeights, 1f);
+            _currentBoxTypeWeights = _initialBoxTypeWeights;
+        }
+
+        private BoxMemoryType GetRandomBoxType() {
+            var randomBoxType = (BoxMemoryType)_aliasMethod.Roll();
+
+            Debug.Log($"ランダムに選ばれたBoxTypeは{randomBoxType}です");
+            return randomBoxType;
+        }
+
+        public void SetBoxTypeWeights(float[] boxTypeWeights) {
+            _currentBoxTypeWeights = boxTypeWeights;
+            _aliasMethod.Constructor(_currentBoxTypeWeights);
+            boxTypeProbabilityShower.SetBoxTypeProbabilityText(_currentBoxTypeWeights);
         }
 
         public void AddOutputableId(int boxId) {
@@ -201,13 +212,6 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             }
 
             return outputableBoxes.ToArray();
-        }
-
-        public void SetProbabilityList(List<int> probabilityList) {
-            _boxTypeProbabilityList = _initialBoxTypeProbabilityList;
-            _boxTypeProbabilityList.AddRange(probabilityList);
-
-            memoryGenerationProbabilityShower.SetMemoryGenerationProbabilityText(_boxTypeProbabilityList);
         }
     }
 }

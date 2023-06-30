@@ -17,6 +17,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         [SerializeField] private Rigidbody2D rb2D;
         [SerializeField] private Animator animator;
+        [SerializeField] private SpriteRenderer spRr;
         [SerializeField] private BoxCollider2D boxCollider2D;
         [SerializeField] private Transform memoryBoxHolderBottom;
         [SerializeField] private SpriteRenderer throwDirectionArrowSpRr;
@@ -59,6 +60,9 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         [Header("何秒ゲージを貯めれば納品できるか")] [SerializeField]
         private float necessaryInputSecToOutput = 1f;
 
+        private static readonly int AnimHasBox = Animator.StringToHash("hasBox");
+        private static readonly int AnimIsWalking = Animator.StringToHash("isWalking");
+        private static readonly int AnimIsFreezing = Animator.StringToHash("isFreezing");
 
         private FairyState _myState;
         private MemoryBoxCore _holdingBox;
@@ -137,6 +141,8 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         }
 
         private void Update() {
+            AnimationChange();
+
             UpdateFairyState();
 
             #region 先行入力の判定
@@ -404,6 +410,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             var blinkTweenerCore = rb2D.DOMove(blinkDirection * blinkDistance, blinkDurationSec)
                 .SetRelative().SetEase(Ease.OutExpo).OnKill(() => {
                     _isBlinking = false;
+                    rb2D.velocity = Vector2.zero;
                     IsControllableTrueAfterBlinked();
                     IsBlinkRecoveredTrueAfterBlinked();
                 }).OnComplete(() => {
@@ -415,12 +422,15 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             blinkTweenerCore.OnUpdate(() => {
                 if (_applyCancelingBlink) {
                     blinkTweenerCore.Kill();
+                    rb2D.velocity = Vector2.zero;
                 }
             });
 
             async void IsControllableTrueAfterBlinked() {
                 await UniTask.Delay(TimeSpan.FromSeconds(reControllableSecAfterBlink));
-                _isControllable = true;
+                if (_myState != FairyState.Freeze) {
+                    _isControllable = true;
+                }
             }
 
             async void IsBlinkRecoveredTrueAfterBlinked() {
@@ -439,6 +449,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         public async void BeAttackedByDesire() {
             _isControllable = false;
+            rb2D.velocity = Vector2.zero;
             ComboCount = 0;
             _myState = FairyState.Freeze;
 
@@ -496,6 +507,18 @@ namespace MemoryTranser.Scripts.Game.Fairy {
                     ? FairyState.IdlingWithoutBox
                     : FairyState.WalkingWithoutBox;
             }
+        }
+
+        private void AnimationChange() {
+            spRr.flipX = rb2D.velocity.x switch {
+                < -Constant.DELTA => true,
+                > Constant.DELTA => false,
+                _ => spRr.flipX
+            };
+
+            animator.SetBool(AnimHasBox, _myState is FairyState.IdlingWithBox or FairyState.WalkingWithBox);
+            animator.SetBool(AnimIsWalking, _myState is FairyState.WalkingWithBox or FairyState.WalkingWithoutBox);
+            animator.SetBool(AnimIsFreezing, _myState == FairyState.Freeze);
         }
 
         #region interfaceの実装

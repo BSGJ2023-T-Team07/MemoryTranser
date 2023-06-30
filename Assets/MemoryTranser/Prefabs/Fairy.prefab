@@ -160,7 +160,7 @@ Animator:
   m_GameObject: {fileID: 3476403440198354191}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b29b0cd3e30e7114b84a60674de6757d, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -230,6 +230,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb2D: {fileID: 8220344965258797477}
   animator: {fileID: 3581967026774715049}
+  spRr: {fileID: 958714052861761041}
   boxCollider2D: {fileID: 4914608097843609349}
   memoryBoxHolderBottom: {fileID: 1085378162422806380}
   throwDirectionArrowSpRr: {fileID: 136847129894747462}
@@ -459,7 +460,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 4496104870537621104}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 6200000, guid: 015786ebd8334e54188e8d14724845ce, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0

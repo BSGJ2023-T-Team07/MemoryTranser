@@ -4,20 +4,24 @@ using System.Linq;
 
 namespace MemoryTranser.Scripts.Game.Util {
     public class AliasMethod {
+        //https://en.wikipedia.org/wiki/Alias_method
+        //https://stackoverflow.com/a/39199014
+        //https://www.keithschwarz.com/darts-dice-coins/
+
         private int _n;
         private float[] _probabilities;
         private int[] _alias;
 
         public void Constructor(float[] weights) {
-            _n = weights.Length;
+            var n = weights.Length;
             var sum = weights.Sum();
-            var p = weights.Select(x => x / sum).ToArray();
+            var p = weights.Select(x => x / sum * n).ToArray();
 
-            _probabilities = new float[_n];
-            _alias = new int[_n];
+            var prob = new float[n];
+            var alias = new int[n];
 
-            Array.Fill(_probabilities, 1f);
-            Array.Fill(_alias, 1);
+            Array.Fill(prob, 0f);
+            Array.Fill(alias, 0);
 
             var small = new Queue<int>();
             var large = new Queue<int>();
@@ -35,8 +39,8 @@ namespace MemoryTranser.Scripts.Game.Util {
                 var l = small.Dequeue();
                 var g = large.Dequeue();
 
-                _probabilities[l] = p[l];
-                _alias[l] = g;
+                prob[l] = p[l];
+                alias[l] = g;
 
                 p[g] = p[g] + p[l] - 1;
 
@@ -50,13 +54,17 @@ namespace MemoryTranser.Scripts.Game.Util {
 
             while (large.Count > 0) {
                 var g = large.Dequeue();
-                _probabilities[g] = 1;
+                prob[g] = 1;
             }
 
             while (small.Count > 0) {
                 var l = small.Dequeue();
-                _probabilities[l] = 1;
+                prob[l] = 1;
             }
+
+            _n = n;
+            _probabilities = prob;
+            _alias = alias;
         }
 
         public int Roll() {

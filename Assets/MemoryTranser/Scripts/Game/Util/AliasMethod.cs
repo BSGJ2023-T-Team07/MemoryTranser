@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,11 +10,14 @@ namespace MemoryTranser.Scripts.Game.Util {
 
         public void Constructor(float[] weights) {
             _n = weights.Length;
-            var sum = weights.Sum(x => x);
+            var sum = weights.Sum();
             var p = weights.Select(x => x / sum).ToArray();
 
             _probabilities = new float[_n];
             _alias = new int[_n];
+
+            Array.Fill(_probabilities, 1f);
+            Array.Fill(_alias, 1);
 
             var small = new Queue<int>();
             var large = new Queue<int>();
@@ -56,8 +60,8 @@ namespace MemoryTranser.Scripts.Game.Util {
         }
 
         public int Roll() {
-            var i = new System.Random().Next(_n);
-            return new System.Random().NextDouble() < _probabilities[i] ? i : _alias[i];
+            var i = new Random().Next(_n);
+            return new Random().NextDouble() < _probabilities[i] ? i : _alias[i];
         }
     }
 }

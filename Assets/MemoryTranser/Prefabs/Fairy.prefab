@@ -237,7 +237,7 @@ MonoBehaviour:
   myParameters:
     maxWalkSpeed: 30
     minWalkSpeed: 0
-    initialWalkSpeed: 8
+    initialWalkSpeed: 10
     maxThrowPower: 10
     minThrowPower: 0
     initialThrowPower: 10

@@ -40,7 +40,7 @@ namespace MemoryTranser.Scripts.Game.Util {
         public static string ToJapanese(this PhaseMemoryType phaseMemoryType) {
             return phaseMemoryType switch {
                 PhaseMemoryType.English => "英語",
-                PhaseMemoryType.Habit => "趣味",
+                // PhaseMemoryType.Habit => "趣味",
                 PhaseMemoryType.Japanese => "国語",
                 PhaseMemoryType.Life => "生活",
                 PhaseMemoryType.Math => "数学",

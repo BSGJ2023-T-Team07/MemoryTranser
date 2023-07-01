@@ -120,7 +120,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             if (_myState == MemoryBoxState.PlacedOnLevel) {
                 //地面に置かれてる状態で大きい速度を持っていたら毎フレーム減速する
                 if (Rb2D.velocity.sqrMagnitude > Constant.DELTA) {
-                    Rb2D.velocity *= 0.98f;
+                    Rb2D.velocity *= 0.95f;
                 }
                 //速度が一定以下になったら、速度を0にする
                 else {
@@ -130,7 +130,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
             if (_boxShapeType == MemoryBoxShapeType.Sphere && _myState == MemoryBoxState.Flying) {
                 if (Rb2D.velocity.sqrMagnitude > Constant.DELTA) {
-                    Rb2D.velocity *= 0.99f;
+                    Rb2D.velocity *= 0.95f;
                 }
                 else {
                     Rb2D.velocity = Vector2.zero;
@@ -184,6 +184,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             Cc2D.enabled = true;
             Cc2D.isTrigger = true;
             Rb2D.velocity = throwDirection * throwPower / Weight * 2f;
+            SpRr.sortingLayerID = SortingLayer.NameToID("MemoryBox");
         }
 
         public void BePushed(Vector2 pushedDirection, float pushPower) {

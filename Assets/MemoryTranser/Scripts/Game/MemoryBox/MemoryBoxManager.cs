@@ -182,13 +182,12 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         }
 
         private BoxMemoryType GetRandomBoxType() {
+            _aliasMethod.Constructor(new float[] { 0, 0, 0, 0, 0, 0, 0, 0, 1f });
             var randomBoxType = (BoxMemoryType)_aliasMethod.Roll();
-
-            Debug.Log($"ランダムに選ばれたBoxTypeは{randomBoxType}です");
             return randomBoxType;
         }
 
-        public void SetBoxTypeWeights(float[] boxTypeWeights) {
+        public void SetBoxTypeProbWeights(float[] boxTypeWeights) {
             _currentBoxTypeWeights = boxTypeWeights;
             _aliasMethod.Constructor(_currentBoxTypeWeights);
             boxTypeProbabilityShower.SetBoxTypeProbabilityText(_currentBoxTypeWeights);

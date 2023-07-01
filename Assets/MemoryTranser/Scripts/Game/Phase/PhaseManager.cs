@@ -37,7 +37,7 @@ namespace MemoryTranser.Scripts.Game.Phase {
         private int viewablePhaseCount = 3;
 
         [Header("MemoryBoxの発生確率に関わるフェイズの数")] [SerializeField]
-        private int boxTypeWeighRange = 5;
+        private int boxTypeWeightRange = 5;
 
         [Header("値が大きいほど直近のフェイズに対応するMemoryBoxが増える")] [SerializeField]
         private float boxTypeProbWeightMultiplier = 5;
@@ -227,12 +227,12 @@ namespace MemoryTranser.Scripts.Game.Phase {
             var boxTypeWeights = new float[(int)BoxMemoryType.Count];
             Array.Fill(boxTypeWeights, 1f);
 
-            for (var i = _currentPhaseIndex; i <= _currentPhaseIndex + boxTypeWeighRange; i++) {
-                var boxTypeWeightI = (_currentPhaseIndex + boxTypeWeighRange - (i - 1)) * boxTypeProbWeightMultiplier;
-                boxTypeWeights[(int)_phaseCores[i].QuestType] += boxTypeWeightI;
+            for (var i = _currentPhaseIndex; i <= _currentPhaseIndex + boxTypeWeightRange; i++) {
+                var boxTypeWeightI = (_currentPhaseIndex + boxTypeWeightRange - (i - 1)) * boxTypeProbWeightMultiplier;
+                boxTypeWeights[(int)GetQuestType(i)] += boxTypeWeightI;
             }
 
-            memoryBoxManager.SetBoxTypeWeights(boxTypeWeights);
+            memoryBoxManager.SetBoxTypeProbWeights(boxTypeWeights);
         }
 
         #endregion

@@ -3,6 +3,7 @@ using MemoryTranser.Scripts.Game.BrainEvent;
 using MemoryTranser.Scripts.Game.Desire;
 using MemoryTranser.Scripts.Game.MemoryBox;
 using MemoryTranser.Scripts.Game.Phase;
+using MemoryTranser.Scripts.Game.UI.Playing;
 using UnityEngine;
 
 namespace MemoryTranser.Scripts.Game.Util {
@@ -16,6 +17,11 @@ namespace MemoryTranser.Scripts.Game.Util {
 
         public static Sprite ToDesireSprite(this DesireType desireType) {
             var path = $"Sprites/Desire/{desireType}DesireSprite";
+            return Resources.Load<Sprite>(path);
+        }
+
+        public static Sprite ToTakahideSprite(this TakahideState takahideState) {
+            var path = $"Sprites/Takahide/Takahide{takahideState}";
             return Resources.Load<Sprite>(path);
         }
     }
@@ -55,7 +61,7 @@ namespace MemoryTranser.Scripts.Game.Util {
 
         public static string ToJapanese(this BrainEventType brainEventType) {
             return brainEventType switch {
-                BrainEventType.Normal => "なし",
+                BrainEventType.None => "なし",
                 BrainEventType.Blind => "ド忘れ",
                 BrainEventType.DesireOutbreak => "煩悩大量発生",
                 _ => ""

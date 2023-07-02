@@ -4,13 +4,14 @@ using DG.Tweening;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.MemoryBox;
 using MemoryTranser.Scripts.Game.Sound;
+using MemoryTranser.Scripts.Game.UI.Playing;
 using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Constant = MemoryTranser.Scripts.Game.Util.Constant;
 
 namespace MemoryTranser.Scripts.Game.Fairy {
-    public class FairyCore : MonoBehaviour, IOnStateChangedToInitializing, IOnStateChangedToReady,
+    public class FairyCore : MonoBehaviour, IOnGameAwake, IOnStateChangedToInitializing, IOnStateChangedToReady,
         IOnStateChangedToPlaying,
         IOnStateChangedToResult {
         #region コンポーネントの定義
@@ -135,10 +136,6 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         #endregion
 
         #region Unityから呼ばれる
-
-        private void Awake() {
-            throwDirectionArrowSpRr.enabled = false;
-        }
 
         private void Update() {
             AnimationChange();
@@ -408,7 +405,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             _isBlinking = true;
 
             var blinkTweenerCore = rb2D.DOMove(blinkDirection * blinkDistance, blinkDurationSec)
-                .SetRelative().SetEase(Ease.OutExpo).OnKill(() => {
+                .SetRelative().SetEase(Ease.OutQuad).OnKill(() => {
                     _isBlinking = false;
                     rb2D.velocity = Vector2.zero;
                     IsControllableTrueAfterBlinked();
@@ -452,6 +449,9 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             rb2D.velocity = Vector2.zero;
             ComboCount = 0;
             _myState = FairyState.Freeze;
+
+            //高秀を悲しませる
+            TakahideShower.I.ChangeTakahideImage(TakahideState.Sad);
 
             //Desireに当たると3秒停止
             await UniTask.Delay(TimeSpan.FromSeconds(stunDurationSec));
@@ -507,6 +507,10 @@ namespace MemoryTranser.Scripts.Game.Fairy {
                     ? FairyState.IdlingWithoutBox
                     : FairyState.WalkingWithoutBox;
             }
+
+            if (_isBlinking) {
+                _myState = HasBox ? FairyState.WalkingWithBox : FairyState.WalkingWithoutBox;
+            }
         }
 
         private void AnimationChange() {
@@ -522,6 +526,10 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         }
 
         #region interfaceの実装
+
+        public void OnGameAwake() {
+            throwDirectionArrowSpRr.enabled = false;
+        }
 
         public void OnStateChangedToInitializing() {
             InitializeFairy();

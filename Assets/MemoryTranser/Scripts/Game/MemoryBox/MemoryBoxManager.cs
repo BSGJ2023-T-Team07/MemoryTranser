@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using MemoryTranser.Scripts.Game.BrainEvent;
 using MemoryTranser.Scripts.Game.Desire;
+using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.UI.Debug;
 using MemoryTranser.Scripts.Game.Util;
 using UnityEngine;
@@ -10,7 +11,7 @@ using Random = UnityEngine.Random;
 using UniRx;
 
 namespace MemoryTranser.Scripts.Game.MemoryBox {
-    public class MemoryBoxManager : MonoBehaviour {
+    public class MemoryBoxManager : MonoBehaviour, IOnGameAwake {
         #region ゲームオブジェクトの定義
 
         [SerializeField] private GameObject memoryBoxPrefab;
@@ -42,31 +43,9 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         private Queue<MemoryBoxCore> _appliedDisappearedBoxes = new();
         private bool[] _outputable;
 
-        private float[] _initialBoxTypeWeights;
-        private float[] _currentBoxTypeWeights;
+        private float[] _initialBoxTypeProbWeights;
+        private float[] _currentBoxTypeProbWeights;
         private AliasMethod _aliasMethod;
-
-        #endregion
-
-        #region Unityから呼ばれる
-
-        private void Awake() {
-            spawnArea.GetComponent<SpriteRenderer>().enabled = false;
-
-            _outputable = new bool[maxBoxGenerateCount];
-            InitializeBoxTypeWeights();
-
-            //ステージ上のDesireの数が0になったら消えていたMemoryBoxをAppearさせる、というeventを購読する
-            desireManager.ExistingDesireCount.Where(x => x == 0).Subscribe(_ => {
-                for (var i = 0; i < _appliedDisappearedBoxes.Count; i++) {
-                    var box = _appliedDisappearedBoxes.Dequeue();
-                    MakeBoxAppear(box);
-                    if (brainEventManager.OnBrainEventTransition.Value == BrainEventType.Blind) {
-                        box.SmokeParticle.Play();
-                    }
-                }
-            });
-        }
 
         #endregion
 
@@ -174,23 +153,22 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             });
         }
 
-        private void InitializeBoxTypeWeights() {
+        private void InitializeBoxTypeProbWeights() {
             _aliasMethod = new AliasMethod();
-            _initialBoxTypeWeights = new float[(int)BoxMemoryType.Count];
-            Array.Fill(_initialBoxTypeWeights, 1f);
-            _currentBoxTypeWeights = _initialBoxTypeWeights;
+            _initialBoxTypeProbWeights = new float[(int)BoxMemoryType.Count];
+            Array.Fill(_initialBoxTypeProbWeights, 1f);
+            _currentBoxTypeProbWeights = _initialBoxTypeProbWeights;
         }
 
         private BoxMemoryType GetRandomBoxType() {
-            _aliasMethod.Constructor(new float[] { 0, 0, 0, 0, 0, 0, 0, 0, 1f });
             var randomBoxType = (BoxMemoryType)_aliasMethod.Roll();
             return randomBoxType;
         }
 
         public void SetBoxTypeProbWeights(float[] boxTypeWeights) {
-            _currentBoxTypeWeights = boxTypeWeights;
-            _aliasMethod.Constructor(_currentBoxTypeWeights);
-            boxTypeProbabilityShower.SetBoxTypeProbabilityText(_currentBoxTypeWeights);
+            _currentBoxTypeProbWeights = boxTypeWeights;
+            _aliasMethod.Constructor(_currentBoxTypeProbWeights);
+            boxTypeProbabilityShower.SetBoxTypeProbabilityText(_currentBoxTypeProbWeights);
         }
 
         public void AddOutputableId(int boxId) {
@@ -212,5 +190,27 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
             return outputableBoxes.ToArray();
         }
+
+        #region interfaceの実装
+
+        public void OnGameAwake() {
+            spawnArea.GetComponent<SpriteRenderer>().enabled = false;
+
+            _outputable = new bool[maxBoxGenerateCount];
+            InitializeBoxTypeProbWeights();
+
+            //ステージ上のDesireの数が0になったら消えていたMemoryBoxをAppearさせる、というeventを購読する
+            desireManager.ExistingDesireCount.Where(x => x == 0).Subscribe(_ => {
+                for (var i = 0; i < _appliedDisappearedBoxes.Count; i++) {
+                    var box = _appliedDisappearedBoxes.Dequeue();
+                    MakeBoxAppear(box);
+                    if (brainEventManager.OnBrainEventTransition.Value == BrainEventType.Blind) {
+                        box.SmokeParticle.Play();
+                    }
+                }
+            });
+        }
+
+        #endregion
     }
 }

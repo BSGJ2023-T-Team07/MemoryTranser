@@ -65,7 +65,7 @@ MonoBehaviour:
     maxRamenFollowSpeed: 10
     minRamenFollowSpeed: 0.1
     initialRamenFollowSpeed: 3.5
-  pushBoxPower: 50
+  pushBoxPower: 10
 --- !u!61 &7740366700348969660
 BoxCollider2D:
   m_ObjectHideFlags: 0

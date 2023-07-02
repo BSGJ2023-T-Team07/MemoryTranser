@@ -8,7 +8,7 @@ namespace MemoryTranser.Scripts.Game.UI.Playing.Announce {
     public class AnnounceManager : SingletonMonoBehaviour<AnnounceManager> {
         protected override bool DontDestroy => false;
 
-        [SerializeField] private TextMeshProUGUI announceText;
+        [SerializeField] private TextMeshProUGUI announceText0;
         [SerializeField] private RectTransform announceTextTransform;
 
         [Header("アナウンスの流れる速さ")] [SerializeField]
@@ -30,14 +30,14 @@ namespace MemoryTranser.Scripts.Game.UI.Playing.Announce {
         public void AddAnnounceText(string text) {
             var textUnit = text + "    ";
             var textUnitLength = textUnit.Length;
-            announceText.text = "";
+            announceText0.text = "";
 
             while (true) {
-                if (announceText.text.Length + textUnitLength > MAX_ANNOUNCE_TEXT_COUNT) {
+                if (announceText0.text.Length + textUnitLength > MAX_ANNOUNCE_TEXT_COUNT) {
                     break;
                 }
 
-                announceText.text += textUnit;
+                announceText0.text += textUnit;
             }
         }
     }

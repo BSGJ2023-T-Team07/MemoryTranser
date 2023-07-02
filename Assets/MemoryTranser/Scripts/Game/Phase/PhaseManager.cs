@@ -8,7 +8,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace MemoryTranser.Scripts.Game.Phase {
-    public class PhaseManager : MonoBehaviour, IOnStateChangedToInitializing, IOnStateChangedToReady {
+    public class PhaseManager : MonoBehaviour, IOnGameAwake, IOnStateChangedToInitializing, IOnStateChangedToReady {
         #region コンポーネントの定義
 
         [SerializeField] private QuestTypeShower questTypeShower;
@@ -57,10 +57,6 @@ namespace MemoryTranser.Scripts.Game.Phase {
 
         #region Unityから呼ばれる
 
-        private void Awake() {
-            _phaseRemainingTime = phaseDuration;
-        }
-
         private void Update() {
             if (GameFlowManager.I.NowGameState != GameState.Playing) {
                 return;
@@ -81,6 +77,10 @@ namespace MemoryTranser.Scripts.Game.Phase {
 
 
         #region interfaceの実装
+
+        public void OnGameAwake() {
+            _phaseRemainingTime = phaseDuration;
+        }
 
         public void OnStateChangedToInitializing() {
             InitializePhases();
@@ -211,6 +211,12 @@ namespace MemoryTranser.Scripts.Game.Phase {
         /// </summary>
         private void TransitToNextPhase() {
             _currentPhaseIndex++;
+
+            var phaseCore = ScriptableObject.CreateInstance<PhaseCore>();
+            var randomPhaseType = (BoxMemoryType)Random.Range(0, (int)BoxMemoryType.Count);
+            phaseCore.QuestType = randomPhaseType;
+
+            _phaseCores.Add(phaseCore);
 
             SetBoxTypeProbWeights();
         }

@@ -114,8 +114,10 @@ namespace MemoryTranser.Scripts.Game.Desire {
                 angle = cross.z > 0 ? 90f : -90f;
             }
 
-            other.rigidbody.AddForce((Vector2)(Quaternion.Euler(0, 0, angle) * myVel) * pushBoxPower,
-                ForceMode2D.Impulse);
+            // other.rigidbody.AddForce((Vector2)(Quaternion.Euler(0, 0, angle) * myVel) * pushBoxPower,
+            //     ForceMode2D.Impulse);
+
+            other.rigidbody.velocity = (Vector2)(Quaternion.Euler(0, 0, angle) * myVel) * pushBoxPower;
         }
 
         #endregion
@@ -140,7 +142,7 @@ namespace MemoryTranser.Scripts.Game.Desire {
             _followFlag = true;
         }
 
-        private void Disappear() {
+        public void Disappear() {
             //ステータスを更新する
             _myState = DesireState.Freeze;
 

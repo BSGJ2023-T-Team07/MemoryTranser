@@ -15,7 +15,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private Rigidbody2D rb2D;
         [SerializeField] private ParticleSystem smokeParticle;
-
+        [SerializeField] private TrailRenderer trailRenderer;
         [SerializeField] private CircleCollider2D cc2D;
 
         #endregion
@@ -80,6 +80,16 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
                 }
 
                 return smokeParticle;
+            }
+        }
+
+        public TrailRenderer TrailRenderer {
+            get {
+                if (!trailRenderer) {
+                    trailRenderer = transform.GetComponent<TrailRenderer>();
+                }
+
+                return trailRenderer;
             }
         }
 
@@ -172,7 +182,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             _myState = MemoryBoxState.Held;
             _holderTransform = holderBottomTransform;
             var myTransform = transform;
-            _diff = Cc2D.radius / 2 * myTransform.localScale.y;
+            _diff = Cc2D.radius * myTransform.localScale.y;
             myTransform.position = _holderTransform.position + (Vector3)Vector2.up * _diff;
             Rb2D.velocity = Vector2.zero;
             Cc2D.enabled = false;

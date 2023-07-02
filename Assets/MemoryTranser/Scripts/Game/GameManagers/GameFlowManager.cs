@@ -9,6 +9,8 @@ namespace MemoryTranser.Scripts.Game.GameManagers {
 
         #region interfaceのインスタンス配列の定義
 
+        private IOnGameAwake[] _onGameAwakes;
+        private IOnGameStart[] _onGameStarts;
         private IOnStateChangedToInitializing[] _onStateChangedToInitializings;
         private IOnStateChangedToReady[] _onStateChangedToReadys;
         private IOnStateChangedToPlaying[] _onStateChangedToPlayings;
@@ -21,6 +23,8 @@ namespace MemoryTranser.Scripts.Game.GameManagers {
 
         protected override void Awake() {
             base.Awake();
+            _onGameAwakes = GameObjectExtensions.FindObjectsByInterface<IOnGameAwake>();
+            _onGameStarts = GameObjectExtensions.FindObjectsByInterface<IOnGameStart>();
             _onStateChangedToInitializings =
                 GameObjectExtensions.FindObjectsByInterface<IOnStateChangedToInitializing>();
             _onStateChangedToReadys =
@@ -69,6 +73,14 @@ namespace MemoryTranser.Scripts.Game.GameManagers {
         }
 
         private void OnStateInitializing() {
+            foreach (var onGameAwake in _onGameAwakes) {
+                onGameAwake.OnGameAwake();
+            }
+
+            foreach (var onGameStart in _onGameStarts) {
+                onGameStart.OnGameStart();
+            }
+
             foreach (var onStateChangedToInitializing in _onStateChangedToInitializings) {
                 onStateChangedToInitializing.OnStateChangedToInitializing();
             }

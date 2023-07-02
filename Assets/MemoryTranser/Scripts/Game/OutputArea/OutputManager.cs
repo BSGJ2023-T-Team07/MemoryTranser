@@ -1,14 +1,16 @@
 using System;
 using MemoryTranser.Scripts.Game.Concentration;
 using MemoryTranser.Scripts.Game.Fairy;
+using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.MemoryBox;
 using MemoryTranser.Scripts.Game.Phase;
+using MemoryTranser.Scripts.Game.UI.Playing;
 using UniRx;
 using UnityEngine;
 
 namespace MemoryTranser.Scripts.Game.OutputArea {
     [RequireComponent(typeof(BoxCollider2D))]
-    public class OutputManager : MonoBehaviour {
+    public class OutputManager : MonoBehaviour, IOnGameAwake {
         #region コンポーネントの定義
 
         [SerializeField] private PhaseManager phaseManager;
@@ -27,10 +29,6 @@ namespace MemoryTranser.Scripts.Game.OutputArea {
         #endregion
 
         #region Unityから呼ばれる
-
-        private void Awake() {
-            fairyCore.OnOutputInput.Subscribe(_ => { OutputBoxes(); });
-        }
 
         private void OnTriggerEnter2D(Collider2D other) {
             var memoryBoxCore = other.GetComponent<MemoryBoxCore>();
@@ -80,11 +78,22 @@ namespace MemoryTranser.Scripts.Game.OutputArea {
 
             //点数の情報を元に集中力アップ
             concentrationManager.AddConcentration(score);
+
+            //高秀のひらめきを表示
+            TakahideShower.I.ChangeTakahideImage(TakahideState.Inspiration);
         }
 
         private void OnDestroy() {
             _onOutput.OnCompleted();
             _onOutput.Dispose();
         }
+
+        #region interfaceの実装
+
+        public void OnGameAwake() {
+            fairyCore.OnOutputInput.Subscribe(_ => { OutputBoxes(); });
+        }
+
+        #endregion
     }
 }

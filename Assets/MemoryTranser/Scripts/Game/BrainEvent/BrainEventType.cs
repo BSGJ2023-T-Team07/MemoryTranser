@@ -1,6 +1,6 @@
 namespace MemoryTranser.Scripts.Game.BrainEvent {
     public enum BrainEventType {
-        Normal,
+        None,
         Blind,
         DesireOutbreak,
 

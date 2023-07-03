@@ -36,7 +36,7 @@ namespace MemoryTranser.Scripts.Game.Util {
                 BoxMemoryType.Math => "数学",
                 BoxMemoryType.Moral => "道徳",
                 BoxMemoryType.Music => "音楽",
-                BoxMemoryType.Science => "理科",
+                BoxMemoryType.Science => "科学",
                 BoxMemoryType.Trivia => "雑学",
                 BoxMemoryType.SocialStudies => "社会",
                 _ => "error"
@@ -52,7 +52,7 @@ namespace MemoryTranser.Scripts.Game.Util {
                 PhaseMemoryType.Math => "数学",
                 PhaseMemoryType.Moral => "道徳",
                 PhaseMemoryType.Music => "音楽",
-                PhaseMemoryType.Science => "理科",
+                PhaseMemoryType.Science => "科学",
                 PhaseMemoryType.Trivia => "雑学",
                 PhaseMemoryType.SocialStudies => "社会",
                 _ => "error"

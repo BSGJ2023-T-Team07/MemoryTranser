@@ -23,7 +23,7 @@ namespace MemoryTranser.Scripts.Game.UI.Debug {
             text.text = $"{_core}" + $"State: {fairyCore.MyState}\n" +
                         $"WalkSpeed: {Mathf.Floor(fairyCore.MyParameters.WalkSpeed * 100) / 100}\n" +
                         $"ThrowPower: {Mathf.Floor(fairyCore.MyParameters.ThrowPower * 100) / 100}\n" +
-                        $"ComboCount: {fairyCore.ComboCount}\n" +
+                        $"ComboCount: {fairyCore.CurrentComboCount}\n" +
                         $"BlinkTicketCount: {fairyCore.BlinkTicketCount}\n" +
                         $"InputVelocity: {fairyCore.InputWalkDirection}\n" +
                         $"InputVelocityBeforeZero: {fairyCore.InputWalkDirectionBeforeZero}\n" +

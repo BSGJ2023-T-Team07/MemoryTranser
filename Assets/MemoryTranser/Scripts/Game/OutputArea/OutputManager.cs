@@ -71,10 +71,10 @@ namespace MemoryTranser.Scripts.Game.OutputArea {
             //点数の情報を元にコンボ加算
             if (falseCount > 0) {
                 //1つでも誤答してたらコンボリセット
-                fairyCore.ComboCount = 0;
+                fairyCore.CurrentComboCount = 0;
             }
             else {
-                fairyCore.ComboCount += trueCount;
+                fairyCore.CurrentComboCount += trueCount;
             }
 
             //点数の情報を元に集中力アップ

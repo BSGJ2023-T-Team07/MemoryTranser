@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.MemoryBox;
 using MemoryTranser.Scripts.Game.UI.Playing;
@@ -150,6 +151,13 @@ namespace MemoryTranser.Scripts.Game.Phase {
         public void UpdatePhaseText() {
             scoreShower.SetScoreText(GetCurrentScore());
             questTypeShower.SetQuestTypeText(GetCurrentQuestType());
+        }
+
+        public (int, int) GetResultInformation() {
+            var totalScore = _phaseCores.Sum(phase => phase.Score);
+            var reachedPhaseCount = _currentPhaseIndex + 1;
+
+            return (totalScore, reachedPhaseCount);
         }
 
         /// <summary>

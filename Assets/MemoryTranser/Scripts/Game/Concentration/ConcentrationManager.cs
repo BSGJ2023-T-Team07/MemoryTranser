@@ -44,8 +44,10 @@ namespace MemoryTranser.Scripts.Game.Concentration {
         private void Update() {
             concentrationShower.SetValue(_remainingConcentration / maxConcentration);
 
+            //ピンチになったあと回復する時に対応
             if (_isPinchEffectPlayed && _remainingConcentration > pinchSeThreshold) {
                 _isPinchEffectPlayed = false;
+                BgmManager.I.SetBgmPitch(1f);
             }
 
             if (_decreaseFlag) {
@@ -53,7 +55,7 @@ namespace MemoryTranser.Scripts.Game.Concentration {
 
                 if (!_isPinchEffectPlayed && _remainingConcentration < pinchSeThreshold) {
                     SeManager.I.Play(SEs.ConcentrationIsLittle);
-                    BgmManager.I.AddBgmPitch(pinchBgmPitch - 1f);
+                    BgmManager.I.SetBgmPitch(pinchBgmPitch);
                     _isPinchEffectPlayed = true;
                 }
 

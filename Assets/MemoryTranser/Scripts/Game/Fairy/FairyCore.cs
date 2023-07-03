@@ -70,7 +70,8 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         private FairyState _myState;
         private MemoryBoxCore _holdingBox;
-        private int _comboCount;
+        private int _currentComboCount;
+        private int _reachedMaxComboCount;
 
         private bool _isControllable;
         private bool _isBlinkRecovered = true;
@@ -122,10 +123,14 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             set => _myState = value;
         }
 
-        public int ComboCount {
-            get => _comboCount;
+        public int CurrentComboCount {
+            get => _currentComboCount;
             set {
-                _comboCount = value;
+                if (value > _currentComboCount) {
+                    _reachedMaxComboCount = Mathf.Max(_reachedMaxComboCount, value);
+                }
+
+                _currentComboCount = value;
 
                 if (HasBox) {
                     myParameters.UpdateWalkSpeedByWeightAndCombo(_holdingBox.Weight, value);
@@ -372,7 +377,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             _holdingBox = memoryBoxCore;
             throwDirectionArrowSpRr.transform.position = _holdingBox.transform.position;
 
-            myParameters.UpdateWalkSpeedByWeightAndCombo(_holdingBox.Weight, ComboCount);
+            myParameters.UpdateWalkSpeedByWeightAndCombo(_holdingBox.Weight, CurrentComboCount);
 
             Debug.Log($"IDが{_holdingBox.BoxId}の記憶を持った");
 
@@ -386,7 +391,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             Debug.Log($"IDが{_holdingBox.BoxId}の記憶を投げた");
             _holdingBox = null;
             throwDirectionArrowSpRr.enabled = false;
-            myParameters.UpdateWalkSpeedByWeightAndCombo(0, ComboCount);
+            myParameters.UpdateWalkSpeedByWeightAndCombo(0, CurrentComboCount);
 
             SeManager.I.Play(SEs.ThrowBox);
         }
@@ -396,7 +401,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
             Debug.Log($"IDが{_holdingBox.BoxId}の記憶を置いた");
             _holdingBox = null;
-            myParameters.UpdateWalkSpeedByWeightAndCombo(0, ComboCount);
+            myParameters.UpdateWalkSpeedByWeightAndCombo(0, CurrentComboCount);
 
             SeManager.I.Play(SEs.PutBox);
         }
@@ -451,7 +456,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             SeManager.I.Play(SEs.FairyAttackedByDesire);
             _isControllable = false;
             rb2D.velocity = Vector2.zero;
-            ComboCount = 0;
+            CurrentComboCount = 0;
             _myState = FairyState.Freeze;
 
             //高秀を悲しませる
@@ -468,6 +473,10 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         public int AddBlinkTicketOnDefeatDesire() {
             return AddBlinkTicket(additionalBlinkTicketOnDefeatDesire);
+        }
+
+        public int GetResultInformation() {
+            return _reachedMaxComboCount;
         }
 
         private int AddBlinkTicket(int add) {

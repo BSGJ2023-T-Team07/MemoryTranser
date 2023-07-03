@@ -54,8 +54,8 @@ namespace MemoryTranser.Scripts.Game.Sound {
             bgmMainSource.volume = volume;
         }
 
-        public void AddBgmPitch(float pitch) {
-            bgmMainSource.pitch += pitch;
+        public void SetBgmPitch(float pitch) {
+            bgmMainSource.pitch = pitch;
         }
     }
 }

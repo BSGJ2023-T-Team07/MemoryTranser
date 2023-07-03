@@ -18,9 +18,9 @@ namespace MemoryTranser.Scripts.Game.UI.Result {
         }
 
         public void ShowResult(int totalScore, int reachedPhaseCount, int reachedMaxComboCount) {
-            totalScoreText.text = $"総合点数: {totalScore}";
-            reachedPhaseCountText.text = $"到達したフェイズ: {reachedPhaseCount}";
-            reachedMaxComboCountText.text = $"最大コンボ数: {reachedMaxComboCount}";
+            totalScoreText.text = $"{totalScore}";
+            reachedPhaseCountText.text = $"{reachedPhaseCount}";
+            reachedMaxComboCountText.text = $"{reachedMaxComboCount}";
 
             pauseBackGround.SetActive(true);
             resultLayer.SetActive(true);

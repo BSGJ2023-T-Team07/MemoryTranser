@@ -180,8 +180,16 @@ namespace MemoryTranser.Scripts.Game.Desire {
                 .Where((t, i) => !_spawnPointRenderers[i].isVisible && canSpawnFlags[i]).ToArray();
 
             if (brainEventManager.OnBrainEventTransition.Value == BrainEventType.DesireOutbreak) {
-                var randomIndex = Random.Range(0, notInCameraSpawnPoints.Length);
-                return (true, notInCameraSpawnPoints[randomIndex].position);
+                int randomIndex;
+
+                if (notInCameraSpawnPoints.Length == 0) {
+                    randomIndex = Random.Range(0, spawnPointObjects.Length);
+                    return (true, spawnPointObjects[randomIndex].position);
+                }
+                else {
+                    randomIndex = Random.Range(0, notInCameraSpawnPoints.Length);
+                    return (true, notInCameraSpawnPoints[randomIndex].position);
+                }
             }
 
             var nearestSpawnPointPos = Vector3.zero;

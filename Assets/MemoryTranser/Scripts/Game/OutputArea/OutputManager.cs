@@ -80,14 +80,16 @@ namespace MemoryTranser.Scripts.Game.OutputArea {
             //点数の情報を元に集中力アップ
             concentrationManager.AddConcentration(score);
 
-            //点数によって高秀の表示を変える
-            if (score > 0) {
-                TakahideShower.I.ChangeTakahideImage(TakahideState.Inspiration);
-                SeManager.I.Play(SEs.OutputTrue);
-            }
-            else {
-                TakahideShower.I.ChangeTakahideImage(TakahideState.Sad);
-                SeManager.I.Play(SEs.OutputFalse);
+            switch (score) {
+                //点数によって高秀の表示を変える
+                case > 0:
+                    TakahideShower.I.ChangeTakahideImage(TakahideState.Inspiration);
+                    SeManager.I.Play(SEs.OutputTrue);
+                    break;
+                case < 0:
+                    TakahideShower.I.ChangeTakahideImage(TakahideState.Sad);
+                    SeManager.I.Play(SEs.OutputFalse);
+                    break;
             }
         }
 

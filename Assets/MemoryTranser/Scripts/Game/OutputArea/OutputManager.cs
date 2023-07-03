@@ -79,8 +79,8 @@ namespace MemoryTranser.Scripts.Game.OutputArea {
             //点数の情報を元に集中力アップ
             concentrationManager.AddConcentration(score);
 
-            //高秀のひらめきを表示
-            TakahideShower.I.ChangeTakahideImage(TakahideState.Inspiration);
+            //点数によって高秀の表示を変える
+            TakahideShower.I.ChangeTakahideImage(score > 0 ? TakahideState.Inspiration : TakahideState.Sad);
         }
 
         private void OnDestroy() {

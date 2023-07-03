@@ -1,4 +1,5 @@
 using MemoryTranser.Scripts.Game.GameManagers;
+using MemoryTranser.Scripts.Game.Sound;
 using MemoryTranser.Scripts.Game.UI.Playing;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ namespace MemoryTranser.Scripts.Game.Concentration {
 
         #region 変数の定義
 
-        [Header("完全放置で集中力が持つ時間(秒)")] [SerializeField]
+        [Header("完全放置で集中力が持つ時間(秒)(つまりゲージの長さ)")] [SerializeField]
         private float maxConcentration;
 
         [Header("減少速度が上がる間隔(秒)")] [SerializeField]
@@ -22,11 +23,18 @@ namespace MemoryTranser.Scripts.Game.Concentration {
         [Header("↑の時間が経った時に加算される減少速度の割合(％)")] [SerializeField]
         private float additionalDecreasePercent;
 
+        [Header("集中力がどの時にピンチSEを鳴らすか")] [SerializeField]
+        private float pinchSeThreshold;
+
+        [Header("集中力がピンチの時のBGMの速度倍率")] [SerializeField]
+        private float pinchBgmPitch;
+
         private float _remainingConcentration;
         private float _remainingTimeForAdditionalDecrease;
         private float _decreaseMultiplier = 1f;
 
         private bool _decreaseFlag;
+        private bool _isPinchEffectPlayed;
 
         #endregion
 
@@ -36,8 +44,19 @@ namespace MemoryTranser.Scripts.Game.Concentration {
         private void Update() {
             concentrationShower.SetValue(_remainingConcentration / maxConcentration);
 
+            if (_isPinchEffectPlayed && _remainingConcentration > pinchSeThreshold) {
+                _isPinchEffectPlayed = false;
+            }
+
             if (_decreaseFlag) {
                 _remainingConcentration -= Time.deltaTime * _decreaseMultiplier;
+
+                if (!_isPinchEffectPlayed && _remainingConcentration < pinchSeThreshold) {
+                    SeManager.I.Play(SEs.ConcentrationIsLittle);
+                    BgmManager.I.AddBgmPitch(pinchBgmPitch - 1f);
+                    _isPinchEffectPlayed = true;
+                }
+
                 _remainingTimeForAdditionalDecrease -= Time.deltaTime;
             }
 

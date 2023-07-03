@@ -4,6 +4,7 @@ using MemoryTranser.Scripts.Game.Fairy;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.MemoryBox;
 using MemoryTranser.Scripts.Game.Phase;
+using MemoryTranser.Scripts.Game.Sound;
 using MemoryTranser.Scripts.Game.UI.Playing;
 using UniRx;
 using UnityEngine;
@@ -80,7 +81,14 @@ namespace MemoryTranser.Scripts.Game.OutputArea {
             concentrationManager.AddConcentration(score);
 
             //点数によって高秀の表示を変える
-            TakahideShower.I.ChangeTakahideImage(score > 0 ? TakahideState.Inspiration : TakahideState.Sad);
+            if (score > 0) {
+                TakahideShower.I.ChangeTakahideImage(TakahideState.Inspiration);
+                SeManager.I.Play(SEs.OutputTrue);
+            }
+            else {
+                TakahideShower.I.ChangeTakahideImage(TakahideState.Sad);
+                SeManager.I.Play(SEs.OutputFalse);
+            }
         }
 
         private void OnDestroy() {

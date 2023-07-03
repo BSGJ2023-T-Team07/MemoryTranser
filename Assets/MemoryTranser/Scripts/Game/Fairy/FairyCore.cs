@@ -43,6 +43,9 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         [Header("ブリンク可能回数")] [SerializeField] private int blinkTicketCount;
 
+        [Header("ブリンクチケットの最大数")] [SerializeField]
+        private int maxBlinkTicketCount;
+
         [Header("ブリンクの距離")] public float blinkDistance = 0.5f;
 
         [Header("ブリンクで移動しきるまでの時間(秒)")] public float blinkDurationSec = 0.5f;
@@ -445,6 +448,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         #region 受動的行動の定義
 
         public async void BeAttackedByDesire() {
+            SeManager.I.Play(SEs.FairyAttackedByDesire);
             _isControllable = false;
             rb2D.velocity = Vector2.zero;
             ComboCount = 0;
@@ -467,7 +471,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         }
 
         private int AddBlinkTicket(int add) {
-            blinkTicketCount += add;
+            blinkTicketCount = Mathf.Min(blinkTicketCount + add, maxBlinkTicketCount);
             return blinkTicketCount;
         }
 

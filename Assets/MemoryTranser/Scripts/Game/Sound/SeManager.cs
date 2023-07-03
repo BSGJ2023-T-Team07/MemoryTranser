@@ -17,7 +17,10 @@ namespace MemoryTranser.Scripts.Game.Sound {
 
         public void Play(SEs seType) {
             foreach (var seData in seDatas) {
-                if (seData.se != seType) continue;
+                if (seData.se != seType) {
+                    continue;
+                }
+
                 audioSource.PlayOneShot(seData.audioClip);
                 break;
             }
@@ -29,8 +32,15 @@ namespace MemoryTranser.Scripts.Game.Sound {
     }
 
     public enum SEs {
+        DecisionDefault1,
+        DecisionDefault2,
         PutBox,
         HoldBox,
-        ThrowBox
+        ThrowBox,
+        FairyAttackedByDesire,
+        OutputTrue,
+        OutputFalse,
+        ConcentrationIsLittle,
+        Result
     }
 }

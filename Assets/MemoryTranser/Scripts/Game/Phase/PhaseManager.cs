@@ -68,8 +68,6 @@ namespace MemoryTranser.Scripts.Game.Phase {
             //フェイズの残り時間が0になったら、次のフェイズに移行する
             if (_phaseRemainingTime <= 0) {
                 TransitToNextPhase();
-                _phaseRemainingTime = phaseDuration;
-                GameFlowManager.I.ChangeGameState(GameState.Ready);
             }
         }
 
@@ -210,15 +208,23 @@ namespace MemoryTranser.Scripts.Game.Phase {
         /// 次のフェイズに移行する
         /// </summary>
         private void TransitToNextPhase() {
+            //フェイズの内部のインデックスを足す
             _currentPhaseIndex++;
 
+            //フェイズの残り時間をリセット
+            _phaseRemainingTime = phaseDuration;
+
+            //次のフェイズの情報を生成して追加
             var phaseCore = ScriptableObject.CreateInstance<PhaseCore>();
             var randomPhaseType = (BoxMemoryType)Random.Range(0, (int)BoxMemoryType.Count);
             phaseCore.QuestType = randomPhaseType;
-
             _phaseCores.Add(phaseCore);
 
+            //MemoryBoxの生成確率を更新
             SetBoxTypeProbWeights();
+
+            //GameStateをReadyに変更
+            GameFlowManager.I.ChangeGameState(GameState.Ready);
         }
 
         private BoxMemoryType GetQuestType(int phaseIndex) {

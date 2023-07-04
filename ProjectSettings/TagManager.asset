@@ -70,6 +70,9 @@ TagManager:
   - name: Fairy
     uniqueID: 3673235947
     locked: 0
+  - name: ForeFairy
+    uniqueID: 1167665433
+    locked: 0
   - name: Desire
     uniqueID: 411586109
     locked: 0

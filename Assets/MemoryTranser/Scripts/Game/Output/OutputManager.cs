@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using MemoryTranser.Scripts.Game.Concentration;
 using MemoryTranser.Scripts.Game.Fairy;
 using MemoryTranser.Scripts.Game.GameManagers;
@@ -9,8 +10,7 @@ using MemoryTranser.Scripts.Game.UI.Playing;
 using UniRx;
 using UnityEngine;
 
-namespace MemoryTranser.Scripts.Game.OutputArea {
-    [RequireComponent(typeof(BoxCollider2D))]
+namespace MemoryTranser.Scripts.Game.Output {
     public class OutputManager : MonoBehaviour, IOnGameAwake {
         #region コンポーネントの定義
 
@@ -19,6 +19,16 @@ namespace MemoryTranser.Scripts.Game.OutputArea {
         [SerializeField] private ConcentrationManager concentrationManager;
         [SerializeField] private MemoryBoxManager memoryBoxManager;
         [SerializeField] private BoxCollider2D areaCollider;
+
+        #endregion
+
+        #region 変数の定義
+
+        [Header("納品時に記憶が飛んでいく速さ")] [SerializeField]
+        private float boxOutputSpeed;
+
+        [Header("記憶が飛んで行ってからDisappearするまでの時間(秒)")] [SerializeField]
+        private float boxDisappearTime;
 
         #endregion
 
@@ -52,16 +62,16 @@ namespace MemoryTranser.Scripts.Game.OutputArea {
         #endregion
 
 
-        private void OutputBoxes() {
+        private void OutputBoxes(MemoryBoxCore[] boxes) {
             _onOutput.OnNext(Unit.Default);
 
             //phaseManagerとmemoryBoxManagerを使って点数の情報を計算
             var (score, trueCount, falseCount) =
-                phaseManager.CalculateScoreInformation(memoryBoxManager.GetOutputableBoxes());
+                phaseManager.CalculateScoreInformation(boxes);
 
             //MemoryBoxをDisappearさせる
-            foreach (var box in memoryBoxManager.GetOutputableBoxes()) {
-                box.Disappear();
+            foreach (var box in boxes) {
+                MakeBoxFry(box);
             }
 
             //点数の情報を元にスコア加算
@@ -93,6 +103,17 @@ namespace MemoryTranser.Scripts.Game.OutputArea {
             }
         }
 
+        private async void MakeBoxFry(MemoryBoxCore box) {
+            box.isOutput = true;
+            box.Cc2D.enabled = false;
+            box.MyState = MemoryBoxState.Flying;
+            box.Rb2D.velocity = Vector2.up * boxOutputSpeed;
+
+            await UniTask.Delay(TimeSpan.FromSeconds(boxDisappearTime));
+
+            box.Disappear();
+        }
+
         private void OnDestroy() {
             _onOutput.OnCompleted();
             _onOutput.Dispose();
@@ -101,7 +122,7 @@ namespace MemoryTranser.Scripts.Game.OutputArea {
         #region interfaceの実装
 
         public void OnGameAwake() {
-            fairyCore.OnOutputInput.Subscribe(_ => { OutputBoxes(); });
+            fairyCore.OnOutputInput.Subscribe(_ => { OutputBoxes(memoryBoxManager.GetOutputableBoxes()); });
         }
 
         #endregion

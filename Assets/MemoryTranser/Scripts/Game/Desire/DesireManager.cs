@@ -52,10 +52,13 @@ namespace MemoryTranser.Scripts.Game.Desire {
         private Queue<DesireCore> _desireCorePool = new();
         private Queue<DesireCore> _desireCorePoolOnDesireOutbreak = new();
         private Renderer[] _spawnPointRenderers;
+
+        //これ単体でいじることは無い。常に_desirePoolと付随していじる
         private List<DesireCore> _existingDesireCores = new();
 
         #region eventの定義
 
+        //これ単体でいじることは無い。常に_desirePoolと付随していじる
         private readonly ReactiveProperty<int> _existingDesireCount = new(0);
         public IReadOnlyReactiveProperty<int> ExistingDesireCount => _existingDesireCount;
 
@@ -90,7 +93,7 @@ namespace MemoryTranser.Scripts.Game.Desire {
 
                     var info = GetCanSpawnAndSpawnPosition();
 
-                    isResult = GameFlowManager.I.NowGameState == GameState.Result;
+                    isResult = GameFlowManager.I.CurrentGameState == GameState.Result;
 
                     if (isResult) {
                         spawnPos = Vector3.zero;
@@ -111,7 +114,11 @@ namespace MemoryTranser.Scripts.Game.Desire {
                         await UniTask.Delay(TimeSpan.FromSeconds(delaySecWhenDesireExist));
                     }
 
-                    TrySpawnDesire(spawnPos);
+                    if (_desireCorePool.Count == 0) {
+                        return;
+                    }
+
+                    SpawnDesire(spawnPos);
                 }
             });
 
@@ -212,23 +219,17 @@ namespace MemoryTranser.Scripts.Game.Desire {
         /// 指定した位置にDesireをスポーンさせる(キューから取り出す)
         /// </summary>
         /// <param name="spawnPos"></param>
-        private void TrySpawnDesire(Vector3 spawnPos) {
-            if (_desireCorePool.Count == 0) {
-                return;
-            }
-
+        private void SpawnDesire(Vector3 spawnPos) {
             var desireCore = _desireCorePool.Dequeue();
             _existingDesireCores.Add(desireCore);
             _existingDesireCount.Value++;
             desireInformationShower.SetDesireInformationText(_existingDesireCores.ToArray());
 
-            desireCore.gameObject.SetActive(true);
             desireCore.Appear(spawnPos);
         }
 
         private void SpawnOutBreakDesire(Vector3 spawnPos) {
             var desireCore = _desireCorePoolOnDesireOutbreak.Dequeue();
-            desireCore.gameObject.SetActive(true);
             desireCore.Appear(spawnPos);
         }
 
@@ -285,7 +286,11 @@ namespace MemoryTranser.Scripts.Game.Desire {
             for (var i = 0; i < maxDefaultSpawnCount; i++) {
                 await UniTask.Delay(TimeSpan.FromSeconds(initialSpawnIntervalSec));
 
-                TrySpawnDesire(GetCanSpawnAndSpawnPosition().Item2);
+                if (_desireCorePool.Count == 0) {
+                    continue;
+                }
+
+                SpawnDesire(GetCanSpawnAndSpawnPosition().Item2);
             }
         }
 

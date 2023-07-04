@@ -275,7 +275,7 @@ MonoBehaviour:
     minThrowPower: 0
     initialThrowPower: 10
   stunDurationSec: 3
-  selectDirectionArrowThreshold: 0.1
+  selectDirectionArrowThreshold: 0.12
   holdableDistance: 2.5
   additionalBlinkTicketOnDefeatDesire: 1
   blinkTicketCount: 0

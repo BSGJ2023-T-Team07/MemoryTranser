@@ -44,7 +44,7 @@ namespace MemoryTranser.Scripts.Game.GameManagers {
         #endregion
 
         private GameState _gameState = GameState.Initializing;
-        public GameState NowGameState => _gameState;
+        public GameState CurrentGameState => _gameState;
 
 
         public void ChangeGameState(GameState state) {

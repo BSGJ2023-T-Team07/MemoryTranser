@@ -41,6 +41,8 @@ namespace MemoryTranser.Scripts.Game.Sound {
         OutputTrue,
         OutputFalse,
         ConcentrationIsLittle,
-        Result
+        TimeUp,
+        ResultShow1,
+        ResultShow2
     }
 }

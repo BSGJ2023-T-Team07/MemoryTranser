@@ -20,28 +20,28 @@ namespace MemoryTranser.Scripts.Game.Phase {
 
         #region 変数の定義
 
-        [Header("1つのフェイズの長さ")] public float phaseDuration = 30f;
+        [Header("1つのフェイズの長さ")] public float phaseDuration;
 
         [Header("Desireを倒したときに加算される点数")] [SerializeField]
         private int additionalScoreOnDefeatDesire;
 
         [Header("四角いMemoryBoxを納品したときの基礎点数")] [SerializeField]
-        private int cubeBoxBasicScore = 5;
+        private int cubeBoxBasicScore;
 
         [Header("丸いMemoryBoxを納品したときの基礎点数")] [SerializeField]
-        private int sphereBoxBasicScore = 10;
+        private int sphereBoxBasicScore;
 
         [Header("最初に生成されるフェイスの数")] [SerializeField]
-        private int initialPhaseCount = 20;
+        private int initialPhaseCount;
 
         [Header("UIで見ることのできるフェイズの数")] [SerializeField]
-        private int viewablePhaseCount = 3;
+        private int viewablePhaseCount;
 
         [Header("MemoryBoxの発生確率に関わるフェイズの数")] [SerializeField]
-        private int boxTypeWeightRange = 5;
+        private int boxTypeWeightRange;
 
         [Header("値が大きいほど直近のフェイズに対応するMemoryBoxが増える")] [SerializeField]
-        private float boxTypeProbWeightMultiplier = 5;
+        private float boxTypeProbWeightMultiplier;
 
         private List<PhaseCore> _phaseCores = new();
 
@@ -59,7 +59,7 @@ namespace MemoryTranser.Scripts.Game.Phase {
         #region Unityから呼ばれる
 
         private void Update() {
-            if (GameFlowManager.I.NowGameState != GameState.Playing) {
+            if (GameFlowManager.I.CurrentGameState != GameState.Playing) {
                 return;
             }
 

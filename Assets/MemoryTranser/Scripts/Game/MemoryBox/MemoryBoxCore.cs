@@ -15,12 +15,14 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private Rigidbody2D rb2D;
         [SerializeField] private ParticleSystem smokeParticle;
-        [SerializeField] private TrailRenderer trailRenderer;
+        [SerializeField] private TrailRenderer trail;
         [SerializeField] private CircleCollider2D cc2D;
 
         #endregion
 
         #region 変数の定義
+
+        public bool isOutput;
 
         private BoxMemoryType _boxMemoryType = new();
         private MemoryBoxShapeType _boxShapeType = new();
@@ -83,13 +85,13 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             }
         }
 
-        public TrailRenderer TrailRenderer {
+        public TrailRenderer Trail {
             get {
-                if (!trailRenderer) {
-                    trailRenderer = transform.GetComponent<TrailRenderer>();
+                if (!trail) {
+                    trail = transform.GetComponent<TrailRenderer>();
                 }
 
-                return trailRenderer;
+                return trail;
             }
         }
 
@@ -123,6 +125,10 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         #region Unityから呼ばれる
 
         private void FixedUpdate() {
+            if (isOutput) {
+                return;
+            }
+
             if (_myState == MemoryBoxState.Held) {
                 transform.position = _holderTransform.position + (Vector3)Vector2.up * _diff;
             }
@@ -144,6 +150,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
                 }
                 else {
                     Rb2D.velocity = Vector2.zero;
+                    Trail.enabled = false;
                     _myState = MemoryBoxState.PlacedOnLevel;
                 }
             }
@@ -186,20 +193,21 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             myTransform.position = _holderTransform.position + (Vector3)Vector2.up * _diff;
             Rb2D.velocity = Vector2.zero;
             Cc2D.enabled = false;
-            SpRr.sortingLayerID = SortingLayer.NameToID("ForeMemoryBox");
+            SpRr.sortingLayerID = SortingLayer.NameToID("ForeFairy");
         }
 
         public void BeThrown(float throwPower, Vector2 throwDirection) {
             _myState = MemoryBoxState.Flying;
             Cc2D.enabled = true;
             Cc2D.isTrigger = true;
+            Trail.enabled = true;
             Rb2D.velocity = throwDirection * throwPower / Weight * 2f;
             SpRr.sortingLayerID = SortingLayer.NameToID("MemoryBox");
         }
 
         public void BePushed(Vector2 pushedDirection, float pushPower) {
             _myState = MemoryBoxState.Flying;
-            Debug.Log($"pushedDirection: {pushedDirection}, pushedPower: {pushPower}");
+            Trail.enabled = true;
             Rb2D.velocity = pushedDirection * pushPower / Weight;
             SpRr.sortingLayerID = SortingLayer.NameToID("ForeMemoryBox");
         }

@@ -26,7 +26,7 @@ namespace MemoryTranser.Scripts.Game.UI.Debug {
                     $"フェイズ{i + 1}: {phaseCores[i].QuestType.ToJapanese()}, 点数: {phaseCores[i].Score}";
                 if (i == currentPhaseIndex) {
                     text.text +=
-                        $"<size={_defaultFontSize + 10}>{coreText}</size>\n";
+                        $"<color=#00FF00><size={_defaultFontSize + 10}>{coreText}</size></color>\n";
                     continue;
                 }
 

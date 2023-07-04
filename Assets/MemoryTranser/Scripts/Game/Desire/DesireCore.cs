@@ -137,6 +137,7 @@ namespace MemoryTranser.Scripts.Game.Desire {
         #endregion
 
         public void Appear(Vector3 spawnPos) {
+            gameObject.SetActive(true);
             transform.position = spawnPos;
             _myState = DesireState.FollowingFairy;
             _followFlag = true;

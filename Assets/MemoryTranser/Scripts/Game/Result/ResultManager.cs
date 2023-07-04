@@ -30,7 +30,6 @@ namespace MemoryTranser.Scripts.Game.Result {
 
             _reachedMaxComboCount = fairyCore.GetResultInformation();
 
-            Debug.Log("これからResultを表示します");
             resultShower.ShowResult(_totalScore, _reachedPhaseCount, _reachedMaxComboCount);
         }
     }

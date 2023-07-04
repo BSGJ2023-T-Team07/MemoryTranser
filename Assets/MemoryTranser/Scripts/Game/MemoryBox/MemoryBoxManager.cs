@@ -50,7 +50,13 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         #endregion
 
         private static void MakeBoxAppear(MemoryBoxCore box) {
+            if (GameFlowManager.I.CurrentGameState != GameState.Playing) {
+                return;
+            }
+
             Debug.Log($"ID{box.BoxId}のMemoryBoxをAppearさせます");
+            box.isOutput = false;
+            box.Trail.enabled = false;
             box.SpRr.enabled = true;
             box.Cc2D.isTrigger = false;
             box.Cc2D.enabled = true;
@@ -77,8 +83,9 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
             //決定したパラメーターから他の値に反映させる
             memoryBoxCore.SpRr.sprite = randomBoxType.ToMemoryBoxSprite(randomBoxShape);
+            memoryBoxCore.Trail.widthMultiplier *= randomWeight;
+            memoryBoxCore.Trail.time *= randomWeight;
             memoryBoxCore.transform.localScale = Vector3.one * memoryBoxCore.Weight / 1.2f;
-            memoryBoxCore.Cc2D.isTrigger = false;
             memoryBoxCore.gameObject.layer = LayerMask.NameToLayer($"{randomBoxShape.ToString()}MemoryBox");
 
             return memoryBoxCore;

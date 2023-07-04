@@ -1,7 +1,6 @@
-using System;
 using UnityEngine;
 
-namespace MemoryTranser.Scripts.Game.OutputArea {
+namespace MemoryTranser.Scripts.Game.Output {
     [RequireComponent(typeof(BoxCollider2D))]
     public class OutputButton : MonoBehaviour {
         [SerializeField] private OutputManager outputManager;

@@ -1,11 +1,16 @@
 using System;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using MemoryTranser.Scripts.Game.Util;
+using TMPro;
+using UnityEngine;
 using Debug = UnityEngine.Debug;
 
 namespace MemoryTranser.Scripts.Game.GameManagers {
     public class GameFlowManager : SingletonMonoBehaviour<GameFlowManager> {
         protected override bool DontDestroy => false;
+
+        [SerializeField] private GameFlowShower gameFlowShower;
 
         #region interfaceのインスタンス配列の定義
 
@@ -38,7 +43,8 @@ namespace MemoryTranser.Scripts.Game.GameManagers {
         }
 
         private void Start() {
-            ChangeGameState(GameState.Initializing);
+            gameFlowShower.CountdownSequence.OnComplete(() => { ChangeGameState(GameState.Initializing); });
+            gameFlowShower.CountdownSequence.Play();
         }
 
         #endregion

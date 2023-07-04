@@ -1,6 +1,7 @@
 using MemoryTranser.Scripts.Game.Fairy;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.Phase;
+using MemoryTranser.Scripts.Game.Sound;
 using MemoryTranser.Scripts.Game.UI.Result;
 using UnityEngine;
 
@@ -24,6 +25,7 @@ namespace MemoryTranser.Scripts.Game.Result {
 
 
         public void OnStateChangedToResult() {
+            BgmManager.I.StopPlayingBgm();
             var phaseInfo = phaseManager.GetResultInformation();
             _totalScore = phaseInfo.Item1;
             _reachedPhaseCount = phaseInfo.Item2;

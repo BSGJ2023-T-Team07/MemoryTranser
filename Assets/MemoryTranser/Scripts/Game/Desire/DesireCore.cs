@@ -126,6 +126,7 @@ namespace MemoryTranser.Scripts.Game.Desire {
 
         public void OnStateChangedToResult() {
             _followFlag = false;
+            Rb2D.velocity = Vector2.zero;
 
             _onBeAttacked.OnCompleted();
             _onDisappear.OnCompleted();

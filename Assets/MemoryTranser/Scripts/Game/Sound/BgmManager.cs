@@ -49,6 +49,11 @@ namespace MemoryTranser.Scripts.Game.Sound {
             bgmMainSource.Play();
         }
 
+        public void StopPlayingBgm() {
+            bgmIntroSource.Stop();
+            bgmMainSource.Stop();
+        }
+
         public void SetBgmVolume(float volume) {
             bgmIntroSource.volume = volume;
             bgmMainSource.volume = volume;

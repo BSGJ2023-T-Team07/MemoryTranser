@@ -166,10 +166,10 @@ namespace MemoryTranser.Scripts.Game.Phase {
         /// <returns></returns>
         public (PhaseCore[], int, int) GetPhaseInformation() {
             //実際のゲーム画面だとこっちの処理を使う
-            // var viewablePhaseCores = _phaseCores.GetRange(_currentPhaseIndex, viewablePhaseCount).ToArray();
-            // return (viewablePhaseCores, 0, viewablePhaseCount);
-
-            return (_phaseCores.ToArray(), _currentPhaseIndex, viewablePhaseCount);
+            var viewablePhaseCores = _phaseCores
+                .GetRange(_currentPhaseIndex, viewablePhaseCount)
+                .ToArray();
+            return (viewablePhaseCores, 0, viewablePhaseCount);
         }
 
         #endregion

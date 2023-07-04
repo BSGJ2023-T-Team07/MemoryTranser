@@ -1,3 +1,4 @@
+using System;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.Sound;
 using MemoryTranser.Scripts.Game.Util;
@@ -17,9 +18,14 @@ namespace MemoryTranser.Scripts.Game.UI.Result {
         [SerializeField] private GameObject resultPaper;
         [SerializeField] private GameObject resultPaperStamp;
 
+        private void Awake() {
+            resultAnimator.enabled = false;
+        }
+
         public void OnGameAwake() {
+            resultLayer.SetActive(true);
+
             pauseBackGround.SetActive(false);
-            resultLayer.SetActive(false);
             resultPaper.SetActive(false);
             resultPaperStamp.SetActive(false);
 
@@ -30,6 +36,8 @@ namespace MemoryTranser.Scripts.Game.UI.Result {
             totalScoreText.gameObject.SetActive(false);
             reachedPhaseCountText.gameObject.SetActive(false);
             reachedMaxComboCountText.gameObject.SetActive(false);
+
+            resultLayer.SetActive(false);
         }
 
         public void ShowResult(int totalScore, int reachedPhaseCount, int reachedMaxComboCount) {
@@ -41,6 +49,7 @@ namespace MemoryTranser.Scripts.Game.UI.Result {
             reachedPhaseCountText.text = $"{reachedPhaseCount}";
             reachedMaxComboCountText.text = $"{reachedMaxComboCount}";
 
+            resultAnimator.enabled = true;
             resultAnimator.Play("ResultShow");
         }
 

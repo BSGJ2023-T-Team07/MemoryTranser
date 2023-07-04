@@ -22,7 +22,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
         #region 変数の定義
 
-        public bool isOutput;
+        [HideInInspector] public bool isOutput;
 
         private BoxMemoryType _boxMemoryType = new();
         private MemoryBoxShapeType _boxShapeType = new();

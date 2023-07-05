@@ -234,6 +234,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             Cc2D.enabled = false;
             Rb2D.velocity = Vector2.zero;
             smokeParticle.Stop();
+            Trail.enabled = false;
 
             _onDisappear.OnNext(Unit.Default);
         }

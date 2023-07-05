@@ -40,7 +40,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         private float sphereBoxWeightMagnification = 1.5f;
 
         private MemoryBoxCore[] _allBoxes;
-        private Queue<MemoryBoxCore> _appliedDisappearedBoxes = new();
+        private readonly Queue<MemoryBoxCore> _appliedDisappearedBoxes = new();
         private bool[] _outputable;
 
         private float[] _initialBoxTypeProbWeights;
@@ -50,7 +50,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         #endregion
 
         private static void MakeBoxAppear(MemoryBoxCore box) {
-            if (GameFlowManager.I.CurrentGameState != GameState.Playing) {
+            if (GameFlowManager.I.CurrentGameState is GameState.Result or GameState.Finished) {
                 return;
             }
 
@@ -113,6 +113,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
                 //MemoryBoxにランダムなパラメーターを設定する
                 ApplyRandomParameterForMemoryBox(memoryBoxCore);
+                MakeBoxAppear(memoryBoxCore);
 
                 //MemoryBoxがDisappearするときのイベントに登録する
                 memoryBoxCore.OnDisappear.Subscribe(async _ => {

@@ -64,7 +64,7 @@ namespace MemoryTranser.Scripts.Game.Util {
                 BrainEventType.None => "なし",
                 BrainEventType.Blind => "ド忘れ",
                 BrainEventType.DesireOutbreak => "煩悩大量発生",
-                _ => ""
+                _ => "error"
             };
         }
 

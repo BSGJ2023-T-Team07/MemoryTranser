@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using MemoryTranser.Scripts.Game.Util;
 using TMPro;
@@ -21,7 +20,7 @@ namespace MemoryTranser.Scripts.Game.UI.Playing.Announce {
         private void FixedUpdate() {
             announceTextTransform.position += Vector3.left * announceMoveSpeed;
 
-            if (announceTextTransform.localPosition.x < -3840f) {
+            if (announceTextTransform.localPosition.x < -Constant.SCREEN_WIDTH) {
                 announceTextTransform.localPosition = Vector3.zero;
             }
         }

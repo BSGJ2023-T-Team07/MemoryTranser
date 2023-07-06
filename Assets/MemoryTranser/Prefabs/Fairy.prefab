@@ -313,46 +313,6 @@ MonoBehaviour:
       m_Calls: []
   m_ActionEvents:
   - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 2efceccb-8238-4701-b826-a09274aaf29d
-    m_ActionName: UI/Navigate[/DualShock4GamepadHID/leftStick/up,/DualShock4GamepadHID/rightStick/up,/DualShock4GamepadHID/leftStick/down,/DualShock4GamepadHID/rightStick/down,/DualShock4GamepadHID/leftStick/left,/DualShock4GamepadHID/rightStick/left,/DualShock4GamepadHID/leftStick/right,/DualShock4GamepadHID/rightStick/right,/DualShock4GamepadHID/dpad,/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 6c64275e-42f4-4c8c-8710-f891bb4e1d79
-    m_ActionName: UI/Submit[/Keyboard/enter,/DualShock4GamepadHID/buttonSouth]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 1a8976c3-b56e-4a98-a403-752ab3e9a236
-    m_ActionName: UI/Cancel[/Keyboard/escape,/DualShock4GamepadHID/buttonEast]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: c06e7a2a-f154-4f7d-94d9-4a66dd46bf7d
-    m_ActionName: UI/Point[/Mouse/position]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: afe25292-6626-4718-afd3-79112a258501
-    m_ActionName: UI/Click[/Mouse/leftButton]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: ac4cc4ba-c02b-4e26-b371-1cd0b0208808
-    m_ActionName: UI/ScrollWheel[/Mouse/scroll]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: f807172e-9b54-4e79-a0ce-8170237034cf
-    m_ActionName: UI/MiddleClick[/Mouse/middleButton]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: a646281f-4f90-4ef5-afa5-fe496c5a8147
-    m_ActionName: UI/RightClick[/Mouse/rightButton]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 25640c23-a66e-4ff9-9370-f7a6cc9f166b
-    m_ActionName: UI/TrackedDevicePosition
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 8ef7a188-f0bd-4c49-8bc5-fbac3e9cd5c9
-    m_ActionName: UI/TrackedDeviceOrientation
-  - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 9092670826081219663}
         m_TargetAssemblyTypeName: MemoryTranser.Scripts.Game.Fairy.FairyCore, Assembly-CSharp
@@ -448,6 +408,26 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: d3479e7c-6982-4c3b-8529-05d31b6faf92
     m_ActionName: Player/Blink[/Keyboard/shift,/DualShock4GamepadHID/leftTrigger]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 2148904e-2b02-4378-89cb-0e502e547956
+    m_ActionName: Player/OpenMenu[/DualShock4GamepadHID/start,/Keyboard/escape]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 44f3fe45-da10-4139-a002-aae8a12dc2fb
+    m_ActionName: UI/CloseMenu[/DualShock4GamepadHID/start,/Keyboard/escape]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 1efebdef-0f9e-4e1e-9698-d455d8b02594
+    m_ActionName: UI/Up[/DualShock4GamepadHID/dpad/up,/Keyboard/w,/Keyboard/upArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 162b08aa-559c-4441-a2d8-b218e1639b60
+    m_ActionName: UI/Down[/DualShock4GamepadHID/dpad/down,/Keyboard/s,/Keyboard/downArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: cf4d54e2-c2dd-4e1c-b911-52c36c963ad4
+    m_ActionName: UI/Decide[/DualShock4GamepadHID/buttonEast,/Keyboard/space]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -702,9 +682,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -157578469
-  m_SortingLayer: 7
-  m_SortingOrder: 0
+  m_SortingLayerID: 1167665433
+  m_SortingLayer: 9
+  m_SortingOrder: 11
   m_Sprite: {fileID: 21300000, guid: 54b81c439aca6bd42844c9ef3a4c928f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

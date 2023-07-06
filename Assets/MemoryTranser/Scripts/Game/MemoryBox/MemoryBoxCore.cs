@@ -30,7 +30,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         private float _weight;
         private int _boxId;
 
-        private float _diff;
+        private float _diffFromHolder;
         private Transform _holderTransform;
 
         #endregion
@@ -130,7 +130,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             }
 
             if (_myState == MemoryBoxState.Held) {
-                transform.position = _holderTransform.position + (Vector3)Vector2.up * _diff;
+                transform.position = _holderTransform.position + (Vector3)Vector2.up * _diffFromHolder;
             }
 
             if (_myState == MemoryBoxState.PlacedOnLevel) {
@@ -185,12 +185,12 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
         #region 受動的行動の定義
 
-        public void BeHeld(Transform holderBottomTransform) {
+        public void BeHeld(Transform holderTransform) {
             _myState = MemoryBoxState.Held;
-            _holderTransform = holderBottomTransform;
+            _holderTransform = holderTransform;
             var myTransform = transform;
-            _diff = Cc2D.radius * myTransform.localScale.y;
-            myTransform.position = _holderTransform.position + (Vector3)Vector2.up * _diff;
+            _diffFromHolder = Cc2D.radius * myTransform.localScale.y;
+            myTransform.position = _holderTransform.position + Vector3.up * _diffFromHolder;
             Rb2D.velocity = Vector2.zero;
             Cc2D.enabled = false;
             SpRr.sortingLayerID = SortingLayer.NameToID("ForeFairy");
@@ -213,6 +213,8 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         }
 
         public void BePut() {
+            transform.position = _holderTransform.position +
+                                 Vector3.down * (_holderTransform.localPosition.y / transform.localScale.y - 0.2f);
             _myState = MemoryBoxState.PlacedOnLevel;
             Cc2D.enabled = true;
             Cc2D.isTrigger = false;

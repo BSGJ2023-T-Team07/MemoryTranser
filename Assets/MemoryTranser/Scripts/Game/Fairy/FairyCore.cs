@@ -1,6 +1,7 @@
 using System;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using MemoryTranser.Scripts.Game.BrainEvent;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.MemoryBox;
 using MemoryTranser.Scripts.Game.Sound;
@@ -11,7 +12,7 @@ using UnityEngine.InputSystem;
 using Constant = MemoryTranser.Scripts.Game.Util.Constant;
 
 namespace MemoryTranser.Scripts.Game.Fairy {
-    public class FairyCore : MonoBehaviour, IOnStateChangedToInitializing, IOnStateChangedToReady,
+    public class FairyCore : MonoBehaviour, IOnGameAwake, IOnStateChangedToInitializing, IOnStateChangedToReady,
         IOnStateChangedToPlaying,
         IOnStateChangedToResult {
         #region コンポーネントの定義
@@ -22,6 +23,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         [SerializeField] private BoxCollider2D boxCollider2D;
         [SerializeField] private Transform memoryBoxHolderBottom;
         [SerializeField] private SpriteRenderer throwDirectionArrowSpRr;
+        [SerializeField] private BrainEventManager brainEventManager;
 
         #endregion
 
@@ -78,6 +80,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         private bool _isBlinking;
         private bool _applyCancelingBlink;
         private bool _isInOutputArea;
+        private bool _applyInvertingInput;
 
         private Vector2 _inputWalkDirection;
         private Vector2 _inputWalkDirectionBeforeZero;
@@ -243,6 +246,11 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
             var moveInput = context.ReadValue<Vector2>();
 
+            //もし操作逆転中なら、入力を反転させる
+            if (_applyInvertingInput) {
+                moveInput = -moveInput;
+            }
+
             if (moveInput == Vector2.zero) {
                 _inputWalkDirectionBeforeZero = _inputWalkDirection;
                 _remainingPrecedeBlinkDirectionInputSec = precedeBlinkDirectionInputSec;
@@ -257,6 +265,11 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             }
 
             var directionInput = context.ReadValue<Vector2>();
+
+            //もし操作逆転中なら、入力を反転させる
+            if (_applyInvertingInput) {
+                directionInput = -directionInput;
+            }
 
             if (_isInOutputArea) {
                 if (Vector2.Dot(directionInput, Vector2.down) > 0.6f) {
@@ -351,7 +364,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
                 return;
             }
 
-            Put();
+            Put(true);
         }
 
         public void OnBlinkInput(InputAction.CallbackContext context) {
@@ -415,14 +428,16 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             SeManager.I.Play(SEs.ThrowBox);
         }
 
-        private void Put() {
+        private void Put(bool playSE) {
             _holdingBox.BePut();
 
             Debug.Log($"IDが{_holdingBox.BoxId}の記憶を置いた");
             _holdingBox = null;
             myParameters.UpdateWalkSpeedByWeightAndCombo(0, CurrentComboCount);
 
-            SeManager.I.Play(SEs.PutBox);
+            if (playSE) {
+                SeManager.I.Play(SEs.PutBox);
+            }
         }
 
         private void Blink(Vector2 blinkDirection) {
@@ -472,6 +487,10 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         #region 受動的行動の定義
 
         public void BeAttackedByDesire() {
+            if (HasBox) {
+                Put(false);
+            }
+
             SeManager.I.Play(SEs.FairyAttackedByDesire);
             _isControllable = false;
             rb2D.velocity = Vector2.zero;
@@ -555,6 +574,13 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         }
 
         #region interfaceの実装
+
+        public void OnGameAwake() {
+            brainEventManager.OnBrainEventTransition.Subscribe(_ => { _applyInvertingInput = false; });
+            brainEventManager.OnBrainEventTransition.Where(x => x == BrainEventType.InvertControl).Subscribe(_ => {
+                _applyInvertingInput = true;
+            });
+        }
 
         public void OnStateChangedToInitializing() {
             InitializeFairy();

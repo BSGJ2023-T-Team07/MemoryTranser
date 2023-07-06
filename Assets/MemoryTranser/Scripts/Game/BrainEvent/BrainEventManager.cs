@@ -56,8 +56,6 @@ namespace MemoryTranser.Scripts.Game.BrainEvent {
                 nextBrainEvent = BrainEventType.None;
             }
 
-            nextBrainEvent = BrainEventType.DesireOutbreak;
-
             return nextBrainEvent;
         }
 

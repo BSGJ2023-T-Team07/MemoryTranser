@@ -46,6 +46,7 @@ namespace MemoryTranser.Scripts.Game.Phase {
         private List<PhaseCore> _phaseCores = new();
 
         private int _currentPhaseIndex = 0;
+        private int _currentTotalScore = 0;
         private float _phaseRemainingTime;
 
         #endregion
@@ -86,8 +87,7 @@ namespace MemoryTranser.Scripts.Game.Phase {
         }
 
         public void OnStateChangedToReady() {
-            UpdatePhaseText();
-            ResetRemainingTime();
+            ResetPhaseRemainingTime();
         }
 
         #endregion
@@ -145,14 +145,6 @@ namespace MemoryTranser.Scripts.Game.Phase {
             return (score, trueCount, falseCount);
         }
 
-        /// <summary>
-        /// UIにフェイズの情報を反映させる
-        /// </summary>
-        public void UpdatePhaseText() {
-            scoreShower.SetScoreText(GetCurrentScore());
-            questTypeShower.SetQuestTypeText(GetCurrentQuestType());
-        }
-
         public (int, int) GetResultInformation() {
             var totalScore = _phaseCores.Sum(phase => phase.Score);
             var reachedPhaseCount = _currentPhaseIndex + 1;
@@ -194,13 +186,15 @@ namespace MemoryTranser.Scripts.Game.Phase {
             memoryBoxManager.GenerateMemoryBoxes();
         }
 
-        private void ResetRemainingTime() {
+        private void ResetPhaseRemainingTime() {
             _phaseRemainingTime = phaseDuration;
         }
 
         private int AddScore(int phaseIndex, int score) {
             var phaseCore = _phaseCores[phaseIndex];
             phaseCore.Score += score;
+            _currentTotalScore += score;
+            UpdateScoreText();
             return phaseCore.Score;
         }
 
@@ -210,6 +204,14 @@ namespace MemoryTranser.Scripts.Game.Phase {
 
         private int GetCurrentScore() {
             return GetScore(_currentPhaseIndex);
+        }
+
+        private void UpdateScoreText() {
+            scoreShower.SetScoreText(_currentTotalScore);
+        }
+
+        private void UpdateQuestTypeText() {
+            questTypeShower.SetQuestTypeText(GetCurrentQuestType());
         }
 
         /// <summary>
@@ -230,6 +232,9 @@ namespace MemoryTranser.Scripts.Game.Phase {
 
             //MemoryBoxの生成確率を更新
             SetBoxTypeProbWeights();
+
+            //クエストのUIを更新
+            UpdateQuestTypeText();
 
             //GameStateをReadyに変更
             GameFlowManager.I.ChangeGameState(GameState.Ready);

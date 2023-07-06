@@ -76,7 +76,6 @@ namespace MemoryTranser.Scripts.Game.Output {
 
             //点数の情報を元にスコア加算
             phaseManager.AddCurrentScore(score);
-            phaseManager.UpdatePhaseText();
 
             //点数の情報を元にコンボ加算
             if (falseCount > 0) {

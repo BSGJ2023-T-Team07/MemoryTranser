@@ -15,7 +15,6 @@ namespace MemoryTranser.Scripts.Game.Phase {
         [SerializeField] private QuestTypeShower questTypeShower;
         [SerializeField] private QuestTypeShower prefabQuestTypeShower;
         [SerializeField] private Canvas uiCanvas;
-        [SerializeField] private PhaseGimmickTypeShower phaseGimmickTypeShower;
         [SerializeField] private ScoreShower scoreShower;
         [SerializeField] private MemoryBoxManager memoryBoxManager;
 
@@ -252,7 +251,7 @@ namespace MemoryTranser.Scripts.Game.Phase {
         }
 
         private void UpdateQuestTypeText() {
-            questTypeShower.SetQuestTypeText(GetCurrentQuestType());
+            // questTypeShower.SetQuestTypeText(GetCurrentQuestType());
         }
         
         /// <summary>
@@ -404,11 +403,6 @@ namespace MemoryTranser.Scripts.Game.Phase {
                     questTextChoosed = musicTxts[Random.Range(0, musicTxts.Count - 1)];
                     questTextChoosedPainted =
                         $"{questTextChoosed.startTxt}<color=#{musicColor}>{questTextChoosed.mainTxt}</color>{questTextChoosed.finalTxt}";
-                    break;
-                case BoxMemoryType.Habit:
-                    questTextChoosed = hobbyTxts[Random.Range(0, hobbyTxts.Count - 1)];
-                    questTextChoosedPainted =
-                        $"{questTextChoosed.startTxt}<color=#{hobbyColor}>{questTextChoosed.mainTxt}</color>{questTextChoosed.finalTxt}";
                     break;
                 case BoxMemoryType.Life:
                     questTextChoosed = lifeTxts[Random.Range(0, lifeTxts.Count - 1)];

@@ -53,14 +53,12 @@ namespace MemoryTranser.Scripts.Game.Desire {
         private Queue<DesireCore> _desireCorePoolOnDesireOutbreak = new();
         private Renderer[] _spawnPointRenderers;
 
-        //これ単体でいじることは無い。常に_desirePoolと付随していじる
-        private List<DesireCore> _existingDesireCores = new();
-
         #region eventの定義
 
         //これ単体でいじることは無い。常に_desirePoolと付随していじる
-        private readonly ReactiveProperty<int> _existingDesireCount = new(0);
-        public IReadOnlyReactiveProperty<int> ExistingDesireCount => _existingDesireCount;
+        private readonly ReactiveCollection<DesireCore> _existingDesireCores = new();
+
+        public IReadOnlyReactiveCollection<DesireCore> ExistingDesireCores => _existingDesireCores;
 
         #endregion
 
@@ -87,7 +85,7 @@ namespace MemoryTranser.Scripts.Game.Desire {
 
                 while (true) {
                     await UniTask.Delay(TimeSpan.FromSeconds(spawnIntervalSec));
-                    if (_existingDesireCount.Value > maxDefaultSpawnCount) {
+                    if (_existingDesireCores.Count > maxDefaultSpawnCount) {
                         continue;
                     }
 
@@ -109,7 +107,7 @@ namespace MemoryTranser.Scripts.Game.Desire {
                 if (!isResult) {
                     ApplyRandomParametersForDesire(desireCore);
 
-                    if (_existingDesireCount.Value > 0) {
+                    if (_existingDesireCores.Count > 0) {
                         //もしステージ上に既にDesireが居たら、しばらく待つ
                         await UniTask.Delay(TimeSpan.FromSeconds(delaySecWhenDesireExist));
                     }
@@ -222,7 +220,6 @@ namespace MemoryTranser.Scripts.Game.Desire {
         private void SpawnDesire(Vector3 spawnPos) {
             var desireCore = _desireCorePool.Dequeue();
             _existingDesireCores.Add(desireCore);
-            _existingDesireCount.Value++;
             desireInformationShower.SetDesireInformationText(_existingDesireCores.ToArray());
 
             desireCore.Appear(spawnPos);
@@ -240,7 +237,6 @@ namespace MemoryTranser.Scripts.Game.Desire {
         private void CollectDefaultDesire(DesireCore desireCore) {
             _desireCorePool.Enqueue(desireCore);
             _existingDesireCores.Remove(desireCore);
-            _existingDesireCount.Value--;
             desireInformationShower.SetDesireInformationText(_existingDesireCores.ToArray());
         }
 
@@ -299,8 +295,6 @@ namespace MemoryTranser.Scripts.Game.Desire {
             for (var i = 0; i < canSpawnFlags.Length; i++) {
                 canSpawnFlags[i] = false;
             }
-
-            _existingDesireCount.Dispose();
         }
 
         public void OnStateChangedToFinished() {
@@ -315,7 +309,7 @@ namespace MemoryTranser.Scripts.Game.Desire {
                 Destroy(desire);
             }
 
-            _existingDesireCores = null;
+            _existingDesireCores.Dispose();
 
             foreach (var desire in _desireCorePoolOnDesireOutbreak) {
                 Destroy(desire);

@@ -81,7 +81,6 @@ namespace MemoryTranser.Scripts.Game.Desire {
 
         private void FixedUpdate() {
             if (!FollowFlag) {
-                Debug.Log("妖精を追いかけないよ");
                 return;
             }
 

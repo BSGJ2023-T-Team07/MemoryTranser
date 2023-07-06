@@ -11,7 +11,7 @@ using Random = UnityEngine.Random;
 using UniRx;
 
 namespace MemoryTranser.Scripts.Game.MemoryBox {
-    public class MemoryBoxManager : MonoBehaviour, IOnGameAwake {
+    public class MemoryBoxManager : MonoBehaviour, IOnGameAwake, IOnStateChangedToFinished {
         #region ゲームオブジェクトの定義
 
         [SerializeField] private GameObject memoryBoxPrefab;
@@ -25,22 +25,22 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         #region 変数の定義
 
         [Header("MemoryBoxの最大生成数")] [SerializeField]
-        private int maxBoxGenerateCount = 20;
+        private int maxBoxGenerateCount;
 
         [Header("MemoryBoxの重さの最大値")] [SerializeField]
-        private float maxWeight = 2f;
+        private float maxWeight;
 
         [Header("MemoryBoxの重さの最小値")] [SerializeField]
-        private float minWeight = 0.8f;
+        private float minWeight;
 
         [Header("MemoryBoxが消えてから再生成されるまでの時間(秒)")] [SerializeField]
-        private float generateIntervalSec = 3f;
+        private float generateIntervalSec;
 
         [Header("SphereBoxの重さの倍率")] [SerializeField]
-        private float sphereBoxWeightMagnification = 1.5f;
+        private float sphereBoxWeightMagnification;
 
         private MemoryBoxCore[] _allBoxes;
-        private readonly Queue<MemoryBoxCore> _appliedDisappearedBoxes = new();
+        private Queue<MemoryBoxCore> _appliedDisappearedBoxes;
         private bool[] _outputable;
 
         private float[] _initialBoxTypeProbWeights;
@@ -83,8 +83,8 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
             //決定したパラメーターから他の値に反映させる
             memoryBoxCore.SpRr.sprite = randomBoxType.ToMemoryBoxSprite(randomBoxShape);
-            memoryBoxCore.Trail.widthMultiplier *= randomWeight;
-            memoryBoxCore.Trail.time *= randomWeight;
+            memoryBoxCore.Trail.widthMultiplier = randomWeight;
+            memoryBoxCore.Trail.time = randomWeight;
             memoryBoxCore.transform.localScale = Vector3.one * memoryBoxCore.Weight / 1.2f;
             memoryBoxCore.gameObject.layer = LayerMask.NameToLayer($"{randomBoxShape.ToString()}MemoryBox");
 
@@ -125,7 +125,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
                     memoryBoxCore.transform.position = GetRandomSpawnPosition();
 
                     //もしDesireが存在しないなら、MemoryBoxをAppearさせる
-                    if (desireManager.ExistingDesireCount.Value == 0) {
+                    if (desireManager.ExistingDesireCores.Count == 0) {
                         MakeBoxAppear(memoryBoxCore);
                         if (brainEventManager.OnBrainEventTransition.Value == BrainEventType.Blind) {
                             memoryBoxCore.SmokeParticle.Play();
@@ -205,10 +205,11 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             spawnArea.GetComponent<SpriteRenderer>().enabled = false;
 
             _outputable = new bool[maxBoxGenerateCount];
+            _appliedDisappearedBoxes = new Queue<MemoryBoxCore>();
             InitializeBoxTypeProbWeights();
 
             //ステージ上のDesireの数が0になったら消えていたMemoryBoxをAppearさせる、というeventを購読する
-            desireManager.ExistingDesireCount.Where(x => x == 0).Subscribe(_ => {
+            desireManager.ExistingDesireCores.ObserveCountChanged().Where(x => x == 0).Subscribe(_ => {
                 for (var i = 0; i < _appliedDisappearedBoxes.Count; i++) {
                     var box = _appliedDisappearedBoxes.Dequeue();
                     MakeBoxAppear(box);
@@ -218,6 +219,8 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
                 }
             });
         }
+
+        public void OnStateChangedToFinished() { }
 
         #endregion
     }

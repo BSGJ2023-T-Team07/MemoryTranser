@@ -386,7 +386,7 @@
                     "name": "Up",
                     "type": "PassThrough",
                     "id": "1efebdef-0f9e-4e1e-9698-d455d8b02594",
-                    "expectedControlType": "Axis",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -395,7 +395,7 @@
                     "name": "Down",
                     "type": "PassThrough",
                     "id": "162b08aa-559c-4441-a2d8-b218e1639b60",
-                    "expectedControlType": "Axis",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -446,11 +446,22 @@
                 },
                 {
                     "name": "",
-                    "id": "9053fe1b-fb23-41e7-b339-6e62c0a0b9bb",
-                    "path": "<Mouse>/scroll/y",
+                    "id": "fad7c755-0d05-4817-aad6-92a938632f03",
+                    "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Up",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "03dd8fed-80f0-41c1-8993-db66f011eb03",
+                    "path": "<Keyboard>/upArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
                     "action": "Up",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -468,11 +479,22 @@
                 },
                 {
                     "name": "",
-                    "id": "993f6637-ae6c-435d-86e6-2e69c6c27771",
-                    "path": "<Mouse>/scroll/y",
+                    "id": "5e0c8d70-7dd5-4b2f-a92b-e69836796309",
+                    "path": "<Keyboard>/s",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Down",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "92a97d0d-00f9-4056-a32d-5304cad77ff6",
+                    "path": "<Keyboard>/downArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
                     "action": "Down",
                     "isComposite": false,
                     "isPartOfComposite": false

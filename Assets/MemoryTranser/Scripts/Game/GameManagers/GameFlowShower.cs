@@ -25,7 +25,7 @@ namespace MemoryTranser.Scripts.Game.GameManagers {
             _countdownSequence = DOTween.Sequence();
 
             _countdownSequence.Append(DOVirtual.Int(COUNTDOWN_SEC, 0, COUNTDOWN_SEC,
-                    i => { countDownText.text = i == 0 ? "START!" : i.ToString(); }).OnStart(() => {
+                    i => { countDownText.text = i == 0 ? "  テスト開始！" : i.ToString(); }).OnStart(() => {
                     countDownLayer.SetActive(true);
                 })
                 .OnComplete(() => {

@@ -11,7 +11,7 @@ using UnityEngine.InputSystem;
 using Constant = MemoryTranser.Scripts.Game.Util.Constant;
 
 namespace MemoryTranser.Scripts.Game.Fairy {
-    public class FairyCore : MonoBehaviour, IOnGameAwake, IOnStateChangedToInitializing, IOnStateChangedToReady,
+    public class FairyCore : MonoBehaviour, IOnStateChangedToInitializing, IOnStateChangedToReady,
         IOnStateChangedToPlaying,
         IOnStateChangedToResult {
         #region コンポーネントの定義
@@ -145,6 +145,10 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         #endregion
 
         #region Unityから呼ばれる
+
+        private void Awake() {
+            throwDirectionArrowSpRr.enabled = false;
+        }
 
         private void Update() {
             AnimationChange();
@@ -551,10 +555,6 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         }
 
         #region interfaceの実装
-
-        public void OnGameAwake() {
-            throwDirectionArrowSpRr.enabled = false;
-        }
 
         public void OnStateChangedToInitializing() {
             InitializeFairy();

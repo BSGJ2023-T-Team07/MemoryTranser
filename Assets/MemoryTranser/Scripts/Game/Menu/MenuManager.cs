@@ -145,7 +145,6 @@ namespace MemoryTranser.Scripts.Game.UI {
                     CloseMenu();
                     break;
                 case MenuSelection.BackToTitle:
-                    GameFlowManager.I.ChangeGameState(GameState.Result);
                     SceneManager.LoadScene("MemoryTranser/Scenes/TitleScene");
                     break;
                 default:

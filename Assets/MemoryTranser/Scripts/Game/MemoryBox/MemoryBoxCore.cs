@@ -9,7 +9,7 @@ using Unit = UniRx.Unit;
 namespace MemoryTranser.Scripts.Game.MemoryBox {
     [RequireComponent(typeof(SpriteRenderer))]
     [RequireComponent(typeof(Rigidbody2D))]
-    public class MemoryBoxCore : MonoBehaviour, IOnStateChangedToResult {
+    public class MemoryBoxCore : MonoBehaviour, IOnStateChangedToFinished {
         #region コンポーネントの定義
 
         [SerializeField] private SpriteRenderer spriteRenderer;
@@ -243,7 +243,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
         #region interfaceの実装
 
-        public void OnStateChangedToResult() {
+        public void OnStateChangedToFinished() {
             _onDisappear.OnCompleted();
             _onDisappear.Dispose();
         }

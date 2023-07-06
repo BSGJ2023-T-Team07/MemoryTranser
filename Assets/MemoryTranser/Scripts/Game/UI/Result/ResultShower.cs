@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.Sound;
 using MemoryTranser.Scripts.Game.Util;
@@ -12,6 +13,7 @@ namespace MemoryTranser.Scripts.Game.UI.Result {
         [SerializeField] private TextMeshProUGUI totalScoreText;
         [SerializeField] private TextMeshProUGUI reachedPhaseCountText;
         [SerializeField] private TextMeshProUGUI reachedMaxComboCountText;
+        [SerializeField] private TextMeshProUGUI backToTitleText;
 
         [SerializeField] private GameObject pauseBackGround;
         [SerializeField] private GameObject resultLayer;
@@ -36,6 +38,7 @@ namespace MemoryTranser.Scripts.Game.UI.Result {
             totalScoreText.gameObject.SetActive(false);
             reachedPhaseCountText.gameObject.SetActive(false);
             reachedMaxComboCountText.gameObject.SetActive(false);
+            backToTitleText.gameObject.SetActive(false);
 
             resultLayer.SetActive(false);
         }
@@ -67,6 +70,11 @@ namespace MemoryTranser.Scripts.Game.UI.Result {
             totalScoreText.gameObject.SetActive(true);
             resultPaperStamp.SetActive(true);
             SeManager.I.Play(SEs.ResultShow2);
+        }
+
+        private void ShowBackToTitleText() {
+            backToTitleText.gameObject.SetActive(true);
+            backToTitleText.DOFade(0.1f, 1f).SetLoops(-1, LoopType.Yoyo);
         }
     }
 }

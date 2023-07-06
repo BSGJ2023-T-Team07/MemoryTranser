@@ -32,8 +32,6 @@ namespace MemoryTranser.Scripts.Game.Desire {
         private DesireType _myType;
         private Vector3 _followPos;
 
-        private bool _followFlag;
-
         #endregion
 
         #region eventの定義
@@ -75,18 +73,23 @@ namespace MemoryTranser.Scripts.Game.Desire {
             set => _myType = value;
         }
 
+        public bool FollowFlag { get; set; }
+
         #endregion
 
         #region Unityから呼ばれる
 
         private void FixedUpdate() {
-            if (_followFlag) {
-                //DesireとFairyの距離を算出する
-                Vector2 direction = (targetTransform.position - transform.position).normalized;
-
-                //移動処理
-                Rb2D.velocity = direction * myParameters.FollowSpeed;
+            if (!FollowFlag) {
+                Debug.Log("妖精を追いかけないよ");
+                return;
             }
+
+            //DesireとFairyの距離を算出する
+            Vector2 direction = (targetTransform.position - transform.position).normalized;
+
+            //移動処理
+            Rb2D.velocity = direction * myParameters.FollowSpeed;
         }
 
         private void OnTriggerEnter2D(Collider2D other) {
@@ -129,8 +132,8 @@ namespace MemoryTranser.Scripts.Game.Desire {
         #region interfaceの実装
 
         public void OnStateChangedToResult() {
-            _followFlag = false;
             Rb2D.velocity = Vector2.zero;
+            FollowFlag = false;
 
             _onBeAttacked.OnCompleted();
             _onDisappear.OnCompleted();
@@ -145,7 +148,7 @@ namespace MemoryTranser.Scripts.Game.Desire {
             gameObject.SetActive(true);
             transform.position = spawnPos;
             _myState = DesireState.FollowingFairy;
-            _followFlag = true;
+            FollowFlag = true;
         }
 
         public void Disappear() {

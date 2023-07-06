@@ -85,6 +85,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         private Vector2 _blinkDirection;
 
         private float _remainingPrecedeBlinkDirectionInputSec;
+        private float _remainingStunDurationSec;
         private float _nowInputSecToOutput;
 
         #endregion
@@ -149,6 +150,20 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             AnimationChange();
 
             UpdateFairyState();
+
+            #region 煩悩によるスタンの処理
+
+            if (_remainingStunDurationSec > 0) {
+                _remainingStunDurationSec -= Time.deltaTime;
+
+                if (_remainingStunDurationSec < 0) {
+                    _remainingStunDurationSec = -1;
+                    _isControllable = true;
+                    _myState = HasBox ? FairyState.IdlingWithBox : FairyState.IdlingWithoutBox;
+                }
+            }
+
+            #endregion
 
             #region 先行入力の判定
 
@@ -452,7 +467,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         #region 受動的行動の定義
 
-        public async void BeAttackedByDesire() {
+        public void BeAttackedByDesire() {
             SeManager.I.Play(SEs.FairyAttackedByDesire);
             _isControllable = false;
             rb2D.velocity = Vector2.zero;
@@ -463,10 +478,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             TakahideShower.I.ChangeTakahideImage(TakahideState.Sad);
 
             //Desireに当たると3秒停止
-            await UniTask.Delay(TimeSpan.FromSeconds(stunDurationSec));
-
-            _isControllable = true;
-            _myState = HasBox ? FairyState.IdlingWithBox : FairyState.IdlingWithoutBox;
+            _remainingStunDurationSec = stunDurationSec;
         }
 
         #endregion

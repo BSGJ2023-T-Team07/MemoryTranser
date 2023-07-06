@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &314838228075117163
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1150344982301594002}
+  m_Layer: 7
+  m_Name: CameraTarget
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1150344982301594002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 314838228075117163}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 3.51, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8034795763478837179}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &683071317130399434
 GameObject:
   m_ObjectHideFlags: 0
@@ -24,7 +55,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 683071317130399434}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.12, z: 0}
+  m_LocalPosition: {x: 0, y: 1.05, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -68,6 +99,8 @@ Transform:
   - {fileID: 2826913958173845447}
   - {fileID: 6067831249057918093}
   - {fileID: 1085378162422806380}
+  - {fileID: 1150344982301594002}
+  - {fileID: 5434448070040561178}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -160,7 +193,7 @@ Animator:
   m_GameObject: {fileID: 3476403440198354191}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b29b0cd3e30e7114b84a60674de6757d, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -203,7 +236,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.041249037, y: -0.6758191}
+  m_Offset: {x: -0.08582726, y: -0.6758191}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -214,7 +247,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.90294075, y: 1.3972198}
+  m_Size: {x: 0.5908931, y: 1.3972198}
   m_EdgeRadius: 0
 --- !u!114 &9092670826081219663
 MonoBehaviour:
@@ -230,24 +263,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb2D: {fileID: 8220344965258797477}
   animator: {fileID: 3581967026774715049}
+  spRr: {fileID: 958714052861761041}
   boxCollider2D: {fileID: 4914608097843609349}
   memoryBoxHolderBottom: {fileID: 1085378162422806380}
   throwDirectionArrowSpRr: {fileID: 136847129894747462}
-  desireManager: {fileID: 0}
   myParameters:
     maxWalkSpeed: 30
     minWalkSpeed: 0
-    initialWalkSpeed: 8
+    initialWalkSpeed: 10
     maxThrowPower: 10
     minThrowPower: 0
     initialThrowPower: 10
-  selectDirectionArrowThreshold: 0.1
-  holdableDistance: 4
+  stunDurationSec: 3
+  selectDirectionArrowThreshold: 0.12
+  holdableDistance: 2.5
+  additionalBlinkTicketOnDefeatDesire: 1
   blinkTicketCount: 0
-  blinkDistance: 0.7
+  maxBlinkTicketCount: 10
+  blinkDistance: 8
   blinkDurationSec: 0.5
   reControllableSecAfterBlink: 0.1
-  blinkRecoverSec: 0.3
+  blinkRecoverSec: 0.2
+  pushBoxPowerMultiplier: 4
+  precedeBlinkDirectionInputSec: 0.3
+  necessaryInputSecToOutput: 0.6
 --- !u!114 &8073110865618226502
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -273,46 +312,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_ActionEvents:
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 2efceccb-8238-4701-b826-a09274aaf29d
-    m_ActionName: UI/Navigate[/DualShock4GamepadHID/leftStick/up,/DualShock4GamepadHID/rightStick/up,/DualShock4GamepadHID/leftStick/down,/DualShock4GamepadHID/rightStick/down,/DualShock4GamepadHID/leftStick/left,/DualShock4GamepadHID/rightStick/left,/DualShock4GamepadHID/leftStick/right,/DualShock4GamepadHID/rightStick/right,/DualShock4GamepadHID/dpad,/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 6c64275e-42f4-4c8c-8710-f891bb4e1d79
-    m_ActionName: UI/Submit[/Keyboard/enter,/DualShock4GamepadHID/buttonSouth]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 1a8976c3-b56e-4a98-a403-752ab3e9a236
-    m_ActionName: UI/Cancel[/Keyboard/escape,/DualShock4GamepadHID/buttonEast]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: c06e7a2a-f154-4f7d-94d9-4a66dd46bf7d
-    m_ActionName: UI/Point[/Mouse/position]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: afe25292-6626-4718-afd3-79112a258501
-    m_ActionName: UI/Click[/Mouse/leftButton]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: ac4cc4ba-c02b-4e26-b371-1cd0b0208808
-    m_ActionName: UI/ScrollWheel[/Mouse/scroll]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: f807172e-9b54-4e79-a0ce-8170237034cf
-    m_ActionName: UI/MiddleClick[/Mouse/middleButton]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: a646281f-4f90-4ef5-afa5-fe496c5a8147
-    m_ActionName: UI/RightClick[/Mouse/rightButton]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 25640c23-a66e-4ff9-9370-f7a6cc9f166b
-    m_ActionName: UI/TrackedDevicePosition
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 8ef7a188-f0bd-4c49-8bc5-fbac3e9cd5c9
-    m_ActionName: UI/TrackedDeviceOrientation
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 9092670826081219663}
@@ -409,6 +408,26 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: d3479e7c-6982-4c3b-8529-05d31b6faf92
     m_ActionName: Player/Blink[/Keyboard/shift,/DualShock4GamepadHID/leftTrigger]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 2148904e-2b02-4378-89cb-0e502e547956
+    m_ActionName: Player/OpenMenu[/DualShock4GamepadHID/start,/Keyboard/escape]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 44f3fe45-da10-4139-a002-aae8a12dc2fb
+    m_ActionName: UI/CloseMenu[/DualShock4GamepadHID/start,/Keyboard/escape]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 1efebdef-0f9e-4e1e-9698-d455d8b02594
+    m_ActionName: UI/Up[/DualShock4GamepadHID/dpad/up,/Keyboard/w,/Keyboard/upArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 162b08aa-559c-4441-a2d8-b218e1639b60
+    m_ActionName: UI/Down[/DualShock4GamepadHID/dpad/down,/Keyboard/s,/Keyboard/downArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: cf4d54e2-c2dd-4e1c-b911-52c36c963ad4
+    m_ActionName: UI/Decide[/DualShock4GamepadHID/buttonEast,/Keyboard/space]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -425,7 +444,7 @@ GameObject:
   - component: {fileID: 2826913958173845447}
   - component: {fileID: 2838558495295697588}
   m_Layer: 11
-  m_Name: NotTriggerCollider
+  m_Name: FairyNotTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -491,6 +510,108 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.31950837, y: 1.3664184}
   m_EdgeRadius: 0
+--- !u!1 &5907255778789631574
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5434448070040561178}
+  - component: {fileID: 765878070938597016}
+  - component: {fileID: 2610837682918280801}
+  - component: {fileID: 4445592617158140278}
+  m_Layer: 7
+  m_Name: Canvas
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &5434448070040561178
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5907255778789631574}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8034795763478837179}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 2.76, y: 1.97}
+  m_SizeDelta: {x: 5, y: 2.5}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!223 &765878070938597016
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5907255778789631574}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: -863352599
+  m_SortingOrder: 1
+  m_TargetDisplay: 0
+--- !u!114 &2610837682918280801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5907255778789631574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UiScaleMode: 0
+  m_ReferencePixelsPerUnit: 100
+  m_ScaleFactor: 1
+  m_ReferenceResolution: {x: 800, y: 600}
+  m_ScreenMatchMode: 0
+  m_MatchWidthOrHeight: 0
+  m_PhysicalUnit: 3
+  m_FallbackScreenDPI: 96
+  m_DefaultSpriteDPI: 96
+  m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 1
+--- !u!114 &4445592617158140278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5907255778789631574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &8252800333479703133
 GameObject:
   m_ObjectHideFlags: 0
@@ -561,9 +682,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -157578469
-  m_SortingLayer: 7
-  m_SortingOrder: 0
+  m_SortingLayerID: 1167665433
+  m_SortingLayer: 9
+  m_SortingOrder: 11
   m_Sprite: {fileID: 21300000, guid: 54b81c439aca6bd42844c9ef3a4c928f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

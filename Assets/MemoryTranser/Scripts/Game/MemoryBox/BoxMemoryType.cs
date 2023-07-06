@@ -1,6 +1,6 @@
 namespace MemoryTranser.Scripts.Game.MemoryBox {
     public enum BoxMemoryType {
-        None = 0,
+        None = -1,
         Math,
         Japanese,
         English,
@@ -9,12 +9,11 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         Trivia,
         Moral,
         Music,
-        Habit,
+
+        // Habit,
         Life,
-        
+
         //要素の数を取得するためのもの
         Count
     }
-    
-    
 }

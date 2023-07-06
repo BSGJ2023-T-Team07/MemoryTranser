@@ -1,14 +1,21 @@
 using System;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using MemoryTranser.Scripts.Game.Util;
+using TMPro;
+using UnityEngine;
 using Debug = UnityEngine.Debug;
 
 namespace MemoryTranser.Scripts.Game.GameManagers {
     public class GameFlowManager : SingletonMonoBehaviour<GameFlowManager> {
         protected override bool DontDestroy => false;
 
+        [SerializeField] private GameFlowShower gameFlowShower;
+
         #region interfaceのインスタンス配列の定義
 
+        private IOnGameAwake[] _onGameAwakes;
+        private IOnGameStart[] _onGameStarts;
         private IOnStateChangedToInitializing[] _onStateChangedToInitializings;
         private IOnStateChangedToReady[] _onStateChangedToReadys;
         private IOnStateChangedToPlaying[] _onStateChangedToPlayings;
@@ -21,6 +28,8 @@ namespace MemoryTranser.Scripts.Game.GameManagers {
 
         protected override void Awake() {
             base.Awake();
+            _onGameAwakes = GameObjectExtensions.FindObjectsByInterface<IOnGameAwake>();
+            _onGameStarts = GameObjectExtensions.FindObjectsByInterface<IOnGameStart>();
             _onStateChangedToInitializings =
                 GameObjectExtensions.FindObjectsByInterface<IOnStateChangedToInitializing>();
             _onStateChangedToReadys =
@@ -34,13 +43,14 @@ namespace MemoryTranser.Scripts.Game.GameManagers {
         }
 
         private void Start() {
-            ChangeGameState(GameState.Initializing);
+            gameFlowShower.CountdownSequence.OnComplete(() => { ChangeGameState(GameState.Initializing); });
+            gameFlowShower.CountdownSequence.Play();
         }
 
         #endregion
 
         private GameState _gameState = GameState.Initializing;
-        public GameState NowGameState => _gameState;
+        public GameState CurrentGameState => _gameState;
 
 
         public void ChangeGameState(GameState state) {
@@ -68,22 +78,26 @@ namespace MemoryTranser.Scripts.Game.GameManagers {
             }
         }
 
-        private async void OnStateInitializing() {
+        private void OnStateInitializing() {
+            foreach (var onGameAwake in _onGameAwakes) {
+                onGameAwake.OnGameAwake();
+            }
+
+            foreach (var onGameStart in _onGameStarts) {
+                onGameStart.OnGameStart();
+            }
+
             foreach (var onStateChangedToInitializing in _onStateChangedToInitializings) {
                 onStateChangedToInitializing.OnStateChangedToInitializing();
             }
 
-            await UniTask.Delay(TimeSpan.FromTicks(1));
-
             ChangeGameState(GameState.Ready);
         }
 
-        private async void OnStateReady() {
+        private void OnStateReady() {
             foreach (var onStateChangedToReady in _onStateChangedToReadys) {
                 onStateChangedToReady.OnStateChangedToReady();
             }
-
-            await UniTask.Delay(TimeSpan.FromSeconds(1f));
 
             ChangeGameState(GameState.Playing);
         }

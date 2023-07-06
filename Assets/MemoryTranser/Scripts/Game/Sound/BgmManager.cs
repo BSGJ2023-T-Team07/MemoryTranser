@@ -3,8 +3,6 @@ using Cysharp.Threading.Tasks;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.Util;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 
 namespace MemoryTranser.Scripts.Game.Sound {
     public class BgmManager : SingletonMonoBehaviour<BgmManager>, IOnStateChangedToInitializing {
@@ -21,6 +19,14 @@ namespace MemoryTranser.Scripts.Game.Sound {
         #endregion
 
         #region Unityから呼ばれる
+
+        protected override void Awake() {
+            base.Awake();
+
+            bgmIntroSource.clip = bgmIntro;
+            bgmMainSource.clip = bgmMain;
+        }
+
 
         private void Start() {
             DontDestroyOnLoad(gameObject);
@@ -49,9 +55,24 @@ namespace MemoryTranser.Scripts.Game.Sound {
             bgmMainSource.Play();
         }
 
+        public void PausePlayingBgm() {
+            bgmIntroSource.Pause();
+            bgmMainSource.Pause();
+        }
+
+        public void UnPausePlayingBgm() {
+            bgmIntroSource.UnPause();
+            bgmMainSource.UnPause();
+        }
+
         public void SetBgmVolume(float volume) {
             bgmIntroSource.volume = volume;
             bgmMainSource.volume = volume;
+        }
+
+        public void SetBgmPitch(float pitch) {
+            bgmIntroSource.pitch = pitch;
+            bgmMainSource.pitch = pitch;
         }
     }
 }

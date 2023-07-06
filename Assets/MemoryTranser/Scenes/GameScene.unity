@@ -3452,6 +3452,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentTakahideImage: {fileID: 1409585444}
+  changeDuration: 2
 --- !u!1 &1410846938
 GameObject:
   m_ObjectHideFlags: 0

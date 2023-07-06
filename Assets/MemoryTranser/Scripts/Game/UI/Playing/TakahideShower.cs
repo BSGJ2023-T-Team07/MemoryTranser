@@ -10,16 +10,28 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
 
         [SerializeField] private Image currentTakahideImage;
 
+        [Header("表情変化が継続する時間(秒)")] [SerializeField]
+        private float changeDuration;
+
+        private float _remainingChangeDuration;
+
         protected override void Awake() {
             base.Awake();
         }
 
-        public async void ChangeTakahideImage(TakahideState takahideState) {
+        private void Update() {
+            if (_remainingChangeDuration > 0) {
+                _remainingChangeDuration -= Time.deltaTime;
+
+                if (_remainingChangeDuration < 0) {
+                    currentTakahideImage.sprite = TakahideState.Thinking.ToTakahideSprite();
+                }
+            }
+        }
+
+        public void ChangeTakahideImage(TakahideState takahideState) {
             currentTakahideImage.sprite = takahideState.ToTakahideSprite();
-
-            await UniTask.Delay(TimeSpan.FromSeconds(2));
-
-            currentTakahideImage.sprite = TakahideState.Thinking.ToTakahideSprite();
+            _remainingChangeDuration = changeDuration;
         }
     }
 

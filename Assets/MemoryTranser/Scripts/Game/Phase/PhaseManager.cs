@@ -1,16 +1,18 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.MemoryBox;
 using MemoryTranser.Scripts.Game.UI.Playing;
 using UniRx;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
-namespace MemoryTranser.Scripts.Game.Phase
-{
-    public class PhaseManager : MonoBehaviour, IOnStateChangedToInitializing, IOnStateChangedToReady
-    {
+namespace MemoryTranser.Scripts.Game.Phase {
+    public class PhaseManager : MonoBehaviour, IOnGameAwake, IOnStateChangedToInitializing, IOnStateChangedToReady {
         #region コンポーネントの定義
 
+        [SerializeField] private QuestTypeShower questTypeShower;
         [SerializeField] private QuestTypeShower prefabQuestTypeShower;
         [SerializeField] private Canvas uiCanvas;
         [SerializeField] private PhaseGimmickTypeShower phaseGimmickTypeShower;
@@ -21,27 +23,36 @@ namespace MemoryTranser.Scripts.Game.Phase
 
         #region 変数の定義
 
-        [Header("1つのフェイズの長さ")] public float phaseDuration = 30f;
+        [Header("1つのフェイズの長さ")] public float phaseDuration;
 
         [Header("Desireを倒したときに加算される点数")] [SerializeField]
         private int additionalScoreOnDefeatDesire;
 
+        [Header("四角いMemoryBoxを納品したときの基礎点数")] [SerializeField]
+        private int cubeBoxBasicScore;
+
+        [Header("丸いMemoryBoxを納品したときの基礎点数")] [SerializeField]
+        private int sphereBoxBasicScore;
+
         [Header("最初に生成されるフェイスの数")] [SerializeField]
-        private int initialPhaseCount = 20;
+        private int initialPhaseCount;
 
         [Header("UIで見ることのできるフェイズの数")] [SerializeField]
-        private int viewablePhaseCount = 3;
+        private int viewablePhaseCount;
 
         [Header("MemoryBoxの発生確率に関わるフェイズの数")] [SerializeField]
-        private int memoryBoxProbabilityPhaseCount = 5;
+        private int boxTypeWeightRange;
 
         [Header("値が大きいほど直近のフェイズに対応するMemoryBoxが増える")] [SerializeField]
-        private int memoryBoxProbabilityWeight = 5;
+        private float boxTypeProbWeightMultiplier;
 
         private List<PhaseCore> _phaseCores = new();
 
         private int _currentPhaseIndex = 0;
+        private int _currentTotalScore = 0;
         private float _phaseRemainingTime;
+        
+        private int phaseCount = 0;
 
         [Header("QuestTypeShowerの数")] [SerializeField]
         private int numQtShower;
@@ -82,28 +93,12 @@ namespace MemoryTranser.Scripts.Game.Phase
 
         public float RemainingTime => _phaseRemainingTime;
 
-        private int phaseCount = 0;
-
-        #endregion
-
-        #region eventの定義
-
-        private readonly ReactiveProperty<PhaseGimmickType> _onPhaseTransition = new(PhaseGimmickType.Normal);
-        public IReadOnlyReactiveProperty<PhaseGimmickType> OnPhaseTransition => _onPhaseTransition;
-
         #endregion
 
         #region Unityから呼ばれる
 
-        private void Awake()
-        {
-            _phaseRemainingTime = phaseDuration;
-        }
-
-        private void Update()
-        {
-            if (GameFlowManager.I.NowGameState != GameState.Playing)
-            {
+        private void Update() {
+            if (GameFlowManager.I.CurrentGameState != GameState.Playing) {
                 return;
             }
 
@@ -111,11 +106,8 @@ namespace MemoryTranser.Scripts.Game.Phase
             _phaseRemainingTime -= Time.deltaTime;
 
             //フェイズの残り時間が0になったら、次のフェイズに移行する
-            if (_phaseRemainingTime <= 0)
-            {
+            if (_phaseRemainingTime <= 0) {
                 TransitToNextPhase();
-                _phaseRemainingTime = phaseDuration;
-                GameFlowManager.I.ChangeGameState(GameState.Ready);
             }
         }
 
@@ -124,18 +116,18 @@ namespace MemoryTranser.Scripts.Game.Phase
 
         #region interfaceの実装
 
-        public void OnStateChangedToInitializing()
-        {
-            InitializePhases();
-            CreateQuestTypeShower();
-            _onPhaseTransition.Value = GetCurrentPhaseGimmickType();
+        public void OnGameAwake() {
+            _phaseRemainingTime = phaseDuration;
         }
 
-        public void OnStateChangedToReady()
-        {
-            ChangeQuestTypeShower();
-            UpdatePhaseText();
-            ResetRemainingTime();
+        public void OnStateChangedToInitializing() {
+            InitializePhases();
+            CreateQuestTypeShower();
+        }
+
+        public void OnStateChangedToReady() {
+            ResetPhaseRemainingTime();
+            CreateQuestTypeShower();
         }
 
         #endregion
@@ -146,16 +138,14 @@ namespace MemoryTranser.Scripts.Game.Phase
         /// 現在のフェイズの点数を加算する
         /// </summary>
         /// <param name="score"></param>
-        public void AddCurrentScore(int score)
-        {
+        public void AddCurrentScore(int score) {
             AddScore(_currentPhaseIndex, score);
         }
 
         /// <summary>
         /// Desireを倒したときに点数を加算する
         /// </summary>
-        public void AddCurrentScoreOnDefeatDesire()
-        {
+        public void AddCurrentScoreOnDefeatDesire() {
             AddScore(_currentPhaseIndex, additionalScoreOnDefeatDesire);
         }
 
@@ -164,8 +154,7 @@ namespace MemoryTranser.Scripts.Game.Phase
         /// </summary>
         /// <param name="boxes"></param>
         /// <returns>点数、正答数、誤答数の組を返す</returns>
-        public (int, int, int) CalculateScoreInformation(MemoryBoxCore[] boxes)
-        {
+        public (int, int, int) CalculateScoreInformation(MemoryBoxCore[] boxes) {
             var currentQuest = GetCurrentQuestType();
             var nextQuest = GetNextQuestType();
             var score = 0;
@@ -173,64 +162,47 @@ namespace MemoryTranser.Scripts.Game.Phase
             var falseCount = 0;
 
             //先に正答数と誤答数だけ計算しておく
-            foreach (var box in boxes)
-                if (box.BoxMemoryType == currentQuest)
-                {
+            foreach (var box in boxes) {
+                if (box.BoxMemoryType == currentQuest) {
                     trueCount++;
                 }
-                else
-                {
+                else {
                     falseCount++;
                 }
+            }
 
             //正答数が多い&誤答数が少ない&納品したMemoryBoxが重いほど高得点
-            foreach (var box in boxes)
-                if (box.BoxMemoryType == currentQuest)
-                {
-                    if (box.BoxShapeType == MemoryBoxShapeType.Cube)
-                    {
-                        score += Mathf.FloorToInt((20 + (trueCount - 1)) * box.Weight);
-                    }
-                    else
-                    {
-                        score += Mathf.FloorToInt((20 + (trueCount - 1)) * box.Weight * 2);
-                    }
+            foreach (var box in boxes) {
+                var basicScore = box.BoxShapeType == MemoryBoxShapeType.Cube ? cubeBoxBasicScore : sphereBoxBasicScore;
+
+                if (box.BoxMemoryType == currentQuest) {
+                    score += Mathf.FloorToInt((basicScore + (trueCount - 1)) * box.Weight);
                 }
-                else
-                {
-                    if (box.BoxShapeType == MemoryBoxShapeType.Cube)
-                    {
-                        score -= Mathf.FloorToInt((10 + (falseCount - 1)) * box.Weight);
-                    }
-                    else
-                    {
-                        score -= Mathf.FloorToInt((10 + (falseCount - 1)) * box.Weight * 2);
-                    }
+                else {
+                    score -= Mathf.FloorToInt((basicScore + (falseCount - 1)) * box.Weight);
                 }
+            }
 
             return (score, trueCount, falseCount);
         }
 
-        /// <summary>
-        /// UIにフェイズの情報を反映させる
-        /// </summary>
-        public void UpdatePhaseText()
-        {
-            scoreShower.SetScoreText(GetCurrentScore());
-            phaseGimmickTypeShower.SetPhaseGimmickTypeText(GetCurrentPhaseGimmickType());
+        public (int, int) GetResultInformation() {
+            var totalScore = _phaseCores.Sum(phase => phase.Score);
+            var reachedPhaseCount = _currentPhaseIndex + 1;
+
+            return (totalScore, reachedPhaseCount);
         }
 
         /// <summary>
         /// デバッグ用関数
         /// </summary>
         /// <returns></returns>
-        public (PhaseCore[], int, int) GetPhaseInformation()
-        {
+        public (PhaseCore[], int, int) GetPhaseInformation() {
             //実際のゲーム画面だとこっちの処理を使う
-            // var viewablePhaseCores = _phaseCores.GetRange(_currentPhaseIndex, viewablePhaseCount).ToArray();
-            // return (viewablePhaseCores, 0, viewablePhaseCount);
-
-            return (_phaseCores.ToArray(), _currentPhaseIndex, viewablePhaseCount);
+            var viewablePhaseCores = _phaseCores
+                .GetRange(_currentPhaseIndex, viewablePhaseCount)
+                .ToArray();
+            return (viewablePhaseCores, 0, viewablePhaseCount);
         }
 
         #endregion
@@ -240,45 +212,49 @@ namespace MemoryTranser.Scripts.Game.Phase
         /// <summary>
         /// フェイズの初期化
         /// </summary>
-        private void InitializePhases()
-        {
-            for (var i = 0; i < initialPhaseCount; i++)
-            {
+        private void InitializePhases() {
+            for (var i = 0; i < initialPhaseCount; i++) {
                 var phaseCore = ScriptableObject.CreateInstance<PhaseCore>();
-                var randomPhaseType = (BoxMemoryType)Random.Range(1, (int)BoxMemoryType.Count);
-                var randomPhaseGimmick = (PhaseGimmickType)Random.Range(0, (int)PhaseGimmickType.Count);
+
+                var randomPhaseType = (BoxMemoryType)Random.Range(0, (int)BoxMemoryType.Count);
                 phaseCore.QuestType = randomPhaseType;
-                phaseCore.GimmickType = randomPhaseGimmick;
 
                 _phaseCores.Add(phaseCore);
             }
 
-            SetBoxGenerationProbability();
+            SetBoxTypeProbWeights();
+
             memoryBoxManager.GenerateMemoryBoxes();
         }
 
-        private void ResetRemainingTime()
-        {
+        private void ResetPhaseRemainingTime() {
             _phaseRemainingTime = phaseDuration;
         }
 
-        private int AddScore(int phaseIndex, int score)
-        {
+        private int AddScore(int phaseIndex, int score) {
             var phaseCore = _phaseCores[phaseIndex];
             phaseCore.Score += score;
+            _currentTotalScore += score;
+            UpdateScoreText();
             return phaseCore.Score;
         }
 
-        private int GetScore(int phaseIndex)
-        {
+        private int GetScore(int phaseIndex) {
             return _phaseCores[phaseIndex].Score;
         }
 
-        private int GetCurrentScore()
-        {
+        private int GetCurrentScore() {
             return GetScore(_currentPhaseIndex);
         }
 
+        private void UpdateScoreText() {
+            scoreShower.SetScoreText(_currentTotalScore);
+        }
+
+        private void UpdateQuestTypeText() {
+            questTypeShower.SetQuestTypeText(GetCurrentQuestType());
+        }
+        
         /// <summary>
         /// インデックスを安全に増やす
         /// </summary>
@@ -305,25 +281,51 @@ namespace MemoryTranser.Scripts.Game.Phase
         /// <summary>
         /// 次のフェイズに移行する
         /// </summary>
-        private void TransitToNextPhase()
-        {
-            _currentPhaseIndex = ValidAddIndex(_currentPhaseIndex, initialPhaseCount);
+        private void TransitToNextPhase() {
             ChangeQuestTypeShower();
-            SetBoxGenerationProbability();
-            _onPhaseTransition.Value = GetCurrentPhaseGimmickType();
+            
+            //フェイズの内部のインデックスを足す
+            _currentPhaseIndex++;
+
+            //フェイズの残り時間をリセット
+            _phaseRemainingTime = phaseDuration;
+
+            //次のフェイズの情報を生成して追加
+            var phaseCore = ScriptableObject.CreateInstance<PhaseCore>();
+            var randomPhaseType = (BoxMemoryType)Random.Range(0, (int)BoxMemoryType.Count);
+            phaseCore.QuestType = randomPhaseType;
+            _phaseCores.Add(phaseCore);
+
+            //MemoryBoxの生成確率を更新
+            SetBoxTypeProbWeights();
+
+            //クエストのUIを更新
+            UpdateQuestTypeText();
+
+            //GameStateをReadyに変更
+            GameFlowManager.I.ChangeGameState(GameState.Ready);
         }
 
-        private BoxMemoryType GetQuestType(int phaseIndex)
-        {
-            Debug.Log($"{phaseIndex}");
+        private BoxMemoryType GetQuestType(int phaseIndex) {
             return _phaseCores[phaseIndex].QuestType;
         }
 
-        private BoxMemoryType GetCurrentQuestType()
-        {
+        private BoxMemoryType GetCurrentQuestType() {
             return GetQuestType(_currentPhaseIndex);
         }
 
+        private void SetBoxTypeProbWeights() {
+            var boxTypeWeights = new float[(int)BoxMemoryType.Count];
+            Array.Fill(boxTypeWeights, 1f);
+
+            for (var i = _currentPhaseIndex; i <= _currentPhaseIndex + boxTypeWeightRange; i++) {
+                var boxTypeWeightI = (_currentPhaseIndex + boxTypeWeightRange - (i - 1)) * boxTypeProbWeightMultiplier;
+                boxTypeWeights[(int)GetQuestType(i)] += boxTypeWeightI;
+            }
+
+            memoryBoxManager.SetBoxTypeProbWeights(boxTypeWeights);
+        }
+        
         //次のクエストを返す
         private BoxMemoryType GetNextQuestType()
         {
@@ -333,37 +335,6 @@ namespace MemoryTranser.Scripts.Game.Phase
         private BoxMemoryType GetOldQuestType()
         {
             return GetQuestType(ValidSubIndex(_currentPhaseIndex, initialPhaseCount));
-        }
-
-        private PhaseGimmickType GetPhaseGimmickType(int phaseIndex)
-        {
-            return _phaseCores[phaseIndex].GimmickType;
-        }
-
-        private PhaseGimmickType GetCurrentPhaseGimmickType()
-        {
-            return GetPhaseGimmickType(_currentPhaseIndex);
-        }
-
-        /// <summary>
-        /// 今あるフェイズを元にBoxの生成確率を設定する
-        /// </summary>
-        private void SetBoxGenerationProbability()
-        {
-            var nextQuestTypeInts = new List<int>();
-            for (var i = _currentPhaseIndex; i <= _currentPhaseIndex + memoryBoxProbabilityPhaseCount; i++)
-            {
-                var questTypeInt = (int)GetQuestType(i);
-                var questTypeInts = new List<int>();
-
-                //直近のフェイズになるほど対応するMemoryBoxが出やすくなる
-                for (var j = 0; j < memoryBoxProbabilityWeight * 2 - (i - _currentPhaseIndex); j++)
-                    questTypeInts.Add(questTypeInt);
-
-                nextQuestTypeInts.AddRange(questTypeInts);
-            }
-
-            memoryBoxManager.SetProbabilityList(nextQuestTypeInts);
         }
 
         //author:コメダ QuestTypeShowerのプレハブ作成

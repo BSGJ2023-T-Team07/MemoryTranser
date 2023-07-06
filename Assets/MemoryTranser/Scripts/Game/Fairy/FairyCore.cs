@@ -1,32 +1,38 @@
 using System;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using MemoryTranser.Scripts.Game.Desire;
+using MemoryTranser.Scripts.Game.BrainEvent;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.MemoryBox;
 using MemoryTranser.Scripts.Game.Sound;
+using MemoryTranser.Scripts.Game.UI.Playing;
+using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Constant = MemoryTranser.Scripts.Game.Util.Constant;
 
 namespace MemoryTranser.Scripts.Game.Fairy {
-    public class FairyCore : MonoBehaviour, IOnStateChangedToInitializing, IOnStateChangedToReady,
+    public class FairyCore : MonoBehaviour, IOnGameAwake, IOnStateChangedToInitializing, IOnStateChangedToReady,
         IOnStateChangedToPlaying,
         IOnStateChangedToResult {
         #region コンポーネントの定義
 
         [SerializeField] private Rigidbody2D rb2D;
         [SerializeField] private Animator animator;
+        [SerializeField] private SpriteRenderer spRr;
         [SerializeField] private BoxCollider2D boxCollider2D;
         [SerializeField] private Transform memoryBoxHolderBottom;
         [SerializeField] private SpriteRenderer throwDirectionArrowSpRr;
-        [SerializeField] private DesireManager desireManager;
+        [SerializeField] private BrainEventManager brainEventManager;
 
         #endregion
 
         #region 変数の定義
 
         [SerializeField] private FairyParameters myParameters;
+
+        [Header("煩悩に当たった時に操作不能になる時間(秒)")] [SerializeField]
+        private float stunDurationSec = 1f;
 
         [Header("投げる方向の入力の閾値")] [SerializeField]
         private float selectDirectionArrowThreshold;
@@ -39,6 +45,9 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         [Header("ブリンク可能回数")] [SerializeField] private int blinkTicketCount;
 
+        [Header("ブリンクチケットの最大数")] [SerializeField]
+        private int maxBlinkTicketCount;
+
         [Header("ブリンクの距離")] public float blinkDistance = 0.5f;
 
         [Header("ブリンクで移動しきるまでの時間(秒)")] public float blinkDurationSec = 0.5f;
@@ -48,16 +57,46 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         [Header("ブリンクし終わってから再度ブリンクできるまでの時間(秒)")]
         public float blinkRecoverSec = 0.7f;
 
+        [Header("ブリンクによるMemoryBox押し出しの強さの倍率")] [SerializeField]
+        private float pushBoxPowerMultiplier = 1f;
+
+        [Header("ブリンクの方向の先行入力の猶予時間(秒)")] [SerializeField]
+        private float precedeBlinkDirectionInputSec = 0.1f;
+
+        [Header("何秒ゲージを貯めれば納品できるか")] [SerializeField]
+        private float necessaryInputSecToOutput = 1f;
+
+        private static readonly int AnimHasBox = Animator.StringToHash("hasBox");
+        private static readonly int AnimIsWalking = Animator.StringToHash("isWalking");
+        private static readonly int AnimIsFreezing = Animator.StringToHash("isFreezing");
 
         private FairyState _myState;
         private MemoryBoxCore _holdingBox;
-        private int _comboCount;
+        private int _currentComboCount;
+        private int _reachedMaxComboCount;
 
         private bool _isControllable;
         private bool _isBlinkRecovered = true;
+        private bool _isBlinking;
+        private bool _applyCancelingBlink;
+        private bool _isInOutputArea;
+        private bool _applyInvertingInput;
 
-        private Vector2 _inputVelocity;
+        private Vector2 _inputWalkDirection;
+        private Vector2 _inputWalkDirectionBeforeZero;
         private Vector2 _inputThrowDirection;
+        private Vector2 _blinkDirection;
+
+        private float _remainingPrecedeBlinkDirectionInputSec;
+        private float _remainingStunDurationSec;
+        private float _nowInputSecToOutput;
+
+        #endregion
+
+        #region eventの定義
+
+        private readonly Subject<Unit> _onOutputInput = new();
+        public IObservable<Unit> OnOutputInput => _onOutputInput;
 
         #endregion
 
@@ -70,18 +109,39 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         public int BlinkTicketCount => blinkTicketCount;
 
+        public Vector2 InputWalkDirection => _inputWalkDirection;
+        public Vector2 InputWalkDirectionBeforeZero => _inputWalkDirectionBeforeZero;
+
+        public bool IsBlinking => _isBlinking;
+
+        public bool IsBlinkRecovered => _isBlinkRecovered;
+
+        public bool ApplyCancelingBlink => _applyCancelingBlink;
+
+        public bool IsControllable => _isControllable;
+
+        public float NowInputSecToOutput => _nowInputSecToOutput;
+
         public FairyState MyState {
             get => _myState;
             set => _myState = value;
         }
 
-        public int ComboCount {
-            get => _comboCount;
+        public int CurrentComboCount {
+            get => _currentComboCount;
             set {
-                _comboCount = value;
+                if (value > _currentComboCount) {
+                    _reachedMaxComboCount = Mathf.Max(_reachedMaxComboCount, value);
+                }
 
-                if (HasBox) myParameters.UpdateWalkSpeedByWeightAndCombo(_holdingBox.Weight, value);
-                else myParameters.UpdateWalkSpeedByWeightAndCombo(0, value);
+                _currentComboCount = value;
+
+                if (HasBox) {
+                    myParameters.UpdateWalkSpeedByWeightAndCombo(_holdingBox.Weight, value);
+                }
+                else {
+                    myParameters.UpdateWalkSpeedByWeightAndCombo(0, value);
+                }
             }
         }
 
@@ -94,11 +154,77 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         }
 
         private void Update() {
+            AnimationChange();
+
             UpdateFairyState();
+
+            #region 煩悩によるスタンの処理
+
+            if (_remainingStunDurationSec > 0) {
+                _remainingStunDurationSec -= Time.deltaTime;
+
+                if (_remainingStunDurationSec < 0) {
+                    _remainingStunDurationSec = -1;
+                    _isControllable = true;
+                    _myState = HasBox ? FairyState.IdlingWithBox : FairyState.IdlingWithoutBox;
+                }
+            }
+
+            #endregion
+
+            #region 先行入力の判定
+
+            if (_inputWalkDirectionBeforeZero != Vector2.zero && _remainingPrecedeBlinkDirectionInputSec > 0f) {
+                _remainingPrecedeBlinkDirectionInputSec -= Time.deltaTime;
+
+                if (_remainingPrecedeBlinkDirectionInputSec < 0f) {
+                    _inputWalkDirectionBeforeZero = Vector2.zero;
+                    _remainingPrecedeBlinkDirectionInputSec = -1;
+                }
+            }
+
+            #endregion
         }
 
         private void FixedUpdate() {
             Move();
+        }
+
+        private void OnTriggerEnter2D(Collider2D other) {
+            if (other.gameObject.layer == LayerMask.NameToLayer("OutputArea")) {
+                _isInOutputArea = true;
+            }
+        }
+
+        private void OnTriggerExit2D(Collider2D other) {
+            if (other.gameObject.layer == LayerMask.NameToLayer("OutputArea")) {
+                _isInOutputArea = false;
+                _nowInputSecToOutput = 0f;
+            }
+        }
+
+        private void OnCollisionEnter2D(Collision2D other) {
+            if (other.gameObject.layer == LayerMask.NameToLayer("SphereMemoryBox")) {
+                _applyCancelingBlink = true;
+
+                if (_isBlinking) {
+                    PushSphereBox(other.gameObject.GetComponent<MemoryBoxCore>());
+                }
+            }
+
+            if (other.gameObject.layer == LayerMask.NameToLayer("Desire")) {
+                _applyCancelingBlink = true;
+            }
+        }
+
+        private void OnCollisionExit2D(Collision2D other) {
+            if (other.gameObject.layer == LayerMask.NameToLayer("SphereMemoryBox")) {
+                _applyCancelingBlink = false;
+            }
+
+            if (other.gameObject.layer == LayerMask.NameToLayer("Desire")) {
+                _applyCancelingBlink = false;
+            }
         }
 
         #endregion
@@ -109,8 +235,8 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         public void OnMoveInput(InputAction.CallbackContext context) {
             if (!_isControllable) {
                 //操作不能かつ速度が0でなかったら速度を0にする
-                if (_inputVelocity != Vector2.zero) {
-                    _inputVelocity = Vector2.zero;
+                if (_inputWalkDirection != Vector2.zero) {
+                    _inputWalkDirection = Vector2.zero;
                     return;
                 }
 
@@ -119,13 +245,43 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             }
 
             var moveInput = context.ReadValue<Vector2>();
-            _inputVelocity = moveInput * myParameters.WalkSpeed;
+
+            //もし操作逆転中なら、入力を反転させる
+            if (_applyInvertingInput) {
+                moveInput = -moveInput;
+            }
+
+            if (moveInput == Vector2.zero) {
+                _inputWalkDirectionBeforeZero = _inputWalkDirection;
+                _remainingPrecedeBlinkDirectionInputSec = precedeBlinkDirectionInputSec;
+            }
+
+            _inputWalkDirection = moveInput.normalized;
         }
 
         public void OnSelectInputDirection(InputAction.CallbackContext context) {
-            if (!_isControllable) return;
+            if (!_isControllable) {
+                return;
+            }
 
             var directionInput = context.ReadValue<Vector2>();
+
+            //もし操作逆転中なら、入力を反転させる
+            if (_applyInvertingInput) {
+                directionInput = -directionInput;
+            }
+
+            if (_isInOutputArea) {
+                if (Vector2.Dot(directionInput, Vector2.down) > 0.6f) {
+                    _nowInputSecToOutput += Time.fixedDeltaTime;
+                }
+
+                if (_nowInputSecToOutput > necessaryInputSecToOutput &&
+                    Vector2.Dot(directionInput, Vector2.up) > 0.7f) {
+                    _nowInputSecToOutput = 0f;
+                    _onOutputInput.OnNext(Unit.Default);
+                }
+            }
 
             //MemoryBoxを持っていないか、投げるための入力が不十分だったら何もしない
             if (!HasBox || directionInput.sqrMagnitude < selectDirectionArrowThreshold) {
@@ -142,10 +298,15 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         public void OnThrowInput(InputAction.CallbackContext context) {
             //操作不能だったら何もしない
-            if (!_isControllable) return;
+            if (!_isControllable) {
+                return;
+            }
 
             //何もMemoryBoxを持っていなければ何もしない
-            if (!HasBox) return;
+            if (!HasBox) {
+                return;
+            }
+
             if (_inputThrowDirection == Vector2.zero) {
                 Debug.Log("もっと勢いを付けて投げてください");
                 return;
@@ -156,49 +317,83 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         public void OnHoldInput(InputAction.CallbackContext context) {
             //このフレームに完全に押されてなければ何もしない
-            if (!context.action.WasPressedThisFrame()) return;
+            if (!context.action.WasPressedThisFrame()) {
+                return;
+            }
 
             //操作不能だったら何もしない
-            if (!_isControllable) return;
+            if (!_isControllable) {
+                return;
+            }
 
             //もし既にBoxを持ってたら何もしない
-            if (HasBox) return;
+            if (HasBox) {
+                return;
+            }
 
             var casts = Physics2D.CircleCastAll(transform.position, holdableDistance, Vector2.zero,
-                0, Constant.MEMORY_BOX_LAYER_MASK);
+                0, LayerMask.GetMask("CubeMemoryBox"));
 
             //もし近くにBoxがなかったら何もしない
-            if (casts.Length == 0) return;
+            if (casts.Length == 0) {
+                return;
+            }
 
-            var holdableNearestBox = GetNearestMemoryBoxCore(casts);
+            var holdableNearestBox = GetNearestHoldableCubeBox(casts);
 
             //近くに地面の置かれてるBoxがあったらHoldする
-            if (holdableNearestBox && holdableNearestBox.MyState == MemoryBoxState.PlacedOnLevel)
+            if (holdableNearestBox && holdableNearestBox.MyState == MemoryBoxState.PlacedOnLevel) {
                 Hold(holdableNearestBox);
+            }
         }
 
 
         public void OnPutInput(InputAction.CallbackContext context) {
             //このフレームに完全に押されてなければ何もしない
-            if (!context.action.WasPressedThisFrame()) return;
+            if (!context.action.WasPressedThisFrame()) {
+                return;
+            }
 
             //操作不能だったら何もしない
-            if (!_isControllable) return;
+            if (!_isControllable) {
+                return;
+            }
 
             //何もMemoryBoxを持っていなければ何もしない
-            if (!HasBox) return;
+            if (!HasBox) {
+                return;
+            }
 
-            Put();
+            Put(true);
         }
 
         public void OnBlinkInput(InputAction.CallbackContext context) {
             //このフレームに完全に押されてなければ何もしない
-            if (!context.action.WasPressedThisFrame()) return;
+            if (!context.action.WasPressedThisFrame()) {
+                return;
+            }
+
+            //操作不能だったら何もしない
+            if (!_isControllable) {
+                return;
+            }
 
             //ブリンク不可能だったら何もしない
-            if (!CanBlink) return;
+            if (!CanBlink) {
+                return;
+            }
 
-            Blink();
+            //ブリンクの方向が指定されてなかったら何もしない
+            if (_inputWalkDirectionBeforeZero == Vector2.zero && _inputWalkDirection == Vector2.zero) {
+                return;
+            }
+
+            _blinkDirection = _inputWalkDirection;
+            if (_inputWalkDirection == Vector2.zero) {
+                _blinkDirection = _inputWalkDirectionBeforeZero;
+            }
+
+            Blink(_blinkDirection);
         }
 
         #endregion
@@ -206,7 +401,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         #region 能動的行動の定義
 
         private void Move() {
-            rb2D.velocity = _inputVelocity;
+            rb2D.velocity = _inputWalkDirection * myParameters.WalkSpeed;
         }
 
         private void Hold(MemoryBoxCore memoryBoxCore) {
@@ -214,7 +409,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             _holdingBox = memoryBoxCore;
             throwDirectionArrowSpRr.transform.position = _holdingBox.transform.position;
 
-            myParameters.UpdateWalkSpeedByWeightAndCombo(_holdingBox.Weight, ComboCount);
+            myParameters.UpdateWalkSpeedByWeightAndCombo(_holdingBox.Weight, CurrentComboCount);
 
             Debug.Log($"IDが{_holdingBox.BoxId}の記憶を持った");
 
@@ -228,52 +423,86 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             Debug.Log($"IDが{_holdingBox.BoxId}の記憶を投げた");
             _holdingBox = null;
             throwDirectionArrowSpRr.enabled = false;
-            myParameters.UpdateWalkSpeedByWeightAndCombo(0, ComboCount);
+            myParameters.UpdateWalkSpeedByWeightAndCombo(0, CurrentComboCount);
 
             SeManager.I.Play(SEs.ThrowBox);
         }
 
-        private void Put() {
+        private void Put(bool playSE) {
             _holdingBox.BePut();
 
             Debug.Log($"IDが{_holdingBox.BoxId}の記憶を置いた");
             _holdingBox = null;
-            myParameters.UpdateWalkSpeedByWeightAndCombo(0, ComboCount);
+            myParameters.UpdateWalkSpeedByWeightAndCombo(0, CurrentComboCount);
 
-            SeManager.I.Play(SEs.PutBox);
+            if (playSE) {
+                SeManager.I.Play(SEs.PutBox);
+            }
         }
 
-        private async void Blink() {
+        private void Blink(Vector2 blinkDirection) {
             _isControllable = false;
             blinkTicketCount--;
             _isBlinkRecovered = false;
+            _isBlinking = true;
 
-            transform.DOMove(_inputVelocity * blinkDistance, blinkDurationSec)
-                .SetRelative().SetEase(Ease.OutExpo);
+            var blinkTweenerCore = rb2D.DOMove(blinkDirection * blinkDistance, blinkDurationSec)
+                .SetRelative().SetEase(Ease.OutQuad).OnKill(() => {
+                    _isBlinking = false;
+                    rb2D.velocity = Vector2.zero;
+                    IsControllableTrueAfterBlinked();
+                    IsBlinkRecoveredTrueAfterBlinked();
+                }).OnComplete(() => {
+                    _isBlinking = false;
+                    IsControllableTrueAfterBlinked();
+                    IsBlinkRecoveredTrueAfterBlinked();
+                });
 
-            await UniTask.Delay(
-                TimeSpan.FromSeconds(blinkDurationSec + reControllableSecAfterBlink));
-            _isControllable = true;
+            blinkTweenerCore.OnUpdate(() => {
+                if (_applyCancelingBlink) {
+                    blinkTweenerCore.Kill();
+                    rb2D.velocity = Vector2.zero;
+                }
+            });
 
-            await UniTask.Delay(
-                TimeSpan.FromSeconds(blinkRecoverSec - reControllableSecAfterBlink));
-            _isBlinkRecovered = true;
+            async void IsControllableTrueAfterBlinked() {
+                await UniTask.Delay(TimeSpan.FromSeconds(reControllableSecAfterBlink));
+                if (_myState != FairyState.Freeze) {
+                    _isControllable = true;
+                }
+            }
+
+            async void IsBlinkRecoveredTrueAfterBlinked() {
+                await UniTask.Delay(TimeSpan.FromSeconds(blinkRecoverSec));
+                _isBlinkRecovered = true;
+            }
+        }
+
+        private void PushSphereBox(MemoryBoxCore sphereBox) {
+            sphereBox.BePushed(_blinkDirection, blinkDistance / blinkDurationSec * pushBoxPowerMultiplier);
         }
 
         #endregion
 
         #region 受動的行動の定義
 
-        public async void BeAttackedByDesire() {
+        public void BeAttackedByDesire() {
+            if (HasBox) {
+                Put(false);
+            }
+
+            SeManager.I.Play(SEs.FairyAttackedByDesire);
             _isControllable = false;
-            ComboCount = 0;
+            rb2D.velocity = Vector2.zero;
+            _inputWalkDirection = Vector2.zero;
+            CurrentComboCount = 0;
             _myState = FairyState.Freeze;
 
-            //Desireに当たると3秒停止
-            await UniTask.Delay(TimeSpan.FromSeconds(3f));
+            //高秀を悲しませる
+            TakahideShower.I.ChangeTakahideImage(TakahideState.Sad);
 
-            _isControllable = true;
-            _myState = HasBox ? FairyState.IdlingWithBox : FairyState.IdlingWithoutBox;
+            //Desireに当たると3秒停止
+            _remainingStunDurationSec = stunDurationSec;
         }
 
         #endregion
@@ -282,12 +511,16 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             return AddBlinkTicket(additionalBlinkTicketOnDefeatDesire);
         }
 
+        public int GetResultInformation() {
+            return _reachedMaxComboCount;
+        }
+
         private int AddBlinkTicket(int add) {
-            blinkTicketCount += add;
+            blinkTicketCount = Mathf.Min(blinkTicketCount + add, maxBlinkTicketCount);
             return blinkTicketCount;
         }
 
-        private MemoryBoxCore GetNearestMemoryBoxCore(RaycastHit2D[] castArray) {
+        private MemoryBoxCore GetNearestHoldableCubeBox(RaycastHit2D[] castArray) {
             var nearestDistance = float.MaxValue;
             var nearestIndex = -1;
             for (var i = 0; i < castArray.Length; i++) {
@@ -309,19 +542,46 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         }
 
         private void UpdateFairyState() {
-            if (_myState == FairyState.Freeze) return;
+            if (_myState == FairyState.Freeze) {
+                return;
+            }
 
-            if (HasBox)
+            if (HasBox) {
                 _myState = rb2D.velocity.sqrMagnitude < Constant.DELTA
                     ? FairyState.IdlingWithBox
                     : FairyState.WalkingWithBox;
-            else
+            }
+            else {
                 _myState = rb2D.velocity.sqrMagnitude < Constant.DELTA
                     ? FairyState.IdlingWithoutBox
                     : FairyState.WalkingWithoutBox;
+            }
+
+            if (_isBlinking) {
+                _myState = HasBox ? FairyState.WalkingWithBox : FairyState.WalkingWithoutBox;
+            }
+        }
+
+        private void AnimationChange() {
+            spRr.flipX = rb2D.velocity.x switch {
+                < -Constant.DELTA => true,
+                > Constant.DELTA => false,
+                _ => spRr.flipX
+            };
+
+            animator.SetBool(AnimHasBox, _myState is FairyState.IdlingWithBox or FairyState.WalkingWithBox);
+            animator.SetBool(AnimIsWalking, _myState is FairyState.WalkingWithBox or FairyState.WalkingWithoutBox);
+            animator.SetBool(AnimIsFreezing, _myState == FairyState.Freeze);
         }
 
         #region interfaceの実装
+
+        public void OnGameAwake() {
+            brainEventManager.OnBrainEventTransition.Subscribe(_ => { _applyInvertingInput = false; });
+            brainEventManager.OnBrainEventTransition.Where(x => x == BrainEventType.InvertControl).Subscribe(_ => {
+                _applyInvertingInput = true;
+            });
+        }
 
         public void OnStateChangedToInitializing() {
             InitializeFairy();
@@ -335,6 +595,8 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         public void OnStateChangedToResult() {
             _isControllable = false;
+            _onOutputInput.OnCompleted();
+            _onOutputInput.Dispose();
         }
 
         #endregion

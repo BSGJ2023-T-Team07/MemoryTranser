@@ -25,11 +25,12 @@ namespace MemoryTranser.Scripts.Game.Desire {
 
         [SerializeField] private DesireParameters myParameters = new();
 
+        [Header("MemoryBoxを押し出す強さ")] [SerializeField]
+        private float pushBoxPower = 20f;
+
         private DesireState _myState = DesireState.Freeze;
         private DesireType _myType;
         private Vector3 _followPos;
-
-        private bool _followFlag;
 
         #endregion
 
@@ -45,10 +46,7 @@ namespace MemoryTranser.Scripts.Game.Desire {
 
         #region プロパティーの定義
 
-        public DesireParameters MyParameters {
-            get => myParameters;
-            set => myParameters = value;
-        }
+        public DesireParameters MyParameters => myParameters;
 
         public Rigidbody2D Rb2D {
             get {
@@ -75,18 +73,22 @@ namespace MemoryTranser.Scripts.Game.Desire {
             set => _myType = value;
         }
 
+        public bool FollowFlag { get; set; }
+
         #endregion
 
         #region Unityから呼ばれる
 
         private void FixedUpdate() {
-            if (_followFlag) {
-                //DesireとFairyの距離を算出する
-                Vector2 direction = (targetTransform.position - transform.position).normalized;
-
-                //移動処理
-                Rb2D.velocity = direction * myParameters.FollowSpeed;
+            if (!FollowFlag) {
+                return;
             }
+
+            //DesireとFairyの距離を算出する
+            Vector2 direction = (targetTransform.position - transform.position).normalized;
+
+            //移動処理
+            Rb2D.velocity = direction * myParameters.FollowSpeed;
         }
 
         private void OnTriggerEnter2D(Collider2D other) {
@@ -98,12 +100,39 @@ namespace MemoryTranser.Scripts.Game.Desire {
             Disappear();
         }
 
+        private void OnCollisionEnter2D(Collision2D other) {
+            if (!other.gameObject.CompareTag("MemoryBox")) {
+                return;
+            }
+
+            var distanceVector = (other.transform.position - transform.position).normalized;
+            var myVel = Rb2D.velocity.normalized;
+            var dot = Vector3.Dot(myVel, distanceVector);
+            var cross = Vector3.Cross(myVel, distanceVector);
+
+            var angle = 0f;
+
+            //十分に正面から当たっている場合、押し出すように条件分岐
+            if (dot > 0.2f) {
+                angle = cross.z > 0 ? 90f : -90f;
+            }
+
+            //重い箱は、押し出しがより遅くなる
+            // other.rigidbody.AddForce((Vector2)(Quaternion.Euler(0, 0, angle) * myVel) * pushBoxPower,
+            //     ForceMode2D.Impulse);
+
+
+            //重さに関わらず、一定の力で押し出す
+            other.rigidbody.velocity = (Vector2)(Quaternion.Euler(0, 0, angle) * myVel) * pushBoxPower;
+        }
+
         #endregion
 
         #region interfaceの実装
 
         public void OnStateChangedToResult() {
-            _followFlag = false;
+            Rb2D.velocity = Vector2.zero;
+            FollowFlag = false;
 
             _onBeAttacked.OnCompleted();
             _onDisappear.OnCompleted();
@@ -115,12 +144,13 @@ namespace MemoryTranser.Scripts.Game.Desire {
         #endregion
 
         public void Appear(Vector3 spawnPos) {
+            gameObject.SetActive(true);
             transform.position = spawnPos;
             _myState = DesireState.FollowingFairy;
-            _followFlag = true;
+            FollowFlag = true;
         }
 
-        private void Disappear() {
+        public void Disappear() {
             //ステータスを更新する
             _myState = DesireState.Freeze;
 

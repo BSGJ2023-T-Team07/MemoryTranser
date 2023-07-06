@@ -494,6 +494,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             SeManager.I.Play(SEs.FairyAttackedByDesire);
             _isControllable = false;
             rb2D.velocity = Vector2.zero;
+            _inputWalkDirection = Vector2.zero;
             CurrentComboCount = 0;
             _myState = FairyState.Freeze;
 

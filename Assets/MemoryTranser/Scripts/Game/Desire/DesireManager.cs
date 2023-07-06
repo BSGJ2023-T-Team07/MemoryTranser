@@ -310,11 +310,18 @@ namespace MemoryTranser.Scripts.Game.Desire {
 
             _desireCorePool = null;
 
+
             foreach (var desire in _existingDesireCores) {
                 Destroy(desire);
             }
 
             _existingDesireCores = null;
+
+            foreach (var desire in _desireCorePoolOnDesireOutbreak) {
+                Destroy(desire);
+            }
+
+            _desireCorePoolOnDesireOutbreak = null;
         }
 
         #endregion

@@ -1,4 +1,7 @@
 using System;
+using MemoryTranser.Scripts.Game.GameManagers;
+using MemoryTranser.Scripts.Game.Menu;
+using MemoryTranser.Scripts.Game.Sound;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -19,14 +22,25 @@ namespace MemoryTranser.Scripts.Game.UI {
 
         #endregion
 
-        #region プロパテｘヂーの定義
+        #region プロパティーの定義
+
+        public bool IsMenuOpened => _isMenuOpened;
 
         #endregion
 
         #region 操作入力時の処理
 
         public void OnOpenMenuInput(InputAction.CallbackContext context) {
+            //メニューが開かれていれば何もしない
+            if (_isMenuOpened) {
+                return;
+            }
+
             if (!context.action.WasPressedThisFrame()) {
+                return;
+            }
+
+            if (GameFlowManager.I.CurrentGameState is not (GameState.Playing or GameState.Ready)) {
                 return;
             }
 
@@ -34,10 +48,16 @@ namespace MemoryTranser.Scripts.Game.UI {
         }
 
         public void OnCloseMenuInput(InputAction.CallbackContext context) {
+            //メニューが開かれていなければ何もしない
+            if (!_isMenuOpened) {
+                return;
+            }
+
             if (!context.action.WasPressedThisFrame()) {
                 return;
             }
 
+            var value = context.ReadValue<float>();
             CloseMenu();
         }
 
@@ -85,23 +105,27 @@ namespace MemoryTranser.Scripts.Game.UI {
 
         #endregion
 
+        #region 行動の定義
+
         private void OpenMenu() {
-            playerInput.currentActionMap = playerInput.actions.FindActionMap("UI");
+            playerInput.SwitchCurrentActionMap("UI");
 
             _isMenuOpened = true;
             menuShower.ToggleMenu(true);
             Time.timeScale = 0f;
+            BgmManager.I.PausePlayingBgm();
 
             _currentMenuSelection = MenuSelection.Resume;
             menuShower.UpdateMenuSelectionShow(_currentMenuSelection);
         }
 
         private void CloseMenu() {
-            playerInput.currentActionMap = playerInput.actions.FindActionMap("Player");
+            playerInput.SwitchCurrentActionMap("Player");
 
             _isMenuOpened = false;
             menuShower.ToggleMenu(false);
             Time.timeScale = 1f;
+            BgmManager.I.UnPausePlayingBgm();
         }
 
         private void SelectionUp() {
@@ -121,19 +145,14 @@ namespace MemoryTranser.Scripts.Game.UI {
                     CloseMenu();
                     break;
                 case MenuSelection.BackToTitle:
+                    GameFlowManager.I.ChangeGameState(GameState.Result);
                     SceneManager.LoadScene("MemoryTranser/Scenes/TitleScene");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(selection), selection, null);
             }
         }
-    }
 
-    public enum MenuSelection {
-        Resume,
-        BackToTitle,
-
-        //以上の要素の数を取得できる
-        Count
+        #endregion
     }
 }

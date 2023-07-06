@@ -25,7 +25,7 @@ namespace MemoryTranser.Scripts.Game.Result {
 
 
         public void OnStateChangedToResult() {
-            BgmManager.I.StopPlayingBgm();
+            BgmManager.I.PausePlayingBgm();
             var phaseInfo = phaseManager.GetResultInformation();
             _totalScore = phaseInfo.Item1;
             _reachedPhaseCount = phaseInfo.Item2;

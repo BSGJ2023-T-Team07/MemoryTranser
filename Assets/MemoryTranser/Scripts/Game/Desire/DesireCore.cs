@@ -110,13 +110,17 @@ namespace MemoryTranser.Scripts.Game.Desire {
 
             var angle = 0f;
 
+            //十分に正面から当たっている場合、押し出すように条件分岐
             if (dot > 0.2f) {
                 angle = cross.z > 0 ? 90f : -90f;
             }
 
+            //重い箱は、押し出しがより遅くなる
             // other.rigidbody.AddForce((Vector2)(Quaternion.Euler(0, 0, angle) * myVel) * pushBoxPower,
             //     ForceMode2D.Impulse);
 
+
+            //重さに関わらず、一定の力で押し出す
             other.rigidbody.velocity = (Vector2)(Quaternion.Euler(0, 0, angle) * myVel) * pushBoxPower;
         }
 

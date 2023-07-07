@@ -29,6 +29,7 @@ namespace MemoryTranser.Scripts.Game.GameManagers {
                 .OnComplete(() => {
                     countDownLayer.SetActive(false);
                     pauseBackGround.SetActive(false);
+                    GameFlowManager.I.ChangeGameState(GameState.Initializing);
                 }));
         }
     }

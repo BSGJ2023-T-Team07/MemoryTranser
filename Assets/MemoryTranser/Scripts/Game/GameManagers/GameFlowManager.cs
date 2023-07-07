@@ -43,7 +43,6 @@ namespace MemoryTranser.Scripts.Game.GameManagers {
         }
 
         private void Start() {
-            gameFlowShower.CountdownSequence.OnComplete(() => { ChangeGameState(GameState.Initializing); });
             gameFlowShower.CountdownSequence.Play();
         }
 

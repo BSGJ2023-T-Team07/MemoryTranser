@@ -8,7 +8,7 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
         [SerializeField] private PhaseManager phaseManager;
 
         private void Update() {
-            text.text = $"現在のフェイズの残り時間 : {phaseManager.RemainingTime:0}";
+            text.SetText($"現在のフェイズの残り時間 : {phaseManager.RemainingTime:0}");
         }
     }
 }

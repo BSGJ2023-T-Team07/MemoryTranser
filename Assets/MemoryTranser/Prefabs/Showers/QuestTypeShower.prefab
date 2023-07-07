@@ -1,0 +1,114 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3107563300686974611
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2672624143472391788}
+  - component: {fileID: 1460897837396770625}
+  m_Layer: 0
+  m_Name: QuestTypeShower
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2672624143472391788
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3107563300686974611}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1460897837396770625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3107563300686974611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a842cedbc3c164946b6d9bb0332f9fde, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  additionalFontSize: 10
+  nextQuestTypeObject: {fileID: 0}
+  nextQuestTypeText: {fileID: 0}
+  currentQuestTypeObject: {fileID: 0}
+  currentQuestTypeText: {fileID: 0}
+  mathTexts:
+  - startText: 
+    mainText: "\u7A4D\u5206"
+    finalText: "\u3063\u3066\u306A\u3093\u3060\u3063\u3051"
+  - startText: 
+    mainText: "\u5FAE\u5206"
+    finalText: "\u3063\u3066\u306A\u3093\u3060\u3063\u3051"
+  - startText: 
+    mainText: "\u89E3\u306E\u516C\u5F0F"
+    finalText: "\u3063\u3066\u306A\u3093\u3060\u3063\u3051"
+  japaneseTexts:
+  - startText: "\u3053\u306E"
+    mainText: "\u90E8\u9996"
+    finalText: "\u3063\u3066\u306A\u3093\u3060\u3063\u3051"
+  - startText: "\u3053\u306E"
+    mainText: "\u719F\u8A9E\u306E\u610F\u5473"
+    finalText: "\u306F\u2026"
+  englishTexts:
+  - startText: 
+    mainText: "be\u52D5\u8A5E"
+    finalText: "\u3063\u3066\u306A\u3093\u3060\u3063\u3051"
+  - startText: 
+    mainText: "\u30A2\u30AF\u30BB\u30F3\u30C8"
+    finalText: "\u3063\u3066\u306A\u3093\u3060\u3063\u3051"
+  - startText: 
+    mainText: "\u4EEE\u5B9A\u6CD5"
+    finalText: "\u3063\u3066\u306A\u3093\u3060\u3063\u3051"
+  lifeTexts:
+  - startText: "\u3053\u306E"
+    mainText: "\u7E2B\u3044\u65B9"
+    finalText: "\u306E\u540D\u524D\u306F\u2026"
+  moralTexts:
+  - startText: 
+    mainText: "\u9053\u5FB3"
+    finalText: "\u2026\uFF1F"
+  scienceTexts:
+  - startText: "\u3053\u306E"
+    mainText: "\u5143\u7D20\u8A18\u53F7"
+    finalText: "\u3063\u3066\u306A\u3093\u3060\u3063\u3051"
+  - startText: "\u3053\u306E"
+    mainText: "\u5730\u5C64"
+    finalText: "\u306E\u540D\u524D\u3063\u3066\u306A\u3093\u3060\u3063\u3051"
+  triviaTexts:
+  - startText: 
+    mainText: "\u30E4\u30FC\u30C9\u30DD\u30F3\u30C9\u6CD5"
+    finalText: "\u3063\u3066\u8981\u308B\uFF1F"
+  musicTexts:
+  - startText: 
+    mainText: "4\u5206\u97F3\u7B26"
+    finalText: "\u3063\u3066\u306A\u3093\u3060\u3063\u3051"
+  - startText: 
+    mainText: D.C.
+    finalText: "\u3063\u3066\u306A\u3093\u3060\u3063\u3051"
+  - startText: 
+    mainText: "\u30D0\u30C3\u30CF"
+    finalText: "\u3063\u3066\u8AB0\u3060\u3063\u3051"
+  socialStudiesTexts:
+  - startText: 
+    mainText: "\u91D1\u878D\u5371\u6A5F"
+    finalText: "\u3063\u3066\u3044\u3064\u306E\u8A71\uFF1F"
+  - startText: 
+    mainText: "\u9769\u547D"
+    finalText: "\u306E\u8D77\u3053\u3057\u65B9"

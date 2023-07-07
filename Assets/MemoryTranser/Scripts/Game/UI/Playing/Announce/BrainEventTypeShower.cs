@@ -7,7 +7,7 @@ namespace MemoryTranser.Scripts.Game.UI.Playing.Announce {
     public class BrainEventTypeShower : MonoBehaviour {
         public static void SetBrainEventTypeText(BrainEventType brainEventType) {
             // if (brainEventType == BrainEventType.None) return;
-            AnnounceManager.I.AddAnnounceText($"現在のイベント：{brainEventType.ToJapanese()}");
+            AnnounceShower.I.AddAnnounceText($"現在のイベント：{brainEventType.ToJapanese()}");
         }
     }
 }

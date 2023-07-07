@@ -13,8 +13,6 @@ namespace MemoryTranser.Scripts.Game.Phase {
         #region コンポーネントの定義
 
         [SerializeField] private QuestTypeShower questTypeShower;
-        [SerializeField] private QuestTypeShower prefabQuestTypeShower;
-        [SerializeField] private Canvas uiCanvas;
         [SerializeField] private ScoreShower scoreShower;
         [SerializeField] private MemoryBoxManager memoryBoxManager;
 
@@ -50,41 +48,6 @@ namespace MemoryTranser.Scripts.Game.Phase {
         private int _currentPhaseIndex = 0;
         private int _currentTotalScore = 0;
         private float _phaseRemainingTime;
-        
-        private int phaseCount = 0;
-
-        [Header("QuestTypeShowerの数")] [SerializeField]
-        private int numQtShower;
-
-        //author コメダ 科目の文章設定
-        //QuestTypeShowerのリスト
-        private List<QuestTypeShower> qtShowerList = new();
-
-        //author コメダ 科目の文章設定
-        //QuestTwxtの文章を設定
-        [SerializeField] private List<QuestText> mathTxts;
-        [SerializeField] private List<QuestText> jpnTxts;
-        [SerializeField] private List<QuestText> engTxts;
-        [SerializeField] private List<QuestText> lifeTxts;
-        [SerializeField] private List<QuestText> moralTxts;
-        [SerializeField] private List<QuestText> scienceTxts;
-        [SerializeField] private List<QuestText> triviaTxts;
-        [SerializeField] private List<QuestText> musicTxts;
-        [SerializeField] private List<QuestText> socialTxts;
-        [SerializeField] private List<QuestText> hobbyTxts;
-
-        //author コメダ 科目の色設定
-        //QuestTextの色を設定
-        [SerializeField] private string mathColor;
-        [SerializeField] private string jpnColor;
-        [SerializeField] private string engColor;
-        [SerializeField] private string lifeColor;
-        [SerializeField] private string moralColor;
-        [SerializeField] private string scienceColor;
-        [SerializeField] private string triviaColor;
-        [SerializeField] private string musicColor;
-        [SerializeField] private string socialColor;
-        [SerializeField] private string hobbyColor;
 
         #endregion
 
@@ -121,12 +84,10 @@ namespace MemoryTranser.Scripts.Game.Phase {
 
         public void OnStateChangedToInitializing() {
             InitializePhases();
-            CreateQuestTypeShower();
         }
 
         public void OnStateChangedToReady() {
             ResetPhaseRemainingTime();
-            CreateQuestTypeShower();
         }
 
         #endregion
@@ -155,7 +116,6 @@ namespace MemoryTranser.Scripts.Game.Phase {
         /// <returns>点数、正答数、誤答数の組を返す</returns>
         public (int, int, int) CalculateScoreInformation(MemoryBoxCore[] boxes) {
             var currentQuest = GetCurrentQuestType();
-            var nextQuest = GetNextQuestType();
             var score = 0;
             var trueCount = 0;
             var falseCount = 0;
@@ -224,6 +184,8 @@ namespace MemoryTranser.Scripts.Game.Phase {
             SetBoxTypeProbWeights();
 
             memoryBoxManager.GenerateMemoryBoxes();
+
+            questTypeShower.InitializeQuestText(GetCurrentQuestType(), GetNextQuestType());
         }
 
         private void ResetPhaseRemainingTime() {
@@ -250,39 +212,22 @@ namespace MemoryTranser.Scripts.Game.Phase {
             scoreShower.SetScoreText(_currentTotalScore);
         }
 
-        private void UpdateQuestTypeText() {
-            // questTypeShower.SetQuestTypeText(GetCurrentQuestType());
-        }
-        
-        /// <summary>
-        /// インデックスを安全に増やす
-        /// </summary>
-        private int ValidAddIndex(int _index, int _maxIndex)
-        {
-            if (_index + 1 >= _maxIndex)
-            {
-                return _index;
-            }
-
-            return _index + 1;
+        private BoxMemoryType GetQuestType(int phaseIndex) {
+            return _phaseCores[phaseIndex].QuestType;
         }
 
-        private int ValidSubIndex(int _index, int _maxIndex)
-        {
-            if (_index - 1 < 0)
-            {
-                return _index;
-            }
+        private BoxMemoryType GetCurrentQuestType() {
+            return GetQuestType(_currentPhaseIndex);
+        }
 
-            return _index - 1;
+        private BoxMemoryType GetNextQuestType() {
+            return GetQuestType(_currentPhaseIndex + 1);
         }
 
         /// <summary>
         /// 次のフェイズに移行する
         /// </summary>
         private void TransitToNextPhase() {
-            ChangeQuestTypeShower();
-            
             //フェイズの内部のインデックスを足す
             _currentPhaseIndex++;
 
@@ -299,18 +244,10 @@ namespace MemoryTranser.Scripts.Game.Phase {
             SetBoxTypeProbWeights();
 
             //クエストのUIを更新
-            UpdateQuestTypeText();
+            questTypeShower.UpdateQuestText(GetNextQuestType());
 
             //GameStateをReadyに変更
             GameFlowManager.I.ChangeGameState(GameState.Ready);
-        }
-
-        private BoxMemoryType GetQuestType(int phaseIndex) {
-            return _phaseCores[phaseIndex].QuestType;
-        }
-
-        private BoxMemoryType GetCurrentQuestType() {
-            return GetQuestType(_currentPhaseIndex);
         }
 
         private void SetBoxTypeProbWeights() {
@@ -323,95 +260,6 @@ namespace MemoryTranser.Scripts.Game.Phase {
             }
 
             memoryBoxManager.SetBoxTypeProbWeights(boxTypeWeights);
-        }
-        
-        //次のクエストを返す
-        private BoxMemoryType GetNextQuestType()
-        {
-            return GetQuestType(ValidAddIndex(_currentPhaseIndex, initialPhaseCount));
-        }
-
-        private BoxMemoryType GetOldQuestType()
-        {
-            return GetQuestType(ValidSubIndex(_currentPhaseIndex, initialPhaseCount));
-        }
-
-        //author:コメダ QuestTypeShowerのプレハブ作成
-        private void CreateQuestTypeShower()
-        {
-            for (var i = 0; i < numQtShower; i++)
-            {
-                var qtShower = Instantiate(prefabQuestTypeShower);
-                qtShower.transform.position = i == 0 ? new Vector3(0, 0, 0) :
-                    i == 1 ? new Vector3(0, 200, 0) : new Vector3(0, -200, 0);
-                qtShower.transform.SetParent(uiCanvas.transform, false);
-                qtShowerList.Add(qtShower);
-            }
-        }
-
-        private void ChangeQuestTypeShower()
-        {
-            //for (var i = 0; i < numQtShower; i++) qtShowerList[i].SetQuestTypeText(GetCurrentQuestType());
-            qtShowerList[phaseCount % 3].ChangeToNext(ChooseQuestTxt(GetNextQuestType()));
-            qtShowerList[(phaseCount + 1) % 3].ChangeToNow(ChooseQuestTxt(GetCurrentQuestType()));
-            qtShowerList[(phaseCount + 2) % 3].ChangeToOld(ChooseQuestTxt(GetOldQuestType()));
-            phaseCount++;
-        }
-
-        private string ChooseQuestTxt(BoxMemoryType boxMemoryType)
-        {
-            QuestText questTextChoosed = null;
-            string questTextChoosedPainted = null;
-            switch (boxMemoryType)
-            {
-                case BoxMemoryType.Math:
-                    questTextChoosed = mathTxts[Random.Range(0, mathTxts.Count - 1)];
-                    questTextChoosedPainted =
-                        $"{questTextChoosed.startTxt}<color=#{mathColor}>{questTextChoosed.mainTxt}</color>{questTextChoosed.finalTxt}";
-                    break;
-                case BoxMemoryType.Japanese:
-                    questTextChoosed = jpnTxts[Random.Range(0, jpnTxts.Count - 1)];
-                    questTextChoosedPainted =
-                        $"{questTextChoosed.startTxt}<color=#{jpnColor}>{questTextChoosed.mainTxt}</color>{questTextChoosed.finalTxt}";
-                    break;
-                case BoxMemoryType.English:
-                    questTextChoosed = engTxts[Random.Range(0, engTxts.Count - 1)];
-                    questTextChoosedPainted =
-                        $"{questTextChoosed.startTxt}<color=#{engColor}>{questTextChoosed.mainTxt}</color>{questTextChoosed.finalTxt}";
-                    break;
-                case BoxMemoryType.SocialStudies:
-                    questTextChoosed = socialTxts[Random.Range(0, socialTxts.Count - 1)];
-                    questTextChoosedPainted =
-                        $"{questTextChoosed.startTxt}<color=#{socialColor}>{questTextChoosed.mainTxt}</color>{questTextChoosed.finalTxt}";
-                    break;
-                case BoxMemoryType.Science:
-                    questTextChoosed = scienceTxts[Random.Range(0, scienceTxts.Count - 1)];
-                    questTextChoosedPainted =
-                        $"{questTextChoosed.startTxt}<color=#{scienceColor}>{questTextChoosed.mainTxt}</color>{questTextChoosed.finalTxt}";
-                    break;
-                case BoxMemoryType.Trivia:
-                    questTextChoosed = triviaTxts[Random.Range(0, triviaTxts.Count - 1)];
-                    questTextChoosedPainted =
-                        $"{questTextChoosed.startTxt}<color=#{triviaColor}>{questTextChoosed.mainTxt}</color>{questTextChoosed.finalTxt}";
-                    break;
-                case BoxMemoryType.Moral:
-                    questTextChoosed = moralTxts[Random.Range(0, moralTxts.Count - 1)];
-                    questTextChoosedPainted =
-                        $"{questTextChoosed.startTxt}<color=#{moralColor}>{questTextChoosed.mainTxt}</color>{questTextChoosed.finalTxt}";
-                    break;
-                case BoxMemoryType.Music:
-                    questTextChoosed = musicTxts[Random.Range(0, musicTxts.Count - 1)];
-                    questTextChoosedPainted =
-                        $"{questTextChoosed.startTxt}<color=#{musicColor}>{questTextChoosed.mainTxt}</color>{questTextChoosed.finalTxt}";
-                    break;
-                case BoxMemoryType.Life:
-                    questTextChoosed = lifeTxts[Random.Range(0, lifeTxts.Count - 1)];
-                    questTextChoosedPainted =
-                        $"{questTextChoosed.startTxt}<color=#{lifeColor}>{questTextChoosed.mainTxt}</color>{questTextChoosed.finalTxt}";
-                    break;
-            }
-
-            return questTextChoosedPainted;
         }
 
         #endregion

@@ -232,6 +232,9 @@ namespace MemoryTranser.Scripts.Game.Phase {
         /// 次のフェイズに移行する
         /// </summary>
         private void TransitToNextPhase() {
+            //クエストのUIを更新
+            questTypeShower.UpdateQuestText(GetAfterNextQuestType());
+
             //フェイズの内部のインデックスを足す
             _currentPhaseIndex++;
 
@@ -246,9 +249,6 @@ namespace MemoryTranser.Scripts.Game.Phase {
 
             //MemoryBoxの生成確率を更新
             SetBoxTypeProbWeights();
-
-            //クエストのUIを更新
-            questTypeShower.UpdateQuestText(GetAfterNextQuestType());
 
             //GameStateをReadyに変更
             GameFlowManager.I.ChangeGameState(GameState.Ready);

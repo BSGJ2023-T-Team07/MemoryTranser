@@ -1,8 +1,6 @@
 using System;
 using MemoryTranser.Scripts.Game.MemoryBox;
 using MemoryTranser.Scripts.Game.Util;
-using TMPro;
-using TMPro.EditorUtilities;
 using UnityEngine;
 
 namespace MemoryTranser.Scripts.Game.GameManagers {

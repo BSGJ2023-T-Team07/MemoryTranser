@@ -175,8 +175,8 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
         /// 引数の記憶の色にテキストを塗る
         /// </summary>
         /// <param name="memoryType"></param>
-        /// <param name="defaultFontSize"></param>
-        /// <param name="additionalFontSize"></param>
+        /// <param name="defaultFontSize">普通の文字の大きさ</param>
+        /// <param name="additionalFontSize">色付き文字と普通の文字の大きさの差</param>
         /// <returns></returns>
         public string GetPaintedText(BoxMemoryType memoryType, float defaultFontSize, float additionalFontSize) {
             return

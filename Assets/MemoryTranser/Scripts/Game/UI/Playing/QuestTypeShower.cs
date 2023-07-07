@@ -130,7 +130,7 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
             imageArray[DOWN].DOFade(0f, questTransitionDuration);
             textArray[DOWN].DOFade(0f, questTransitionDuration)
                 .OnComplete(() => {
-                    //表示が消えきったら、opに戻す
+                    //表示が消えきったら、Topに戻す
                     transformArray[DOWN].localPosition = _topObjectPos;
                     transformArray[DOWN].localScale = _topObjectScale;
                     transformArray[DOWN].gameObject.SetActive(false);

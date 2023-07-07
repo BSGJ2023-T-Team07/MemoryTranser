@@ -2,6 +2,7 @@ using System;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.Menu;
 using MemoryTranser.Scripts.Game.Sound;
+using MemoryTranser.Scripts.Game.UI.Playing;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;

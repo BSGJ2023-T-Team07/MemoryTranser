@@ -3,7 +3,7 @@ using MemoryTranser.Scripts.Game.Menu;
 using TMPro;
 using UnityEngine;
 
-namespace MemoryTranser.Scripts.Game.UI {
+namespace MemoryTranser.Scripts.Game.UI.Playing {
     public class MenuShower : MonoBehaviour {
         [SerializeField] private GameObject pauseBackGround;
 

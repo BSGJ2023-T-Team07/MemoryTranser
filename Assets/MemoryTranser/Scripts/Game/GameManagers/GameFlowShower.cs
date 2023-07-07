@@ -17,11 +17,9 @@ namespace MemoryTranser.Scripts.Game.GameManagers {
 
         public Sequence CountdownSequence => _countdownSequence;
 
-        private void Awake() {
-            pauseBackGround.SetActive(true);
-        }
-
         private void Start() {
+            pauseBackGround.SetActive(true);
+
             _countdownSequence = DOTween.Sequence();
 
             _countdownSequence.Append(DOVirtual.Int(COUNTDOWN_SEC, 0, COUNTDOWN_SEC,

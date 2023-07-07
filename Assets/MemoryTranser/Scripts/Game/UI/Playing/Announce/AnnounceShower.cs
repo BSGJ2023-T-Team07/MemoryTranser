@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 
 namespace MemoryTranser.Scripts.Game.UI.Playing.Announce {
-    public class AnnounceManager : SingletonMonoBehaviour<AnnounceManager> {
+    public class AnnounceShower : SingletonMonoBehaviour<AnnounceShower> {
         protected override bool DontDestroy => false;
 
         [SerializeField] private TextMeshProUGUI announceText0;
@@ -16,6 +16,11 @@ namespace MemoryTranser.Scripts.Game.UI.Playing.Announce {
         private Queue<string> _announceTextQueue = new();
 
         private const int MAX_ANNOUNCE_TEXT_COUNT = 53;
+
+        protected override void Awake() {
+            base.Awake();
+            announceText0.enableWordWrapping = false;
+        }
 
         private void FixedUpdate() {
             announceTextTransform.position += Vector3.left * announceMoveSpeed;
@@ -32,7 +37,7 @@ namespace MemoryTranser.Scripts.Game.UI.Playing.Announce {
             announceText0.text = "";
 
             while (true) {
-                if (announceText0.text.Length + textUnitLength > MAX_ANNOUNCE_TEXT_COUNT) {
+                if (announceText0.text.Length + textUnitLength > MAX_ANNOUNCE_TEXT_COUNT * 10) {
                     break;
                 }
 

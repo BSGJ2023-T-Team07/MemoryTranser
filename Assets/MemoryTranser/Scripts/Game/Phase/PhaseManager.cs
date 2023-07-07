@@ -184,6 +184,8 @@ namespace MemoryTranser.Scripts.Game.Phase {
             SetBoxTypeProbWeights();
 
             memoryBoxManager.GenerateMemoryBoxes();
+
+            questTypeShower.InitializeQuestText(GetCurrentQuestType(), GetNextQuestType());
         }
 
         private void ResetPhaseRemainingTime() {
@@ -210,8 +212,20 @@ namespace MemoryTranser.Scripts.Game.Phase {
             scoreShower.SetScoreText(_currentTotalScore);
         }
 
-        private void UpdateQuestTypeText() {
-            questTypeShower.SetQuestTypeText(GetCurrentQuestType());
+        private BoxMemoryType GetQuestType(int phaseIndex) {
+            return _phaseCores[phaseIndex].QuestType;
+        }
+
+        private BoxMemoryType GetCurrentQuestType() {
+            return GetQuestType(_currentPhaseIndex);
+        }
+
+        private BoxMemoryType GetNextQuestType() {
+            return GetQuestType(_currentPhaseIndex + 1);
+        }
+
+        private BoxMemoryType GetAfterNextQuestType() {
+            return GetQuestType(_currentPhaseIndex + 2);
         }
 
         /// <summary>
@@ -234,18 +248,10 @@ namespace MemoryTranser.Scripts.Game.Phase {
             SetBoxTypeProbWeights();
 
             //クエストのUIを更新
-            UpdateQuestTypeText();
+            questTypeShower.UpdateQuestText(GetAfterNextQuestType());
 
             //GameStateをReadyに変更
             GameFlowManager.I.ChangeGameState(GameState.Ready);
-        }
-
-        private BoxMemoryType GetQuestType(int phaseIndex) {
-            return _phaseCores[phaseIndex].QuestType;
-        }
-
-        private BoxMemoryType GetCurrentQuestType() {
-            return GetQuestType(_currentPhaseIndex);
         }
 
         private void SetBoxTypeProbWeights() {

@@ -21,8 +21,8 @@ namespace MemoryTranser.Scripts.Game.UI.Debug {
 
         private void UpdateFairyText() {
             text.text = $"{_core}" + $"State: {fairyCore.MyState}\n" +
-                        $"WalkSpeed: {fairyCore.MyParameters.WalkSpeed:0.00:}\n" +
-                        $"ThrowPower: {fairyCore.MyParameters.ThrowPower:0.00:}\n" +
+                        $"WalkSpeed: {fairyCore.MyParameters.WalkSpeed:0.00}\n" +
+                        $"ThrowPower: {fairyCore.MyParameters.ThrowPower:0.00}\n" +
                         $"ComboCount: {fairyCore.CurrentComboCount}\n" +
                         $"BlinkTicketCount: {fairyCore.BlinkTicketCount}\n" +
                         $"InputVelocity: {fairyCore.InputWalkDirection}\n" +
@@ -31,7 +31,7 @@ namespace MemoryTranser.Scripts.Game.UI.Debug {
                         $"IsBlinkRecovered: {fairyCore.IsBlinkRecovered}\n" +
                         $"IsTouchingSphereBox: {fairyCore.ApplyCancelingBlink}\n" +
                         $"IsControllable: {fairyCore.IsControllable}\n" +
-                        $"NowInputSecToOutput: {fairyCore.NowInputSecToOutput:.00:}\n";
+                        $"NowInputSecToOutput: {fairyCore.NowInputSecToOutput:.00}\n";
         }
     }
 }

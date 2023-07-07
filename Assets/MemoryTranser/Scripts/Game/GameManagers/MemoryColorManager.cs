@@ -43,9 +43,11 @@ namespace MemoryTranser.Scripts.Game.GameManagers {
         [Space] [SerializeField] private string lifeMainColorCode;
         [SerializeField] private string lifeSubColorCode;
         [SerializeField] private Material lifeTextMaterial;
+
         private static readonly int FaceColor = Shader.PropertyToID("_FaceColor");
         private static readonly int OutlineColor = Shader.PropertyToID("_OutlineColor");
 
+#if UNITY_EDITOR
         private void OnValidate() {
             mathTextMaterial.SetColor(FaceColor,
                 ColorUtility.TryParseHtmlString($"#{mathMainColorCode}", out var color) ? color : Color.white);
@@ -92,11 +94,7 @@ namespace MemoryTranser.Scripts.Game.GameManagers {
             lifeTextMaterial.SetColor(OutlineColor,
                 ColorUtility.TryParseHtmlString($"#{lifeSubColorCode}", out color) ? color : Color.white);
         }
-
-        protected override void Awake() {
-            base.Awake();
-            OnValidate();
-        }
+#endif
 
         public string GetTextMaterialName(BoxMemoryType memoryType) {
             return memoryType switch {

@@ -5365,7 +5365,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4581010340769217123, guid: 70740b46c3cea514288136fb49b440ff, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6745425310972273930, guid: 70740b46c3cea514288136fb49b440ff, type: 3}
       propertyPath: m_Volume
@@ -6038,6 +6038,10 @@ PrefabInstance:
     - target: {fileID: 5057982732802318050, guid: 6bdb243284348a847b3854ceb4aa5cf1, type: 3}
       propertyPath: m_Name
       value: MemoryColorManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 5057982732802318050, guid: 6bdb243284348a847b3854ceb4aa5cf1, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7176,7 +7180,7 @@ PrefabInstance:
       objectReference: {fileID: 2131254437}
     - target: {fileID: 1454199774511658284, guid: 9930826d5183e3b45be23ef3b9989cc8, type: 3}
       propertyPath: phaseDuration
-      value: 3
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 1454199774511658284, guid: 9930826d5183e3b45be23ef3b9989cc8, type: 3}
       propertyPath: questTypeShower
@@ -7480,6 +7484,10 @@ PrefabInstance:
     - target: {fileID: 3107563300686974611, guid: 0298d3e2d8816804d96c33d102bbb963, type: 3}
       propertyPath: m_Name
       value: QuestTypeShower
+      objectReference: {fileID: 0}
+    - target: {fileID: 3107563300686974611, guid: 0298d3e2d8816804d96c33d102bbb963, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

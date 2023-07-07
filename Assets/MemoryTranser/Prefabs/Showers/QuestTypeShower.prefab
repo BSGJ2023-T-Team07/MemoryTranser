@@ -45,10 +45,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   additionalFontSize: 10
-  nextQuestTypeObject: {fileID: 0}
-  nextQuestTypeText: {fileID: 0}
-  currentQuestTypeObject: {fileID: 0}
-  currentQuestTypeText: {fileID: 0}
+  questTransitionDuration: 1
+  topStartQuestObject: {fileID: 0}
+  topStartQuestImage: {fileID: 0}
+  topStartQuestText: {fileID: 0}
+  middleStartQuestObject: {fileID: 0}
+  middleStartQuestImage: {fileID: 0}
+  middleStartQuestText: {fileID: 0}
+  downStartQuestObject: {fileID: 0}
+  downStartQuestImage: {fileID: 0}
+  downStartQuestText: {fileID: 0}
+  finishedQuestPosition: {fileID: 0}
   mathTexts:
   - startText: 
     mainText: "\u7A4D\u5206"

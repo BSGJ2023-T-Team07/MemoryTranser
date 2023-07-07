@@ -224,6 +224,10 @@ namespace MemoryTranser.Scripts.Game.Phase {
             return GetQuestType(_currentPhaseIndex + 1);
         }
 
+        private BoxMemoryType GetAfterNextQuestType() {
+            return GetQuestType(_currentPhaseIndex + 2);
+        }
+
         /// <summary>
         /// 次のフェイズに移行する
         /// </summary>
@@ -244,7 +248,7 @@ namespace MemoryTranser.Scripts.Game.Phase {
             SetBoxTypeProbWeights();
 
             //クエストのUIを更新
-            questTypeShower.UpdateQuestText(GetNextQuestType());
+            questTypeShower.UpdateQuestText(GetAfterNextQuestType());
 
             //GameStateをReadyに変更
             GameFlowManager.I.ChangeGameState(GameState.Ready);

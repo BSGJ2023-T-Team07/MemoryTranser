@@ -12,6 +12,9 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
     public class QuestTypeShower : MonoBehaviour {
         #region コンポーネントの定義
 
+        [Header("クエストの文章の背景のx軸の余白")] [SerializeField]
+        private float questTextPaddingX;
+
         [Header("色付き文字が通常文字よりどれだけ大きいか")] [SerializeField]
         private float additionalFontSize;
 
@@ -101,7 +104,13 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
 
         public void InitializeQuestText(BoxMemoryType currentMemoryType, BoxMemoryType nextMemoryType) {
             middleStartQuestText.text = GetRandomPaintedText(nextMemoryType);
+            middleStartQuestImage.rectTransform.sizeDelta = new Vector2(
+                middleStartQuestText.preferredWidth + questTextPaddingX * 2,
+                middleStartQuestImage.rectTransform.sizeDelta.y);
             downStartQuestText.text = GetRandomPaintedText(currentMemoryType);
+            downStartQuestImage.rectTransform.sizeDelta = new Vector2(
+                downStartQuestText.preferredWidth + questTextPaddingX * 2,
+                downStartQuestImage.rectTransform.sizeDelta.y);
         }
 
         public void UpdateQuestText(BoxMemoryType afterNextMemoryType) {
@@ -112,6 +121,8 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
 
             //クエストの文章を更新
             textArray[TOP].text = GetRandomPaintedText(afterNextMemoryType);
+            imageArray[TOP].rectTransform.sizeDelta = new Vector2(textArray[TOP].preferredWidth + questTextPaddingX * 2,
+                imageArray[TOP].rectTransform.sizeDelta.y);
 
             //TopのオブジェクトをMiddle動かす
             transformArray[TOP].gameObject.SetActive(true);

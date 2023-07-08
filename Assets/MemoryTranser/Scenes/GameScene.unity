@@ -7340,6 +7340,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BrainEventManager
       objectReference: {fileID: 0}
+    - target: {fileID: 7340172754084149184, guid: 0f89f8ad7a8058940bbd78d825e5e4ca, type: 3}
+      propertyPath: achievementOfStudyDurationSec
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 7589829636175659355, guid: 0f89f8ad7a8058940bbd78d825e5e4ca, type: 3}
       propertyPath: m_RootOrder
       value: -1
@@ -7603,6 +7607,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MemoryBoxManager
       objectReference: {fileID: 0}
+    - target: {fileID: 3016680030751130664, guid: e4c751194bcb0674981c4185ae84ea6d, type: 3}
+      propertyPath: phaseManager
+      value: 
+      objectReference: {fileID: 871197807}
     - target: {fileID: 3016680030751130664, guid: e4c751194bcb0674981c4185ae84ea6d, type: 3}
       propertyPath: desireManager
       value: 

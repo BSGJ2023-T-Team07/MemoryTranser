@@ -65,6 +65,7 @@ namespace MemoryTranser.Scripts.Game.Util {
                 BrainEventType.Blind => "ド忘れ",
                 BrainEventType.DesireOutbreak => "煩悩大量発生",
                 BrainEventType.InvertControl => "操作逆転",
+                BrainEventType.AchievementOfStudy => "勉強の成果",
                 _ => "error"
             };
         }

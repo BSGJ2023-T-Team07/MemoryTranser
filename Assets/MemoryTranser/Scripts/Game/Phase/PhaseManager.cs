@@ -145,6 +145,12 @@ namespace MemoryTranser.Scripts.Game.Phase {
             return (score, trueCount, falseCount);
         }
 
+        public PhaseCore[] GetNearPhases(int count) {
+            return _phaseCores
+                .GetRange(_currentPhaseIndex, count)
+                .ToArray();
+        }
+
         public (int, int) GetResultInformation() {
             var totalScore = _phaseCores.Sum(phase => phase.Score);
             var reachedPhaseCount = _currentPhaseIndex + 1;

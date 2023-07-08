@@ -21,6 +21,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         [SerializeField] private GameObject spawnArea;
         [SerializeField] private BoxTypeProbabilityShower boxTypeProbabilityShower;
         [SerializeField] private DesireManager desireManager;
+        [SerializeField] private PhaseManager phaseManager;
         [SerializeField] private BrainEventManager brainEventManager;
 
         #endregion
@@ -29,6 +30,12 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
         [Header("MemoryBoxの最大生成数")] [SerializeField]
         private int maxBoxGenerateCount;
+
+        [Header("勉強の成果イベントで考慮するフェイズの数")] [SerializeField]
+        private int nearPhasesCount;
+
+        [Header("勉強の成果イベントで消えるMemoryBoxの最大数")] [SerializeField]
+        private int maxDisappearBoxCountOnStudy;
 
         [Header("MemoryBoxの重さの最大値")] [SerializeField]
         private float maxWeight;
@@ -170,6 +177,28 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
                 foreach (var box in _allBoxes) {
                     if (box.MyState != MemoryBoxState.Disappeared) {
                         box.SmokeParticle.Play();
+                    }
+                }
+            });
+
+            //遷移したBrainEventが頭がスッキリだったらMemoryBoxを一部消す、というイベントを購読する
+            brainEventManager.OnBrainEventTransition.Where(x => x == BrainEventType.AchievementOfStudy).Subscribe(_ => {
+                var nearPhases = phaseManager.GetNearPhases(nearPhasesCount);
+                var nearMemoryTypes = nearPhases.Select(x => x.QuestType).ToArray();
+                var currentDisappearCount = 0;
+
+                foreach (var box in _allBoxes) {
+                    if (box.MyState == MemoryBoxState.Disappeared) {
+                        continue;
+                    }
+
+                    if (!nearMemoryTypes.Contains(box.BoxMemoryType)) {
+                        ApplyRandomParameterForMemoryBox(box);
+                        currentDisappearCount++;
+                    }
+
+                    if (currentDisappearCount >= maxDisappearBoxCountOnStudy) {
+                        break;
                     }
                 }
             });

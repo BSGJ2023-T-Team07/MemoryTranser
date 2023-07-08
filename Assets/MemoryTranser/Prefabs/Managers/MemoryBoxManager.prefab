@@ -24,7 +24,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2074685894923220524}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -49,11 +49,14 @@ MonoBehaviour:
   spawnArea: {fileID: 6035145267203715587}
   boxTypeProbabilityShower: {fileID: 0}
   desireManager: {fileID: 0}
+  phaseManager: {fileID: 0}
   brainEventManager: {fileID: 0}
   maxBoxGenerateCount: 30
+  nearPhasesCount: 3
+  maxDisappearBoxCountOnStudy: 5
   maxWeight: 2
   minWeight: 0.8
-  generateIntervalSec: 3
+  generateIntervalSec: 1
   sphereBoxWeightMagnification: 5
 --- !u!1 &6035145267203715587
 GameObject:

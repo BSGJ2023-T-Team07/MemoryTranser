@@ -4,6 +4,7 @@ namespace MemoryTranser.Scripts.Game.BrainEvent {
         Blind,
         DesireOutbreak,
         InvertControl,
+        AchievementOfStudy,
 
         //以上の要素の数を取得できる
         Count

@@ -45,3 +45,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selectDurationSec: 15
+  achievementOfStudyDurationSec: 5

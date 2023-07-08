@@ -7,8 +7,11 @@ using Random = UnityEngine.Random;
 
 namespace MemoryTranser.Scripts.Game.BrainEvent {
     public class BrainEventManager : MonoBehaviour, IOnStateChangedToInitializing, IOnStateChangedToResult {
-        [Header("ギミックの抽選の間隔(秒)")] [SerializeField]
-        private float selectDurationSec = 10f;
+        [Header("ギミックの抽選と継続の間隔(秒)")] [SerializeField]
+        private float selectDurationSec;
+
+        [Header("勉強の成果イベントのギミック継続時間")] [SerializeField]
+        private float achievementOfStudyDurationSec;
 
         private List<BrainEventType> _brainEvents = new();
 
@@ -30,20 +33,27 @@ namespace MemoryTranser.Scripts.Game.BrainEvent {
                 _remainingTimeForReSelection -= Time.deltaTime;
 
                 if (_remainingTimeForReSelection < 0f) {
-                    _remainingTimeForReSelection = selectDurationSec;
-                    TransitToNextBrainEvent();
+                    TransitToNextBrainEvent(out var nextBrainEvent);
+
+                    //イベントによって継続時間を変える
+                    _remainingTimeForReSelection = nextBrainEvent switch {
+                        BrainEventType.AchievementOfStudy => achievementOfStudyDurationSec,
+                        _ => selectDurationSec
+                    };
                 }
             }
         }
 
         #endregion
 
-        private void TransitToNextBrainEvent() {
-            var nextBrainEvent = SelectNextBrainEvent();
-            _brainEvents.Add(nextBrainEvent);
-            _onBrainEventTransition.Value = nextBrainEvent;
-            BrainEventTypeShower.SetBrainEventTypeText(nextBrainEvent);
+        private void TransitToNextBrainEvent(out BrainEventType nextBrainEvent) {
+            var thisNextBrainEvent = SelectNextBrainEvent();
+            _brainEvents.Add(thisNextBrainEvent);
+            _onBrainEventTransition.Value = thisNextBrainEvent;
+            BrainEventTypeShower.SetBrainEventTypeText(thisNextBrainEvent);
             _currentBrainEventIndex++;
+
+            nextBrainEvent = thisNextBrainEvent;
         }
 
         private BrainEventType SelectNextBrainEvent() {

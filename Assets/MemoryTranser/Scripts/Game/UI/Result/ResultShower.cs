@@ -25,8 +25,6 @@ namespace MemoryTranser.Scripts.Game.UI.Result {
         }
 
         public void OnGameAwake() {
-            resultLayer.SetActive(true);
-
             pauseBackGround.SetActive(false);
             resultPaper.SetActive(false);
             resultPaperStamp.SetActive(false);
@@ -39,8 +37,6 @@ namespace MemoryTranser.Scripts.Game.UI.Result {
             reachedPhaseCountText.gameObject.SetActive(false);
             reachedMaxComboCountText.gameObject.SetActive(false);
             backToTitleText.gameObject.SetActive(false);
-
-            resultLayer.SetActive(false);
         }
 
         public void ShowResult(int totalScore, int reachedPhaseCount, int reachedMaxComboCount) {

@@ -14,6 +14,7 @@ namespace MemoryTranser.Scripts.Game.Phase {
 
         [SerializeField] private QuestTypeShower questTypeShower;
         [SerializeField] private ScoreShower scoreShower;
+        [SerializeField] private PhaseTimerShower phaseTimerShower;
         [SerializeField] private MemoryBoxManager memoryBoxManager;
 
         #endregion
@@ -51,15 +52,11 @@ namespace MemoryTranser.Scripts.Game.Phase {
 
         #endregion
 
-        #region プロパティーの定義
-
-        public float RemainingTime => _phaseRemainingTime;
-
-        #endregion
-
         #region Unityから呼ばれる
 
         private void Update() {
+            phaseTimerShower.SetPhaseRemainingTimeText(_phaseRemainingTime);
+
             if (GameFlowManager.I.CurrentGameState != GameState.Playing) {
                 return;
             }
@@ -187,11 +184,17 @@ namespace MemoryTranser.Scripts.Game.Phase {
                 _phaseCores.Add(phaseCore);
             }
 
+            //MemoryBoxの発生確率に関わるフェイズの数だけ、MemoryBoxの種類の重みを設定する
             SetBoxTypeProbWeights();
 
+            //確率に応じてMemoryBoxの生成を行う
             memoryBoxManager.GenerateMemoryBoxes();
 
+            //クエストの文章の初期化
             questTypeShower.InitializeQuestText(GetCurrentQuestType(), GetNextQuestType());
+
+            //経過したフェイズの数のUIを更新
+            phaseTimerShower.SetPassedPhaseCountText(_currentPhaseIndex + 1);
         }
 
         private void ResetPhaseRemainingTime() {
@@ -240,6 +243,9 @@ namespace MemoryTranser.Scripts.Game.Phase {
         private void TransitToNextPhase() {
             //クエストのUIを更新
             questTypeShower.UpdateQuestText(GetAfterNextQuestType());
+
+            //経過したフェイズの数のUIを更新
+            phaseTimerShower.SetPassedPhaseCountText(_currentPhaseIndex + 1);
 
             //フェイズの内部のインデックスを足す
             _currentPhaseIndex++;

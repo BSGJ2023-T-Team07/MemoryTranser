@@ -4,11 +4,15 @@ using UnityEngine;
 
 namespace MemoryTranser.Scripts.Game.UI.Playing {
     public class PhaseTimerShower : MonoBehaviour {
-        [SerializeField] private TextMeshProUGUI text;
-        [SerializeField] private PhaseManager phaseManager;
+        [SerializeField] private TextMeshProUGUI phaseRemainingTimeText;
+        [SerializeField] private TextMeshProUGUI passedPhaseCountText;
 
-        private void Update() {
-            text.SetText($"現在のフェイズの残り時間 : {phaseManager.RemainingTime:0}");
+        public void SetPhaseRemainingTimeText(float remainingTime) {
+            phaseRemainingTimeText.SetText($"{remainingTime:0}");
+        }
+
+        public void SetPassedPhaseCountText(int passedPhaseCount) {
+            passedPhaseCountText.SetText($"{passedPhaseCount}");
         }
     }
 }

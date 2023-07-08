@@ -72,6 +72,7 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
         #endregion
 
         private void Awake() {
+            //クエストの文章に空文字列を入れる
             middleStartQuestText.text = "";
             downStartQuestText.text = "";
 
@@ -86,6 +87,7 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
             _middleObjectScale = middleStartQuestObject.transform.localScale;
             _downObjectScale = downStartQuestObject.transform.localScale;
 
+            //初期フォントサイズを保存
             _defaultFontSize = downStartQuestText.fontSize;
 
             //キューに入れるのはこの順番でなければならない
@@ -103,11 +105,14 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
         }
 
         public void InitializeQuestText(BoxMemoryType currentMemoryType, BoxMemoryType nextMemoryType) {
+            //クエストの文章を更新
             middleStartQuestText.text = GetRandomPaintedText(nextMemoryType);
+            downStartQuestText.text = GetRandomPaintedText(currentMemoryType);
+
+            //文章の長さによって背景画像のサイズを変更
             middleStartQuestImage.rectTransform.sizeDelta = new Vector2(
                 middleStartQuestText.preferredWidth + questTextPaddingX * 2,
                 middleStartQuestImage.rectTransform.sizeDelta.y);
-            downStartQuestText.text = GetRandomPaintedText(currentMemoryType);
             downStartQuestImage.rectTransform.sizeDelta = new Vector2(
                 downStartQuestText.preferredWidth + questTextPaddingX * 2,
                 downStartQuestImage.rectTransform.sizeDelta.y);
@@ -121,6 +126,8 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
 
             //クエストの文章を更新
             textArray[TOP].text = GetRandomPaintedText(afterNextMemoryType);
+
+            //文章の長さによって背景画像のサイズを変更
             imageArray[TOP].rectTransform.sizeDelta = new Vector2(textArray[TOP].preferredWidth + questTextPaddingX * 2,
                 imageArray[TOP].rectTransform.sizeDelta.y);
 

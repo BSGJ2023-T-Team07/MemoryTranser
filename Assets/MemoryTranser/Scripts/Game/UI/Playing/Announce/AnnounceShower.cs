@@ -13,6 +13,8 @@ namespace MemoryTranser.Scripts.Game.UI.Playing.Announce {
         [Header("アナウンスの流れる速さ")] [SerializeField]
         private float announceMoveSpeed;
 
+        private Vector3 _defaultAnnounceTextPosition;
+
         private Queue<string> _announceTextQueue = new();
 
         private const int MAX_ANNOUNCE_TEXT_COUNT = 53;
@@ -20,6 +22,8 @@ namespace MemoryTranser.Scripts.Game.UI.Playing.Announce {
         protected override void Awake() {
             base.Awake();
             announceText0.enableWordWrapping = false;
+
+            _defaultAnnounceTextPosition = announceTextTransform.localPosition;
         }
 
         private void FixedUpdate() {

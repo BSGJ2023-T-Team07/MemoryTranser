@@ -24,6 +24,8 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
         [HideInInspector] public bool isOutput;
 
+        private Renderer _particleRenderer;
+
         private BoxMemoryType _boxMemoryType = new();
         private MemoryBoxShapeType _boxShapeType = new();
         private MemoryBoxState _myState = new();
@@ -92,6 +94,16 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
                 }
 
                 return trail;
+            }
+        }
+
+        public Renderer ParticleRenderer {
+            get {
+                if (!_particleRenderer) {
+                    _particleRenderer = SmokeParticle.GetComponent<Renderer>();
+                }
+
+                return _particleRenderer;
             }
         }
 
@@ -194,6 +206,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             Rb2D.velocity = Vector2.zero;
             Cc2D.enabled = false;
             SpRr.sortingLayerID = SortingLayer.NameToID("ForeFairy");
+            ParticleRenderer.sortingLayerID = SortingLayer.NameToID("ForeFairy");
         }
 
         public void BeThrown(float throwPower, Vector2 throwDirection) {

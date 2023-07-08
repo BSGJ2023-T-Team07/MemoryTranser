@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using MemoryTranser.Scripts.Game.BrainEvent;
 using MemoryTranser.Scripts.Game.Desire;
 using MemoryTranser.Scripts.Game.GameManagers;
+using MemoryTranser.Scripts.Game.Phase;
 using MemoryTranser.Scripts.Game.UI.Debug;
 using MemoryTranser.Scripts.Game.Util;
 using UnityEngine;
@@ -57,9 +60,20 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             Debug.Log($"ID{box.BoxId}のMemoryBoxをAppearさせます");
             box.isOutput = false;
             box.Trail.enabled = false;
+
+            var nowColor = box.SpRr.color;
+            box.SpRr.color = new Color(nowColor.r, nowColor.g, nowColor.b, 0);
             box.SpRr.enabled = true;
+            box.SpRr.DOFade(1f, 0.5f);
+
+            var myTransform = box.transform;
+            var nowScale = myTransform.localScale;
+            myTransform.localScale = Vector3.zero;
+            myTransform.DOScale(nowScale, 0.5f);
+
             box.Cc2D.isTrigger = false;
             box.Cc2D.enabled = true;
+
             box.MyState = MemoryBoxState.PlacedOnLevel;
         }
 

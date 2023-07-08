@@ -99,6 +99,14 @@ namespace MemoryTranser.Scripts.Game.Output {
                     TakahideShower.I.ChangeTakahideImage(TakahideState.Sad);
                     SeManager.I.Play(SEs.OutputFalse);
                     break;
+                case 0:
+                    if (trueCount == 0) {
+                        break;
+                    }
+
+                    TakahideShower.I.ChangeTakahideImage(TakahideState.Inspiration);
+                    //TODO:ちゃんと記憶を設置してるのに点数が0だったときのSEを用意したい
+                    break;
             }
         }
 

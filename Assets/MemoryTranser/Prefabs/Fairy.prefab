@@ -265,6 +265,7 @@ MonoBehaviour:
   animator: {fileID: 3581967026774715049}
   spRr: {fileID: 958714052861761041}
   boxCollider2D: {fileID: 4914608097843609349}
+  playerInput: {fileID: 8073110865618226502}
   memoryBoxHolderBottom: {fileID: 1085378162422806380}
   throwDirectionArrowSpRr: {fileID: 136847129894747462}
   brainEventManager: {fileID: 0}
@@ -275,7 +276,7 @@ MonoBehaviour:
     maxThrowPower: 10
     minThrowPower: 0
     initialThrowPower: 10
-  stunDurationSec: 3
+  stunDurationSec: 2
   selectDirectionArrowThreshold: 0.12
   holdableDistance: 2.5
   additionalBlinkTicketOnDefeatDesire: 1
@@ -287,7 +288,7 @@ MonoBehaviour:
   blinkRecoverSec: 0.2
   pushBoxPowerMultiplier: 4
   precedeBlinkDirectionInputSec: 0.3
-  necessaryInputSecToOutput: 0.6
+  necessaryInputSecToOutput: 0.4
 --- !u!114 &8073110865618226502
 MonoBehaviour:
   m_ObjectHideFlags: 0

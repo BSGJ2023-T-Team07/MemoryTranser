@@ -21,6 +21,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         [SerializeField] private Animator animator;
         [SerializeField] private SpriteRenderer spRr;
         [SerializeField] private BoxCollider2D boxCollider2D;
+        [SerializeField] private PlayerInput playerInput;
         [SerializeField] private Transform memoryBoxHolderBottom;
         [SerializeField] private SpriteRenderer throwDirectionArrowSpRr;
         [SerializeField] private BrainEventManager brainEventManager;
@@ -72,6 +73,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         private FairyState _myState;
         private MemoryBoxCore _holdingBox;
+        private InputAction _selectThrowingDirectionAction;
         private int _currentComboCount;
         private int _reachedMaxComboCount;
 
@@ -151,12 +153,33 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         private void Awake() {
             throwDirectionArrowSpRr.enabled = false;
+            _selectThrowingDirectionAction = playerInput.actions["SelectThrowingDirection"];
         }
 
         private void Update() {
             AnimationChange();
 
             UpdateFairyState();
+
+            #region 納品入力の処理
+
+            if (_isControllable && _selectThrowingDirectionAction.IsPressed()) {
+                var directionInput = _selectThrowingDirectionAction.ReadValue<Vector2>();
+
+                if (_isInOutputArea) {
+                    if (Vector2.Dot(directionInput, Vector2.down) > 0.6f) {
+                        _nowInputSecToOutput += Time.deltaTime;
+                    }
+
+                    if (_nowInputSecToOutput > necessaryInputSecToOutput &&
+                        Vector2.Dot(directionInput, Vector2.up) > 0.7f) {
+                        _nowInputSecToOutput = 0f;
+                        _onOutputInput.OnNext(Unit.Default);
+                    }
+                }
+            }
+
+            #endregion
 
             #region 煩悩によるスタンの処理
 
@@ -264,23 +287,11 @@ namespace MemoryTranser.Scripts.Game.Fairy {
                 return;
             }
 
-            var directionInput = context.ReadValue<Vector2>();
+            var directionInput = context.ReadValue<Vector2>().normalized;
 
             //もし操作逆転中なら、入力を反転させる
             if (_applyInvertingInput) {
                 directionInput = -directionInput;
-            }
-
-            if (_isInOutputArea) {
-                if (Vector2.Dot(directionInput, Vector2.down) > 0.6f) {
-                    _nowInputSecToOutput += Time.fixedDeltaTime;
-                }
-
-                if (_nowInputSecToOutput > necessaryInputSecToOutput &&
-                    Vector2.Dot(directionInput, Vector2.up) > 0.7f) {
-                    _nowInputSecToOutput = 0f;
-                    _onOutputInput.OnNext(Unit.Default);
-                }
             }
 
             //MemoryBoxを持っていないか、投げるための入力が不十分だったら何もしない

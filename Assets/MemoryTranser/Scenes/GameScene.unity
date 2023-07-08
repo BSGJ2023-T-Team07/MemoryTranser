@@ -5365,7 +5365,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4581010340769217123, guid: 70740b46c3cea514288136fb49b440ff, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6745425310972273930, guid: 70740b46c3cea514288136fb49b440ff, type: 3}
       propertyPath: m_Volume
@@ -5823,7 +5823,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.8537736, b: 0.8537736, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -6056,6 +6056,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 261203874}
     m_Modifications:
+    - target: {fileID: 527440071269027128, guid: 0181012239b104b408f637a689f6162d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 824379014067223295, guid: 0181012239b104b408f637a689f6162d, type: 3}
       propertyPath: m_Name
       value: OutputManager
@@ -7211,6 +7215,10 @@ PrefabInstance:
       propertyPath: boxTypeProbabilityShower
       value: 
       objectReference: {fileID: 1410846942}
+    - target: {fileID: 6035145267203715587, guid: e4c751194bcb0674981c4185ae84ea6d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8877105031233947374, guid: e4c751194bcb0674981c4185ae84ea6d, type: 3}
       propertyPath: m_RootOrder
       value: -1

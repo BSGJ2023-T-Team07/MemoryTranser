@@ -18,7 +18,10 @@ namespace MemoryTranser.Scripts.Game.Desire {
         [SerializeField] private Rigidbody2D rb2D;
         [SerializeField] private SpriteRenderer spRr;
         [SerializeField] private NavMeshAgent navMeshAgent;
-
+        
+        //author コメダ デザイア消失時のエフェクト
+            //[SerializeField] private 
+            
         #endregion
 
         #region 変数の定義
@@ -164,6 +167,7 @@ namespace MemoryTranser.Scripts.Game.Desire {
 
         public void BeAttacked() {
             _onBeAttacked.OnNext(Unit.Default);
+            //エフェクト処理を書く
             Disappear();
         }
     }

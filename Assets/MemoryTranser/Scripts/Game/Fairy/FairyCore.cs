@@ -24,6 +24,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         [SerializeField] private Transform memoryBoxHolderBottom;
         [SerializeField] private SpriteRenderer throwDirectionArrowSpRr;
         [SerializeField] private BrainEventManager brainEventManager;
+        [SerializeField] private ParticleSystem _particleSystem;
 
         #endregion
 
@@ -497,7 +498,9 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             _inputWalkDirection = Vector2.zero;
             CurrentComboCount = 0;
             _myState = FairyState.Freeze;
-
+            
+            _particleSystem.Play();
+            
             //高秀を悲しませる
             TakahideShower.I.ChangeTakahideImage(TakahideState.Sad);
 

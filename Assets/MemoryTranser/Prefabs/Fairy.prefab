@@ -102,7 +102,7 @@ Transform:
   - {fileID: 1150344982301594002}
   - {fileID: 5434448070040561178}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &958714052861761041
 SpriteRenderer:
@@ -267,6 +267,7 @@ MonoBehaviour:
   boxCollider2D: {fileID: 4914608097843609349}
   memoryBoxHolderBottom: {fileID: 1085378162422806380}
   throwDirectionArrowSpRr: {fileID: 136847129894747462}
+  brainEventManager: {fileID: 0}
   myParameters:
     maxWalkSpeed: 30
     minWalkSpeed: 0
@@ -409,25 +410,85 @@ MonoBehaviour:
     m_ActionId: d3479e7c-6982-4c3b-8529-05d31b6faf92
     m_ActionName: Player/Blink[/Keyboard/shift,/DualShock4GamepadHID/leftTrigger]
   - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 2148904e-2b02-4378-89cb-0e502e547956
-    m_ActionName: Player/OpenMenu[/DualShock4GamepadHID/start,/Keyboard/escape]
-  - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: MemoryTranser.Scripts.Game.UI.MenuManager, Assembly-CSharp
+        m_MethodName: OnCloseMenuInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 44f3fe45-da10-4139-a002-aae8a12dc2fb
-    m_ActionName: UI/CloseMenu[/DualShock4GamepadHID/start,/Keyboard/escape]
+    m_ActionName: UI/OpenOrCloseMenu[/DualShock4GamepadHID/start,/Keyboard/escape]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: MemoryTranser.Scripts.Game.UI.MenuManager, Assembly-CSharp
+        m_MethodName: OnUpInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 1efebdef-0f9e-4e1e-9698-d455d8b02594
-    m_ActionName: UI/Up[/DualShock4GamepadHID/dpad/up,/Keyboard/w,/Keyboard/upArrow]
+    m_ActionName: UI/Up[/DualShock4GamepadHID/dpad/up,/Mouse/scroll/y]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: MemoryTranser.Scripts.Game.UI.MenuManager, Assembly-CSharp
+        m_MethodName: OnDownInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 162b08aa-559c-4441-a2d8-b218e1639b60
-    m_ActionName: UI/Down[/DualShock4GamepadHID/dpad/down,/Keyboard/s,/Keyboard/downArrow]
+    m_ActionName: UI/Down[/DualShock4GamepadHID/dpad/down,/Mouse/scroll/y]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: MemoryTranser.Scripts.Game.UI.MenuManager, Assembly-CSharp
+        m_MethodName: OnDecideInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: cf4d54e2-c2dd-4e1c-b911-52c36c963ad4
     m_ActionName: UI/Decide[/DualShock4GamepadHID/buttonEast,/Keyboard/space]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: MemoryTranser.Scripts.Game.UI.MenuManager, Assembly-CSharp
+        m_MethodName: OnOpenMenuInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 2148904e-2b02-4378-89cb-0e502e547956
+    m_ActionName: Player/OpenMenu[/DualShock4GamepadHID/start,/Keyboard/escape]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player

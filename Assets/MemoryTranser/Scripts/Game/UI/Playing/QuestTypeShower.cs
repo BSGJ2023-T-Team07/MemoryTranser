@@ -131,7 +131,7 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
             imageArray[TOP].rectTransform.sizeDelta = new Vector2(textArray[TOP].preferredWidth + questTextPaddingX * 2,
                 imageArray[TOP].rectTransform.sizeDelta.y);
 
-            //TopのオブジェクトをMiddle動かす
+            //TopのオブジェクトをMiddleに動かす
             transformArray[TOP].gameObject.SetActive(true);
             transformArray[TOP].DOLocalMove(_middleObjectPos, questTransitionDuration).SetEase(Ease.InOutQuad);
             transformArray[TOP].DOScale(_middleObjectScale, questTransitionDuration).SetEase(Ease.InOutQuad);

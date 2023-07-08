@@ -96,7 +96,7 @@ namespace MemoryTranser.Scripts.Game.GameManagers {
         }
 #endif
 
-        public string GetTextMaterialName(BoxMemoryType memoryType) {
+        public static string GetTextMaterialName(BoxMemoryType memoryType) {
             return memoryType switch {
                 BoxMemoryType.Math => Constant.MATH_TEXT_MATERIAL_NAME,
                 BoxMemoryType.Japanese => Constant.JAPANESE_TEXT_MATERIAL_NAME,

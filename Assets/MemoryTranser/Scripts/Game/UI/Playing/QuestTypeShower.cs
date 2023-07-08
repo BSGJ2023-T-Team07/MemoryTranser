@@ -198,7 +198,7 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
         /// <returns></returns>
         public string GetPaintedText(BoxMemoryType memoryType, float defaultFontSize, float additionalFontSize) {
             return
-                $"{startText}<material={MemoryColorManager.I.GetTextMaterialName(memoryType)}><size={defaultFontSize + additionalFontSize}>{mainText}</size></material>{finalText}";
+                $"{startText}<material={MemoryColorManager.GetTextMaterialName(memoryType)}><size={defaultFontSize + additionalFontSize}>{mainText}</size></material>{finalText}";
         }
     }
 }

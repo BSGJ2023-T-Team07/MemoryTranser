@@ -2951,6 +2951,11 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 40}
   m_EdgeRadius: 0
+--- !u!198 &1163760112 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 3217258109736297965, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
+  m_PrefabInstance: {fileID: 2690472647546631218}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1206888008
 GameObject:
   m_ObjectHideFlags: 3
@@ -3115,11 +3120,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1241431521}
   m_CullTransparentMesh: 1
---- !u!198 &1265840918 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 3850159871874051136, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
-  m_PrefabInstance: {fileID: 2690472647546631218}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1288957706
 GameObject:
   m_ObjectHideFlags: 0
@@ -6474,7 +6474,7 @@ PrefabInstance:
     - target: {fileID: 9092670826081219663, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
       propertyPath: _particleSystem
       value: 
-      objectReference: {fileID: 1265840918}
+      objectReference: {fileID: 1163760112}
     - target: {fileID: 9092670826081219663, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
       propertyPath: brainEventManager
       value: 

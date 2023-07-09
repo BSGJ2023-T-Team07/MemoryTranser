@@ -166,6 +166,10 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             if (_isControllable && _selectThrowingDirectionAction.IsPressed()) {
                 var directionInput = _selectThrowingDirectionAction.ReadValue<Vector2>();
 
+                if (_applyInvertingInput) {
+                    directionInput = -directionInput;
+                }
+
                 if (_isInOutputArea) {
                     if (Vector2.Dot(directionInput, Vector2.down) > 0.6f) {
                         _nowInputSecToOutput += Time.deltaTime;

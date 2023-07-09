@@ -116,6 +116,15 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
             downStartQuestImage.rectTransform.sizeDelta = new Vector2(
                 downStartQuestText.preferredWidth + questTextPaddingX * 2,
                 downStartQuestImage.rectTransform.sizeDelta.y);
+
+
+            //Middleは半透明にしておく
+            var currentMiddleImageColor = middleStartQuestImage.color;
+            var currentMiddleTextColor = middleStartQuestText.color;
+            middleStartQuestImage.color = new Color(currentMiddleImageColor.r, currentMiddleImageColor.g,
+                currentMiddleImageColor.b, 0.5f);
+            middleStartQuestText.color = new Color(currentMiddleTextColor.r, currentMiddleTextColor.g,
+                currentMiddleTextColor.b, 0.5f);
         }
 
         public void UpdateQuestText(BoxMemoryType afterNextMemoryType) {
@@ -135,12 +144,14 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
             transformArray[TOP].gameObject.SetActive(true);
             transformArray[TOP].DOLocalMove(_middleObjectPos, questTransitionDuration).SetEase(Ease.InOutQuad);
             transformArray[TOP].DOScale(_middleObjectScale, questTransitionDuration).SetEase(Ease.InOutQuad);
-            imageArray[TOP].DOFade(1f, questTransitionDuration);
-            textArray[TOP].DOFade(1f, questTransitionDuration);
+            imageArray[TOP].DOFade(0.5f, questTransitionDuration);
+            textArray[TOP].DOFade(0.5f, questTransitionDuration);
 
             //MiddleのオブジェクトをDownに動かす
             transformArray[MIDDLE].DOLocalMove(_downObjectPos, questTransitionDuration).SetEase(Ease.InOutQuad);
             transformArray[MIDDLE].DOScale(_downObjectScale, questTransitionDuration).SetEase(Ease.InOutQuad);
+            imageArray[MIDDLE].DOFade(1f, questTransitionDuration);
+            textArray[MIDDLE].DOFade(1f, questTransitionDuration);
 
             //Downのオブジェクトを動かして表示を消す
             transformArray[DOWN].DOLocalMove(_finishedQuestPos, questTransitionDuration).SetEase(Ease.InOutQuad);

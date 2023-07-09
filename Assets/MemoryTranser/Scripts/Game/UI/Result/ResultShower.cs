@@ -29,9 +29,9 @@ namespace MemoryTranser.Scripts.Game.UI.Result {
             resultPaper.SetActive(false);
             resultPaperStamp.SetActive(false);
 
-            totalScoreText.text = "";
-            reachedPhaseCountText.text = "";
-            reachedMaxComboCountText.text = "";
+            totalScoreText.SetText("");
+            reachedPhaseCountText.SetText("");
+            reachedMaxComboCountText.SetText("");
 
             totalScoreText.gameObject.SetActive(false);
             reachedPhaseCountText.gameObject.SetActive(false);
@@ -44,9 +44,9 @@ namespace MemoryTranser.Scripts.Game.UI.Result {
             resultLayer.SetActive(true);
             resultPaper.SetActive(true);
 
-            totalScoreText.text = $"{totalScore}";
-            reachedPhaseCountText.text = $"{reachedPhaseCount}";
-            reachedMaxComboCountText.text = $"{reachedMaxComboCount}";
+            totalScoreText.SetText($"{totalScore}");
+            reachedPhaseCountText.SetText($"{reachedPhaseCount}");
+            reachedMaxComboCountText.SetText($"{reachedMaxComboCount}");
 
             resultAnimator.enabled = true;
             resultAnimator.Play("ResultShow");

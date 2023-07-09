@@ -1,14 +1,14 @@
-using System;
 using DG.Tweening;
+using MemoryTranser.Scripts.Game.GameManagers;
 using TMPro;
 using UnityEngine;
 
 namespace MemoryTranser.Scripts.Game.UI.Playing {
-    public class ScoreShower : MonoBehaviour {
+    public class ScoreShower : MonoBehaviour, IOnGameAwake {
         [SerializeField] private TextMeshProUGUI scoreText;
 
-        private void Awake() {
-            scoreText.text = "0";
+        public void OnGameAwake() {
+            scoreText.SetText("0");
         }
 
         public void SetScoreText(int newScore) {

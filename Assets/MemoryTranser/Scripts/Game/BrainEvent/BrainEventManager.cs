@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using MemoryTranser.Scripts.Game.GameManagers;
-using MemoryTranser.Scripts.Game.UI.Playing.Announce;
+using MemoryTranser.Scripts.Game.UI.Playing;
 using UniRx;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -36,10 +36,7 @@ namespace MemoryTranser.Scripts.Game.BrainEvent {
                     TransitToNextBrainEvent(out var nextBrainEvent);
 
                     //イベントによって継続時間を変える
-                    _remainingTimeForReSelection = nextBrainEvent switch {
-                        BrainEventType.AchievementOfStudy => achievementOfStudyDurationSec,
-                        _ => selectDurationSec
-                    };
+                    _remainingTimeForReSelection = GetSecForReselection(nextBrainEvent);
                 }
             }
         }
@@ -50,7 +47,7 @@ namespace MemoryTranser.Scripts.Game.BrainEvent {
             var thisNextBrainEvent = SelectNextBrainEvent();
             _brainEvents.Add(thisNextBrainEvent);
             _onBrainEventTransition.Value = thisNextBrainEvent;
-            BrainEventTypeShower.SetBrainEventTypeText(thisNextBrainEvent);
+            AnnounceShower.I.SetBrainEventTypeText(thisNextBrainEvent, GetSecForReselection(thisNextBrainEvent));
             _currentBrainEventIndex++;
 
             nextBrainEvent = thisNextBrainEvent;
@@ -67,6 +64,13 @@ namespace MemoryTranser.Scripts.Game.BrainEvent {
             }
 
             return nextBrainEvent;
+        }
+
+        private float GetSecForReselection(BrainEventType brainEventType) {
+            return brainEventType switch {
+                BrainEventType.AchievementOfStudy => achievementOfStudyDurationSec,
+                _ => selectDurationSec
+            };
         }
 
         private BrainEventType GetCurrentBrainEvent() {
@@ -86,7 +90,7 @@ namespace MemoryTranser.Scripts.Game.BrainEvent {
             _onBrainEventTransition.Value = initialBrainEvent;
             _brainEvents.Add(initialBrainEvent);
             _currentBrainEventIndex = 0;
-            BrainEventTypeShower.SetBrainEventTypeText(initialBrainEvent);
+            AnnounceShower.I.SetBrainEventTypeText(initialBrainEvent, GetSecForReselection(initialBrainEvent));
         }
 
         public void OnStateChangedToResult() {

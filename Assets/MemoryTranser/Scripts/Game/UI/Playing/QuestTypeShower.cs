@@ -73,8 +73,8 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
 
         private void Awake() {
             //クエストの文章に空文字列を入れる
-            middleStartQuestText.text = "";
-            downStartQuestText.text = "";
+            middleStartQuestText.SetText("");
+            downStartQuestText.SetText("");
 
             //初期位置を保存
             _topObjectPos = topStartQuestObject.transform.localPosition;
@@ -106,8 +106,8 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
 
         public void InitializeQuestText(BoxMemoryType currentMemoryType, BoxMemoryType nextMemoryType) {
             //クエストの文章を更新
-            middleStartQuestText.text = GetRandomPaintedText(nextMemoryType);
-            downStartQuestText.text = GetRandomPaintedText(currentMemoryType);
+            middleStartQuestText.SetText(GetRandomPaintedText(nextMemoryType));
+            downStartQuestText.SetText(GetRandomPaintedText(currentMemoryType));
 
             //文章の長さによって背景画像のサイズを変更
             middleStartQuestImage.rectTransform.sizeDelta = new Vector2(
@@ -125,7 +125,7 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
             var textArray = _texts.ToArray();
 
             //クエストの文章を更新
-            textArray[TOP].text = GetRandomPaintedText(afterNextMemoryType);
+            textArray[TOP].SetText(GetRandomPaintedText(afterNextMemoryType));
 
             //文章の長さによって背景画像のサイズを変更
             imageArray[TOP].rectTransform.sizeDelta = new Vector2(textArray[TOP].preferredWidth + questTextPaddingX * 2,

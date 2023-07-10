@@ -29,6 +29,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         private BoxMemoryType _boxMemoryType = new();
         private MemoryBoxShapeType _boxShapeType = new();
         private MemoryBoxState _myState = new();
+        private bool _isStateChangedToFlyingThisFrame;
         private float _weight;
         private int _boxId;
 
@@ -43,7 +44,6 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         public IObservable<Unit> OnDisappear => _onDisappear;
 
         #endregion
-
 
         #region プロパティーの定義
 
@@ -119,7 +119,13 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
         public MemoryBoxState MyState {
             get => _myState;
-            set => _myState = value;
+            set {
+                _myState = value;
+
+                if (value == MemoryBoxState.Flying) {
+                    _isStateChangedToFlyingThisFrame = true;
+                }
+            }
         }
 
         public float Weight {
@@ -136,16 +142,22 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
         #region Unityから呼ばれる
 
+        private void Update() {
+            if (_isStateChangedToFlyingThisFrame) {
+                _isStateChangedToFlyingThisFrame = false;
+            }
+        }
+
         private void FixedUpdate() {
             if (isOutput) {
                 return;
             }
 
-            if (_myState == MemoryBoxState.Held) {
+            if (MyState == MemoryBoxState.Held) {
                 transform.position = _holderTransform.position + (Vector3)Vector2.up * _diffFromHolder;
             }
 
-            if (_myState == MemoryBoxState.PlacedOnLevel) {
+            if (MyState == MemoryBoxState.PlacedOnLevel) {
                 //地面に置かれてる状態で大きい速度を持っていたら毎フレーム減速する
                 if (Rb2D.velocity.sqrMagnitude > Constant.DELTA) {
                     Rb2D.velocity *= 0.95f;
@@ -156,20 +168,20 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
                 }
             }
 
-            if (_boxShapeType == MemoryBoxShapeType.Sphere && _myState == MemoryBoxState.Flying) {
+            if (_boxShapeType == MemoryBoxShapeType.Sphere && MyState == MemoryBoxState.Flying) {
                 if (Rb2D.velocity.sqrMagnitude > Constant.DELTA) {
                     Rb2D.velocity *= 0.95f;
                 }
                 else {
                     Rb2D.velocity = Vector2.zero;
                     Trail.enabled = false;
-                    _myState = MemoryBoxState.PlacedOnLevel;
+                    MyState = MemoryBoxState.PlacedOnLevel;
                 }
             }
         }
 
         private void OnTriggerEnter2D(Collider2D other) {
-            if (_myState != MemoryBoxState.Flying) {
+            if (MyState != MemoryBoxState.Flying) {
                 return;
             }
 
@@ -188,7 +200,17 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         }
 
         private void OnCollisionEnter2D(Collision2D other) {
-            if (_myState == MemoryBoxState.Flying && other.gameObject.layer == LayerMask.NameToLayer("Desire")) {
+            if (MyState == MemoryBoxState.Flying && other.gameObject.layer == LayerMask.NameToLayer("Desire")) {
+                AttackDesire(other.gameObject.GetComponent<DesireCore>());
+            }
+        }
+
+        private void OnCollisionStay2D(Collision2D other) {
+            if (other.gameObject.layer != LayerMask.NameToLayer("Desire")) {
+                return;
+            }
+
+            if (_isStateChangedToFlyingThisFrame) {
                 AttackDesire(other.gameObject.GetComponent<DesireCore>());
             }
         }
@@ -198,7 +220,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         #region 受動的行動の定義
 
         public void BeHeld(Transform holderTransform) {
-            _myState = MemoryBoxState.Held;
+            MyState = MemoryBoxState.Held;
             _holderTransform = holderTransform;
             var myTransform = transform;
             _diffFromHolder = Cc2D.radius * myTransform.localScale.y;
@@ -210,7 +232,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         }
 
         public void BeThrown(float throwPower, Vector2 throwDirection) {
-            _myState = MemoryBoxState.Flying;
+            MyState = MemoryBoxState.Flying;
             Cc2D.enabled = true;
             Cc2D.isTrigger = true;
             Trail.enabled = true;
@@ -219,7 +241,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         }
 
         public void BePushed(Vector2 pushedDirection, float pushPower) {
-            _myState = MemoryBoxState.Flying;
+            MyState = MemoryBoxState.Flying;
             Trail.enabled = true;
             Rb2D.velocity = pushedDirection * pushPower / Weight;
             SpRr.sortingLayerID = SortingLayer.NameToID("ForeMemoryBox");
@@ -228,7 +250,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         public void BePut() {
             transform.position = _holderTransform.position +
                                  Vector3.down * (_holderTransform.localPosition.y / transform.localScale.y - 0.2f);
-            _myState = MemoryBoxState.PlacedOnLevel;
+            MyState = MemoryBoxState.PlacedOnLevel;
             Cc2D.enabled = true;
             Cc2D.isTrigger = false;
             SpRr.sortingLayerID = SortingLayer.NameToID("MemoryBox");
@@ -244,7 +266,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         }
 
         public void Disappear() {
-            _myState = MemoryBoxState.Disappeared;
+            MyState = MemoryBoxState.Disappeared;
             SpRr.enabled = false;
             Cc2D.enabled = false;
             Rb2D.velocity = Vector2.zero;

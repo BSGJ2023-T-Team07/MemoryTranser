@@ -80,6 +80,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         private bool _isControllable;
         private bool _isBlinkRecovered = true;
         private bool _isBlinking;
+        private bool _changedIsBlinkingTrueThisFrame;
         private bool _applyCancelingBlink;
         private bool _isInOutputArea;
         private bool _applyInvertingInput;
@@ -92,6 +93,8 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         private float _remainingPrecedeBlinkDirectionInputSec;
         private float _remainingStunDurationSec;
         private float _nowInputSecToOutput;
+
+        private int _remainFrameCountOnIsBlinkingChangedToTrue;
 
         #endregion
 
@@ -160,6 +163,20 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             AnimationChange();
 
             UpdateFairyState();
+
+            #region MemoryBox密着時のブリンクのための処理
+
+            if (_changedIsBlinkingTrueThisFrame) {
+                if (_remainFrameCountOnIsBlinkingChangedToTrue == 1) {
+                    _changedIsBlinkingTrueThisFrame = false;
+                    _remainFrameCountOnIsBlinkingChangedToTrue = 0;
+                }
+                else {
+                    _remainFrameCountOnIsBlinkingChangedToTrue++;
+                }
+            }
+
+            #endregion
 
             #region 納品入力の処理
 
@@ -244,6 +261,16 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             }
         }
 
+        private void OnCollisionStay2D(Collision2D other) {
+            if (other.gameObject.layer != LayerMask.NameToLayer("SphereMemoryBox")) {
+                return;
+            }
+
+            if (_changedIsBlinkingTrueThisFrame) {
+                PushSphereBox(other.gameObject.GetComponent<MemoryBoxCore>());
+            }
+        }
+
         private void OnCollisionExit2D(Collision2D other) {
             if (other.gameObject.layer == LayerMask.NameToLayer("SphereMemoryBox")) {
                 _applyCancelingBlink = false;
@@ -255,7 +282,6 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         }
 
         #endregion
-
 
         #region 操作入力時の処理
 
@@ -460,18 +486,19 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             blinkTicketCount--;
             _isBlinkRecovered = false;
             _isBlinking = true;
+            _changedIsBlinkingTrueThisFrame = true;
 
             var blinkTweenerCore = rb2D.DOMove(blinkDirection * blinkDistance, blinkDurationSec)
-                .SetRelative().SetEase(Ease.OutQuad).OnKill(() => {
-                    _isBlinking = false;
-                    rb2D.velocity = Vector2.zero;
-                    IsControllableTrueAfterBlinked();
-                    IsBlinkRecoveredTrueAfterBlinked();
-                }).OnComplete(() => {
-                    _isBlinking = false;
-                    IsControllableTrueAfterBlinked();
-                    IsBlinkRecoveredTrueAfterBlinked();
-                });
+                                       .SetRelative().SetEase(Ease.OutQuad).OnKill(() => {
+                                           _isBlinking = false;
+                                           rb2D.velocity = Vector2.zero;
+                                           IsControllableTrueAfterBlinked();
+                                           IsBlinkRecoveredTrueAfterBlinked();
+                                       }).OnComplete(() => {
+                                           _isBlinking = false;
+                                           IsControllableTrueAfterBlinked();
+                                           IsBlinkRecoveredTrueAfterBlinked();
+                                       });
 
             blinkTweenerCore.OnUpdate(() => {
                 if (_applyCancelingBlink) {

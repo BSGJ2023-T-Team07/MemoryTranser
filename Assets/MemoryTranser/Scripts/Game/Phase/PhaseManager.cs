@@ -21,7 +21,7 @@ namespace MemoryTranser.Scripts.Game.Phase {
 
         #region 変数の定義
 
-        [Header("1つのフェイズの長さ")] public float phaseDuration;
+        [Header("1つのフェイズの長さ(秒)")] public float phaseDuration;
 
         [Header("Desireを倒したときに加算される点数")] [SerializeField]
         private int additionalScoreOnDefeatDesire;

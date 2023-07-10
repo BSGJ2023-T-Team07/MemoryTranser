@@ -23,6 +23,9 @@ namespace MemoryTranser.Scripts.Game.Concentration {
         [Header("↑の時間が経った時に加算される減少速度の割合(％)")] [SerializeField]
         private float additionalDecreasePercent;
 
+        [Header("減少速度の最大倍率(％)")] [SerializeField]
+        private float maxDecreaseMultiplier;
+
         [Header("集中力がどの時にピンチSEを鳴らすか")] [SerializeField]
         private float pinchSeThreshold;
 
@@ -65,7 +68,8 @@ namespace MemoryTranser.Scripts.Game.Concentration {
 
             if (_remainingTimeForAdditionalDecrease < 0) {
                 _remainingTimeForAdditionalDecrease = additionalDecreaseInterval;
-                _decreaseMultiplier += additionalDecreasePercent / 100;
+                _decreaseMultiplier =
+                    Mathf.Min(_decreaseMultiplier + additionalDecreasePercent / 100, maxDecreaseMultiplier / 100);
             }
 
             if (_remainingConcentration < 0) {

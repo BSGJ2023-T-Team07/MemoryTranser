@@ -8,7 +8,7 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
         [SerializeField] private TextMeshProUGUI passedPhaseCountText;
 
         public void SetPhaseRemainingTimeText(float remainingTime) {
-            phaseRemainingTimeText.SetText($"{remainingTime:0}");
+            phaseRemainingTimeText.SetText($"{remainingTime:00}");
         }
 
         public void SetPassedPhaseCountText(int passedPhaseCount) {

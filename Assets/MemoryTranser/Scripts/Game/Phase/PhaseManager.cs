@@ -194,7 +194,7 @@ namespace MemoryTranser.Scripts.Game.Phase {
             questTypeShower.InitializeQuestText(GetCurrentQuestType(), GetNextQuestType());
 
             //経過したフェイズの数のUIを更新
-            phaseTimerShower.SetPassedPhaseCountText(_currentPhaseIndex + 1);
+            phaseTimerShower.SetPassedPhaseCountText(1);
         }
 
         private void ResetPhaseRemainingTime() {
@@ -244,11 +244,11 @@ namespace MemoryTranser.Scripts.Game.Phase {
             //クエストのUIを更新
             questTypeShower.UpdateQuestText(GetAfterNextQuestType());
 
-            //経過したフェイズの数のUIを更新
-            phaseTimerShower.SetPassedPhaseCountText(_currentPhaseIndex + 1);
-
             //フェイズの内部のインデックスを足す
             _currentPhaseIndex++;
+
+            //経過したフェイズの数のUIを更新
+            phaseTimerShower.SetPassedPhaseCountText(_currentPhaseIndex + 1);
 
             //フェイズの残り時間をリセット
             _phaseRemainingTime = phaseDuration;

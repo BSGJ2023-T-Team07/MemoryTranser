@@ -25,6 +25,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         [SerializeField] private Transform memoryBoxHolderBottom;
         [SerializeField] private SpriteRenderer throwDirectionArrowSpRr;
         [SerializeField] private BrainEventManager brainEventManager;
+        [SerializeField] private BlinkTicketCountShower blinkTicketCountShower;
 
         #endregion
 
@@ -113,6 +114,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         public FairyParameters MyParameters => myParameters;
 
         public int BlinkTicketCount => blinkTicketCount;
+        public int MaxBlinkTicketCount => maxBlinkTicketCount;
 
         public Vector2 InputWalkDirection => _inputWalkDirection;
         public Vector2 InputWalkDirectionBeforeZero => _inputWalkDirectionBeforeZero;
@@ -483,7 +485,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         private void Blink(Vector2 blinkDirection) {
             _isControllable = false;
-            blinkTicketCount--;
+            AddBlinkTicket(-1);
             _isBlinkRecovered = false;
             _isBlinking = true;
             _changedIsBlinkingTrueThisFrame = true;
@@ -559,6 +561,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         private int AddBlinkTicket(int add) {
             blinkTicketCount = Mathf.Min(blinkTicketCount + add, maxBlinkTicketCount);
+            blinkTicketCountShower.SetBlinkTicketCountShow(blinkTicketCount);
             return blinkTicketCount;
         }
 

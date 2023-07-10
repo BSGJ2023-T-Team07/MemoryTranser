@@ -36,7 +36,7 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
                 return;
             }
 
-            I.AddAnnounceText($"現在のイベント：{brainEventType.ToJapanese()}", durationSec);
+            AddAnnounceText($"{brainEventType.ToJapanese()}！！", durationSec);
         }
     }
 }

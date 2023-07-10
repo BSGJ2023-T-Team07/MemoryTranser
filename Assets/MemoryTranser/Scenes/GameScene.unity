@@ -1324,7 +1324,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 491.99997, y: 355}
+  m_AnchoredPosition: {x: 526, y: 355}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &402944540
@@ -2704,7 +2704,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 590, y: 560}
+  m_AnchoredPosition: {x: 624, y: 560}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &924286932
@@ -3011,7 +3011,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 590, y: 239}
+  m_AnchoredPosition: {x: 624, y: 239}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &994733006
@@ -4774,7 +4774,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 590, y: 467}
+  m_AnchoredPosition: {x: 624, y: 467}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!4 &1729127264 stripped
@@ -4842,6 +4842,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2351981620795597147, guid: aeb7c8b5aea7b5c4d8abec95d076884d, type: 3}
   m_PrefabInstance: {fileID: 8983410426132863780}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1809429423 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2820944186445253078, guid: aeb7c8b5aea7b5c4d8abec95d076884d, type: 3}
+  m_PrefabInstance: {fileID: 8983410426132863780}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 390dec397f87d0448b06169838d528b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1816578646
 GameObject:
   m_ObjectHideFlags: 0
@@ -5999,7 +6010,7 @@ PrefabInstance:
     - target: {fileID: 2313801023863999499, guid: cf66cabae21ace34293dd0a98fc87fa6, type: 3}
       propertyPath: gameFlowShower
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1809429423}
     - target: {fileID: 2903207311384275751, guid: cf66cabae21ace34293dd0a98fc87fa6, type: 3}
       propertyPath: m_RootOrder
       value: -1
@@ -6987,6 +6998,10 @@ PrefabInstance:
       propertyPath: concentrationSlider
       value: 
       objectReference: {fileID: 517902726}
+    - target: {fileID: 3289872047489349997, guid: b2a4a0e49a4e41846b54750e3e6f34fc, type: 3}
+      propertyPath: concentrationTransform
+      value: 
+      objectReference: {fileID: 448050439}
     - target: {fileID: 3566799234408988392, guid: b2a4a0e49a4e41846b54750e3e6f34fc, type: 3}
       propertyPath: m_RootOrder
       value: -1

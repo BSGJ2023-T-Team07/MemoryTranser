@@ -56,6 +56,7 @@ namespace MemoryTranser.Scripts.Game.Concentration {
                 if (!_isPinchEffectPlayed && _remainingConcentration < pinchSeThreshold) {
                     SeManager.I.Play(SEs.ConcentrationIsLittle);
                     BgmManager.I.SetBgmPitch(pinchBgmPitch);
+                    concentrationShower.PlayAnimationWhenPinch();
                     _isPinchEffectPlayed = true;
                 }
 

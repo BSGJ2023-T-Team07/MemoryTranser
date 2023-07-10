@@ -4505,11 +4505,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4018857809952630336, guid: 7ec141e11e8c24c419dd23c57c84e99e, type: 3}
   m_PrefabInstance: {fileID: 8569142084202167639}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &1405795359 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 2591320596226054821, guid: 7ec141e11e8c24c419dd23c57c84e99e, type: 3}
-  m_PrefabInstance: {fileID: 8569142084202167639}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1405795360 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1733484788900786231, guid: 7ec141e11e8c24c419dd23c57c84e99e, type: 3}
@@ -7394,10 +7389,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: MemoryColorManager
       objectReference: {fileID: 0}
-    - target: {fileID: 5057982732802318050, guid: 6bdb243284348a847b3854ceb4aa5cf1, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7411,17 +7402,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 261203874}
     m_Modifications:
-    - target: {fileID: 527440071269027128, guid: 0181012239b104b408f637a689f6162d, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 824379014067223295, guid: 0181012239b104b408f637a689f6162d, type: 3}
       propertyPath: m_Name
       value: OutputManager
-      objectReference: {fileID: 0}
-    - target: {fileID: 2829422102598229805, guid: 0181012239b104b408f637a689f6162d, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 10.18
       objectReference: {fileID: 0}
     - target: {fileID: 4589780585457527797, guid: 0181012239b104b408f637a689f6162d, type: 3}
       propertyPath: fairyCore
@@ -7757,29 +7740,13 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 662591885}
     - target: {fileID: 9092670826081219663, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
-      propertyPath: blinkTicketCount
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9092670826081219663, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
       propertyPath: brainEventManager
       value: 
       objectReference: {fileID: 549527177}
     - target: {fileID: 9092670826081219663, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
-      propertyPath: maxBlinkTicketCount
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 9092670826081219663, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
       propertyPath: blinkTicketCountShower
       value: 
       objectReference: {fileID: 431068173}
-    - target: {fileID: 9092670826081219663, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
-      propertyPath: necessaryInputSecToOutput
-      value: 0.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 9092670826081219663, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
-      propertyPath: invincibleSecAfterRecoverFromStun
-      value: 1.5
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8085,10 +8052,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2131254437}
     - target: {fileID: 1454199774511658284, guid: 9930826d5183e3b45be23ef3b9989cc8, type: 3}
-      propertyPath: phaseDuration
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 1454199774511658284, guid: 9930826d5183e3b45be23ef3b9989cc8, type: 3}
       propertyPath: questTypeShower
       value: 
       objectReference: {fileID: 1729127265}
@@ -8316,10 +8279,6 @@ PrefabInstance:
     m_TransformParent: {fileID: 1479279386}
     m_Modifications:
     - target: {fileID: 1460897837396770625, guid: 0298d3e2d8816804d96c33d102bbb963, type: 3}
-      propertyPath: questTextPaddingX
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 1460897837396770625, guid: 0298d3e2d8816804d96c33d102bbb963, type: 3}
       propertyPath: topStartQuestText
       value: 
       objectReference: {fileID: 355728939}
@@ -8406,10 +8365,6 @@ PrefabInstance:
     - target: {fileID: 3107563300686974611, guid: 0298d3e2d8816804d96c33d102bbb963, type: 3}
       propertyPath: m_Name
       value: QuestTypeShower
-      objectReference: {fileID: 0}
-    - target: {fileID: 3107563300686974611, guid: 0298d3e2d8816804d96c33d102bbb963, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8537,10 +8492,6 @@ PrefabInstance:
       propertyPath: boxTypeProbabilityShower
       value: 
       objectReference: {fileID: 1410846942}
-    - target: {fileID: 6035145267203715587, guid: e4c751194bcb0674981c4185ae84ea6d, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8877105031233947374, guid: e4c751194bcb0674981c4185ae84ea6d, type: 3}
       propertyPath: m_RootOrder
       value: -1
@@ -9209,10 +9160,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 3093276548252669953}
     - target: {fileID: 1733484788900786231, guid: 7ec141e11e8c24c419dd23c57c84e99e, type: 3}
-      propertyPath: resultAnimator
-      value: 
-      objectReference: {fileID: 1405795359}
-    - target: {fileID: 1733484788900786231, guid: 7ec141e11e8c24c419dd23c57c84e99e, type: 3}
       propertyPath: totalScoreText
       value: 
       objectReference: {fileID: 7201430595270133876}
@@ -9353,34 +9300,6 @@ PrefabInstance:
       propertyPath: scorePaper
       value: 
       objectReference: {fileID: 1829961901}
-    - target: {fileID: 7984412669802689522, guid: b125acb5f161262448937c6e0dedc4ac, type: 3}
-      propertyPath: scoreThresholds.Array.size
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 7984412669802689522, guid: b125acb5f161262448937c6e0dedc4ac, type: 3}
-      propertyPath: scoreThresholds.Array.data[0]
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7984412669802689522, guid: b125acb5f161262448937c6e0dedc4ac, type: 3}
-      propertyPath: scoreThresholds.Array.data[1]
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 7984412669802689522, guid: b125acb5f161262448937c6e0dedc4ac, type: 3}
-      propertyPath: scoreThresholds.Array.data[2]
-      value: 300
-      objectReference: {fileID: 0}
-    - target: {fileID: 7984412669802689522, guid: b125acb5f161262448937c6e0dedc4ac, type: 3}
-      propertyPath: scoreThresholds.Array.data[3]
-      value: 500
-      objectReference: {fileID: 0}
-    - target: {fileID: 7984412669802689522, guid: b125acb5f161262448937c6e0dedc4ac, type: 3}
-      propertyPath: scoreThresholds.Array.data[4]
-      value: 1000
-      objectReference: {fileID: 0}
-    - target: {fileID: 7984412669802689522, guid: b125acb5f161262448937c6e0dedc4ac, type: 3}
-      propertyPath: scoreThresholds.Array.data[5]
-      value: 1500
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

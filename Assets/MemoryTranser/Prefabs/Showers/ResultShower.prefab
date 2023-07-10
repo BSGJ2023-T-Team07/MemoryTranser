@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71fb26d67d759e64785e8e3e090d7aa8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  resultAnimator: {fileID: 0}
+  resultAnimator: {fileID: 2591320596226054821}
   totalScoreText: {fileID: 0}
   reachedPhaseCountText: {fileID: 0}
   reachedMaxComboCountText: {fileID: 0}

@@ -311,7 +311,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
                 return;
             }
 
-            var directionInput = context.ReadValue<Vector2>().normalized;
+            var directionInput = context.ReadValue<Vector2>();
 
             //もし操作逆転中なら、入力を反転させる
             if (_applyInvertingInput) {
@@ -468,6 +468,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
             Debug.Log($"IDが{_holdingBox.BoxId}の記憶を置いた");
             _holdingBox = null;
+            throwDirectionArrowSpRr.enabled = false;
             myParameters.UpdateWalkSpeedByWeightAndCombo(0, CurrentComboCount);
 
             if (playSE) {
@@ -483,16 +484,16 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             _changedIsBlinkingTrueThisFrame = true;
 
             var blinkTweenerCore = rb2D.DOMove(blinkDirection * blinkDistance, blinkDurationSec)
-                                       .SetRelative().SetEase(Ease.OutQuad).OnKill(() => {
-                                           _isBlinking = false;
-                                           rb2D.velocity = Vector2.zero;
-                                           IsControllableTrueAfterBlinked();
-                                           IsBlinkRecoveredTrueAfterBlinked();
-                                       }).OnComplete(() => {
-                                           _isBlinking = false;
-                                           IsControllableTrueAfterBlinked();
-                                           IsBlinkRecoveredTrueAfterBlinked();
-                                       });
+                .SetRelative().SetEase(Ease.OutQuad).OnKill(() => {
+                    _isBlinking = false;
+                    rb2D.velocity = Vector2.zero;
+                    IsControllableTrueAfterBlinked();
+                    IsBlinkRecoveredTrueAfterBlinked();
+                }).OnComplete(() => {
+                    _isBlinking = false;
+                    IsControllableTrueAfterBlinked();
+                    IsBlinkRecoveredTrueAfterBlinked();
+                });
 
             blinkTweenerCore.OnUpdate(() => {
                 if (_applyCancelingBlink) {

@@ -45,3 +45,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scoreText: {fileID: 0}
+  scorePaper: {fileID: 0}
+  scoreThresholds: 01000000640000002c010000f4010000e8030000dc050000

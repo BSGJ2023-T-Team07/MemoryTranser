@@ -45,3 +45,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   concentrationSlider: {fileID: 0}
+  concentrationTransform: {fileID: 0}
+  concentrationImage: {fileID: 0}

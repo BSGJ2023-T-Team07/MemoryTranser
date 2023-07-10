@@ -102,7 +102,7 @@ Transform:
   - {fileID: 1150344982301594002}
   - {fileID: 5434448070040561178}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &958714052861761041
 SpriteRenderer:
@@ -269,6 +269,7 @@ MonoBehaviour:
   memoryBoxHolderBottom: {fileID: 1085378162422806380}
   throwDirectionArrowSpRr: {fileID: 136847129894747462}
   brainEventManager: {fileID: 0}
+  blinkTicketCountShower: {fileID: 0}
   myParameters:
     maxWalkSpeed: 30
     minWalkSpeed: 0
@@ -277,7 +278,8 @@ MonoBehaviour:
     minThrowPower: 0
     initialThrowPower: 10
   stunDurationSec: 2
-  selectDirectionArrowThreshold: 0.12
+  invincibleSecAfterRecoverFromStun: 1.5
+  selectDirectionArrowThreshold: 0.18
   holdableDistance: 2.5
   additionalBlinkTicketOnDefeatDesire: 1
   blinkTicketCount: 0
@@ -288,7 +290,7 @@ MonoBehaviour:
   blinkRecoverSec: 0.2
   pushBoxPowerMultiplier: 4
   precedeBlinkDirectionInputSec: 0.3
-  necessaryInputSecToOutput: 0.4
+  necessaryInputSecToOutput: 0.3
 --- !u!114 &8073110865618226502
 MonoBehaviour:
   m_ObjectHideFlags: 0

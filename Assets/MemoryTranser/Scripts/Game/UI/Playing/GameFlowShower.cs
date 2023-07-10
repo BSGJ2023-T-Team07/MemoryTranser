@@ -1,9 +1,9 @@
-using System;
 using DG.Tweening;
+using MemoryTranser.Scripts.Game.GameManagers;
 using TMPro;
 using UnityEngine;
 
-namespace MemoryTranser.Scripts.Game.GameManagers {
+namespace MemoryTranser.Scripts.Game.UI.Playing {
     public class GameFlowShower : MonoBehaviour {
         [SerializeField] private GameObject pauseBackGround;
         [SerializeField] private TextMeshProUGUI countDownText;

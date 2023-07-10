@@ -1,6 +1,7 @@
 using System;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using MemoryTranser.Scripts.Game.UI.Playing;
 using MemoryTranser.Scripts.Game.Util;
 using TMPro;
 using UnityEngine;

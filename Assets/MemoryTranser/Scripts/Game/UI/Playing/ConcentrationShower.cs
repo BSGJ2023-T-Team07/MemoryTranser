@@ -6,13 +6,18 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
     public class ConcentrationShower : MonoBehaviour {
         [SerializeField] private Slider concentrationSlider;
         [SerializeField] private Transform concentrationTransform;
+        [SerializeField] private Image concentrationImage;
 
         public void SetValue(float value) {
             concentrationSlider.value = value;
         }
-        
+
         public void PlayAnimationWhenPinch() {
-            concentrationTransform.DOShakePosition(0.5f, 10f, 20, 90f, false, true);
+            concentrationTransform.DOShakePosition(2f, 10f, 20);
+            concentrationImage.DOColor(Color.red, 0.5f).SetLoops(4, LoopType.Yoyo);
         }
+
+        public void PlayAnimationWhenIncrease() { }
+        public void PlayAnimationWhenDecrease() { }
     }
 }

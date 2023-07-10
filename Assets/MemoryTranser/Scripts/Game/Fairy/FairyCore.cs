@@ -34,27 +34,30 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         [SerializeField] private FairyParameters myParameters;
 
         [Header("煩悩に当たった時に操作不能になる時間(秒)")] [SerializeField]
-        private float stunDurationSec = 1f;
+        private float stunDurationSec;
+
+        [Header("煩悩に当たって操作可能になってから無敵である時間(秒)")] [SerializeField]
+        private float invincibleSecAfterRecoverFromStun;
 
         [Header("投げる方向の入力の閾値")] [SerializeField]
         private float selectDirectionArrowThreshold;
 
         [Header("MemoryBoxをHoldできる最大距離(円の半径)")] [SerializeField]
-        private float holdableDistance = 4f;
+        private float holdableDistance;
 
         [Header("煩悩を倒したときにもらえるブリンクチケットの数")] [SerializeField]
-        private int additionalBlinkTicketOnDefeatDesire = 1;
+        private int additionalBlinkTicketOnDefeatDesire;
 
         [Header("ブリンク可能回数")] [SerializeField] private int blinkTicketCount;
 
         [Header("ブリンクチケットの最大数")] [SerializeField]
         private int maxBlinkTicketCount;
 
-        [Header("ブリンクの距離")] public float blinkDistance = 0.5f;
+        [Header("ブリンクの距離")] public float blinkDistance;
 
-        [Header("ブリンクで移動しきるまでの時間(秒)")] public float blinkDurationSec = 0.5f;
+        [Header("ブリンクで移動しきるまでの時間(秒)")] public float blinkDurationSec;
 
-        [Header("ブリンクし終わってから操作可能になるまでの時間(秒)")] public float reControllableSecAfterBlink = 0.3f;
+        [Header("ブリンクし終わってから操作可能になるまでの時間(秒)")] public float reControllableSecAfterBlink;
 
         [Header("ブリンクし終わってから再度ブリンクできるまでの時間(秒)")]
         public float blinkRecoverSec = 0.7f;
@@ -79,6 +82,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         private int _reachedMaxComboCount;
 
         private bool _isControllable;
+        private bool _isInvincible;
         private bool _isBlinkRecovered = true;
         private bool _isBlinking;
         private bool _changedIsBlinkingTrueThisFrame;
@@ -93,9 +97,11 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         private float _remainingPrecedeBlinkDirectionInputSec;
         private float _remainingStunDurationSec;
+        private float _remainingInvincibleSecAfterRecoverFromStun;
         private float _nowInputSecToOutput;
 
         private int _remainFrameCountOnIsBlinkingChangedToTrue;
+        private Tweener _invincibleTweener;
 
         #endregion
 
@@ -199,20 +205,6 @@ namespace MemoryTranser.Scripts.Game.Fairy {
                         _nowInputSecToOutput = 0f;
                         _onOutputInput.OnNext(Unit.Default);
                     }
-                }
-            }
-
-            #endregion
-
-            #region 煩悩によるスタンの処理
-
-            if (_remainingStunDurationSec > 0) {
-                _remainingStunDurationSec -= Time.deltaTime;
-
-                if (_remainingStunDurationSec < 0) {
-                    _remainingStunDurationSec = -1;
-                    _isControllable = true;
-                    _myState = HasBox ? FairyState.IdlingWithBox : FairyState.IdlingWithoutBox;
                 }
             }
 
@@ -530,13 +522,18 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         #region 受動的行動の定義
 
-        public void BeAttackedByDesire() {
+        public async void BeAttackedByDesire() {
+            if (_isInvincible) {
+                return;
+            }
+
             if (HasBox) {
                 Put(false);
             }
 
             SeManager.I.Play(SEs.FairyAttackedByDesire);
             _isControllable = false;
+            _isInvincible = true;
             rb2D.velocity = Vector2.zero;
             _inputWalkDirection = Vector2.zero;
             CurrentComboCount = 0;
@@ -546,7 +543,19 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             TakahideShower.I.ChangeTakahideImage(TakahideState.Sad);
 
             //Desireに当たると3秒停止
-            _remainingStunDurationSec = stunDurationSec;
+            await UniTask.Delay(TimeSpan.FromSeconds(stunDurationSec));
+
+            _isControllable = true;
+            _myState = HasBox ? FairyState.IdlingWithBox : FairyState.IdlingWithoutBox;
+
+            //一定時間無敵にする
+            var invincibleTweener =
+                spRr.DOFade(0.2f, invincibleSecAfterRecoverFromStun / 4).SetLoops(-1, LoopType.Yoyo);
+            await UniTask.Delay(TimeSpan.FromSeconds(invincibleSecAfterRecoverFromStun));
+
+            _isInvincible = false;
+            invincibleTweener.Kill();
+            spRr.color = Color.white;
         }
 
         #endregion

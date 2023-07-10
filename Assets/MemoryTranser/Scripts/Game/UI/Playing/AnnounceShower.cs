@@ -14,7 +14,6 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
         [Header("アナウンスの流れる速さ")] [SerializeField]
         private float announceMoveSpeed;
 
-        private RectTransform _announceTextTransform;
         private Vector3 _defaultAnnounceTextPosition;
 
         private Sequence _announceSequence;
@@ -22,8 +21,6 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
         protected override void Awake() {
             base.Awake();
             announcePrefab.enableWordWrapping = false;
-
-            _defaultAnnounceTextPosition = _announceTextTransform.localPosition;
         }
 
         private void AddAnnounceText(string text, float durationSec) {

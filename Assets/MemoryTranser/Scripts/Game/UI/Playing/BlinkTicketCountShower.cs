@@ -13,6 +13,10 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
         [SerializeField] private Image[] blinkTicketCountImages;
 
         private void OnValidate() {
+            if (blinkTicketCountImages == null || !blinkTicketCountObjectsParent) {
+                return;
+            }
+
             blinkTicketCountImages = blinkTicketCountObjectsParent.GetComponentsInChildren<Image>();
         }
 

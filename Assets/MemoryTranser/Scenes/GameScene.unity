@@ -4225,7 +4225,6 @@ Transform:
   - {fileID: 2131254436}
   - {fileID: 531729831}
   - {fileID: 380374733}
-  - {fileID: 1912753017}
   - {fileID: 1405795358}
   - {fileID: 401384899}
   - {fileID: 1809429422}
@@ -5194,11 +5193,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1868431427}
   m_CullTransparentMesh: 1
---- !u!4 &1912753017 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4448008678134383916, guid: 32492a61528978f4a9931920be2c5409, type: 3}
-  m_PrefabInstance: {fileID: 2407896422235884848}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1952386256 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5963728696554252207, guid: 6f35863478ab6544d840481cda817613, type: 3}
@@ -6367,67 +6361,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1001 &2407896422235884848
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 1479279386}
-    m_Modifications:
-    - target: {fileID: 4448008678134383916, guid: 32492a61528978f4a9931920be2c5409, type: 3}
-      propertyPath: m_RootOrder
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4448008678134383916, guid: 32492a61528978f4a9931920be2c5409, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4448008678134383916, guid: 32492a61528978f4a9931920be2c5409, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4448008678134383916, guid: 32492a61528978f4a9931920be2c5409, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4448008678134383916, guid: 32492a61528978f4a9931920be2c5409, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4448008678134383916, guid: 32492a61528978f4a9931920be2c5409, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4448008678134383916, guid: 32492a61528978f4a9931920be2c5409, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4448008678134383916, guid: 32492a61528978f4a9931920be2c5409, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4448008678134383916, guid: 32492a61528978f4a9931920be2c5409, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4448008678134383916, guid: 32492a61528978f4a9931920be2c5409, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4448008678134383916, guid: 32492a61528978f4a9931920be2c5409, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6035303629111840993, guid: 32492a61528978f4a9931920be2c5409, type: 3}
-      propertyPath: m_Name
-      value: BrainEventTypeShower
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 32492a61528978f4a9931920be2c5409, type: 3}
 --- !u!1001 &2442828838086407748
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6589,6 +6522,10 @@ PrefabInstance:
       propertyPath: m_ActionEvents.Array.data[10].m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 662591885}
+    - target: {fileID: 9092670826081219663, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
+      propertyPath: blinkTicketCount
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 9092670826081219663, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
       propertyPath: brainEventManager
       value: 

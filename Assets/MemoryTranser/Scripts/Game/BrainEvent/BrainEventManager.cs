@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.UI.Playing;
@@ -7,13 +8,29 @@ using Random = UnityEngine.Random;
 
 namespace MemoryTranser.Scripts.Game.BrainEvent {
     public class BrainEventManager : MonoBehaviour, IOnStateChangedToInitializing, IOnStateChangedToResult {
-        [Header("ギミックの抽選と継続の間隔(秒)")] [SerializeField]
-        private float selectDurationSec;
+        [SerializeField] private BrainEventTypeShower brainEventTypeShower;
+
+        [Header("イベント無しの継続時間")] [SerializeField]
+        private float noEventDurationSec;
+
+        [Header("ド忘れイベントのギミック継続時間")] [SerializeField]
+        private float blindDurationSec;
+
+        [Header("煩悩大量発生イベントのギミック継続時間")] [SerializeField]
+        private float desireOutbreakDurationSec;
+
+        [Header("操作逆転イベントのギミック継続時間")] [SerializeField]
+        private float invertControlDurationSec;
 
         [Header("勉強の成果イベントのギミック継続時間")] [SerializeField]
         private float achievementOfStudyDurationSec;
 
+        [Header("フィーバータイムのギミック継続時間")] [SerializeField]
+        private float feverTimeDurationSec;
+
         private List<BrainEventType> _brainEvents = new();
+
+        private float _eventDurationSec;
 
         private float _remainingTimeForReSelection;
         private int _currentBrainEventIndex = 0;
@@ -34,6 +51,7 @@ namespace MemoryTranser.Scripts.Game.BrainEvent {
 
                 if (_remainingTimeForReSelection < 0f) {
                     TransitToNextBrainEvent(out var nextBrainEvent);
+                    Debug.Log($"{nextBrainEvent}が発生");
 
                     //イベントによって継続時間を変える
                     _remainingTimeForReSelection = GetSecForReselection(nextBrainEvent);
@@ -47,7 +65,7 @@ namespace MemoryTranser.Scripts.Game.BrainEvent {
             var thisNextBrainEvent = SelectNextBrainEvent();
             _brainEvents.Add(thisNextBrainEvent);
             _onBrainEventTransition.Value = thisNextBrainEvent;
-            AnnounceShower.I.SetBrainEventTypeText(thisNextBrainEvent, GetSecForReselection(thisNextBrainEvent));
+            brainEventTypeShower.SetBrainEventShow(thisNextBrainEvent, GetSecForReselection(thisNextBrainEvent));
             _currentBrainEventIndex++;
 
             nextBrainEvent = thisNextBrainEvent;
@@ -68,8 +86,13 @@ namespace MemoryTranser.Scripts.Game.BrainEvent {
 
         private float GetSecForReselection(BrainEventType brainEventType) {
             return brainEventType switch {
+                BrainEventType.None => noEventDurationSec,
                 BrainEventType.AchievementOfStudy => achievementOfStudyDurationSec,
-                _ => selectDurationSec
+                BrainEventType.Blind => blindDurationSec,
+                BrainEventType.DesireOutbreak => desireOutbreakDurationSec,
+                BrainEventType.FeverTime => feverTimeDurationSec,
+                BrainEventType.InvertControl => invertControlDurationSec,
+                _ => throw new ArgumentOutOfRangeException(nameof(brainEventType), brainEventType, null)
             };
         }
 
@@ -84,13 +107,13 @@ namespace MemoryTranser.Scripts.Game.BrainEvent {
         #region interfaceの実装
 
         public void OnStateChangedToInitializing() {
-            _remainingTimeForReSelection = selectDurationSec;
+            _remainingTimeForReSelection = _eventDurationSec;
 
             const BrainEventType initialBrainEvent = BrainEventType.None;
             _onBrainEventTransition.Value = initialBrainEvent;
             _brainEvents.Add(initialBrainEvent);
             _currentBrainEventIndex = 0;
-            AnnounceShower.I.SetBrainEventTypeText(initialBrainEvent, GetSecForReselection(initialBrainEvent));
+            brainEventTypeShower.SetBrainEventShow(initialBrainEvent, GetSecForReselection(initialBrainEvent));
         }
 
         public void OnStateChangedToResult() {

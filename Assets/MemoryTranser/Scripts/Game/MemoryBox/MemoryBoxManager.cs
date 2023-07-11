@@ -67,7 +67,6 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
                 return;
             }
 
-            Debug.Log($"ID{box.BoxId}のMemoryBoxをAppearさせます");
             box.isOutput = false;
             box.Trail.enabled = false;
 

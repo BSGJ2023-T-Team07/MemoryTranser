@@ -188,10 +188,10 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
                 BoxMemoryType.English => englishTexts[Random.Range(0, englishTexts.Length)],
                 BoxMemoryType.SocialStudies => socialStudiesTexts[Random.Range(0, socialStudiesTexts.Length)],
                 BoxMemoryType.Science => scienceTexts[Random.Range(0, scienceTexts.Length)],
-                BoxMemoryType.Trivia => triviaTexts[Random.Range(0, triviaTexts.Length)],
+                // BoxMemoryType.Trivia => triviaTexts[Random.Range(0, triviaTexts.Length)],
                 BoxMemoryType.Moral => moralTexts[Random.Range(0, moralTexts.Length)],
-                BoxMemoryType.Music => musicTexts[Random.Range(0, musicTexts.Length)],
-                BoxMemoryType.Life => lifeTexts[Random.Range(0, lifeTexts.Length)],
+                // BoxMemoryType.Music => musicTexts[Random.Range(0, musicTexts.Length)],
+                // BoxMemoryType.Life => lifeTexts[Random.Range(0, lifeTexts.Length)],
                 _ => throw new ArgumentOutOfRangeException(nameof(memoryType), memoryType, null)
             };
         }

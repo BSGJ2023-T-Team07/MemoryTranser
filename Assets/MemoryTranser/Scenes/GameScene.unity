@@ -7465,9 +7465,33 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2077243976}
     - target: {fileID: 4589780585457527797, guid: 0181012239b104b408f637a689f6162d, type: 3}
+      propertyPath: brainEventManager
+      value: 
+      objectReference: {fileID: 549527177}
+    - target: {fileID: 4589780585457527797, guid: 0181012239b104b408f637a689f6162d, type: 3}
+      propertyPath: blindEventMultiplier
+      value: 1.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4589780585457527797, guid: 0181012239b104b408f637a689f6162d, type: 3}
       propertyPath: concentrationManager
       value: 
       objectReference: {fileID: 389205919}
+    - target: {fileID: 4589780585457527797, guid: 0181012239b104b408f637a689f6162d, type: 3}
+      propertyPath: studyEventMultiplier
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4589780585457527797, guid: 0181012239b104b408f637a689f6162d, type: 3}
+      propertyPath: feverTimeEventMultiplier
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4589780585457527797, guid: 0181012239b104b408f637a689f6162d, type: 3}
+      propertyPath: invertControlEventMultiplier
+      value: 1.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4589780585457527797, guid: 0181012239b104b408f637a689f6162d, type: 3}
+      propertyPath: desireOutbreakEventMultiplier
+      value: 1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 5297146395541755712, guid: 0181012239b104b408f637a689f6162d, type: 3}
       propertyPath: m_RootOrder
       value: -1
@@ -8076,7 +8100,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6271028472369744655, guid: 6f35863478ab6544d840481cda817613, type: 3}
       propertyPath: announceMoveSpeed
-      value: 400
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 6271028472369744655, guid: 6f35863478ab6544d840481cda817613, type: 3}
       propertyPath: announceTextParent
@@ -8296,9 +8320,29 @@ PrefabInstance:
       value: BrainEventManager
       objectReference: {fileID: 0}
     - target: {fileID: 7340172754084149184, guid: 0f89f8ad7a8058940bbd78d825e5e4ca, type: 3}
+      propertyPath: blindDurationSec
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7340172754084149184, guid: 0f89f8ad7a8058940bbd78d825e5e4ca, type: 3}
+      propertyPath: noEventDurationSec
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7340172754084149184, guid: 0f89f8ad7a8058940bbd78d825e5e4ca, type: 3}
       propertyPath: brainEventTypeShower
       value: 
       objectReference: {fileID: 1184856836}
+    - target: {fileID: 7340172754084149184, guid: 0f89f8ad7a8058940bbd78d825e5e4ca, type: 3}
+      propertyPath: feverTimeDurationSec
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7340172754084149184, guid: 0f89f8ad7a8058940bbd78d825e5e4ca, type: 3}
+      propertyPath: invertControlDurationSec
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7340172754084149184, guid: 0f89f8ad7a8058940bbd78d825e5e4ca, type: 3}
+      propertyPath: desireOutbreakDurationSec
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 7589829636175659355, guid: 0f89f8ad7a8058940bbd78d825e5e4ca, type: 3}
       propertyPath: m_RootOrder
       value: -1
@@ -8574,6 +8618,10 @@ PrefabInstance:
       propertyPath: boxTypeProbabilityShower
       value: 
       objectReference: {fileID: 1410846942}
+    - target: {fileID: 3016680030751130664, guid: e4c751194bcb0674981c4185ae84ea6d, type: 3}
+      propertyPath: sphereBoxMassMagnification
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 8877105031233947374, guid: e4c751194bcb0674981c4185ae84ea6d, type: 3}
       propertyPath: m_RootOrder
       value: -1

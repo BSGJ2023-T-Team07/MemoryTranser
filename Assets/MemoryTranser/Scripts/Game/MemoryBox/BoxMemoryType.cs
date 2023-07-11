@@ -6,12 +6,13 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         English,
         SocialStudies,
         Science,
-        Trivia,
+
+        // Trivia,
         Moral,
-        Music,
+        // Music,
 
         // Habit,
-        Life,
+        // Life,
 
         //要素の数を取得するためのもの
         Count

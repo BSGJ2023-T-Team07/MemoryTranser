@@ -32,12 +32,12 @@ namespace MemoryTranser.Scripts.Game.Util {
                 BoxMemoryType.English => "英語",
                 // BoxMemoryType.Habit => "趣味",
                 BoxMemoryType.Japanese => "国語",
-                BoxMemoryType.Life => "生活",
+                // BoxMemoryType.Life => "生活",
                 BoxMemoryType.Math => "数学",
                 BoxMemoryType.Moral => "道徳",
-                BoxMemoryType.Music => "音楽",
+                // BoxMemoryType.Music => "音楽",
                 BoxMemoryType.Science => "科学",
-                BoxMemoryType.Trivia => "雑学",
+                // BoxMemoryType.Trivia => "雑学",
                 BoxMemoryType.SocialStudies => "社会",
                 _ => "error"
             };

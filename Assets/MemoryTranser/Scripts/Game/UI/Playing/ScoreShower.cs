@@ -19,9 +19,22 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
 
 
         public void SetScoreText(int newScore) {
+            //スコアが変化しきるのにかかる時間(秒)
+            const float duration = 0.5f;
+
+            //通常の波紋アニメーションの大きさの倍率
+            const float normalScaleMultiplier = 1.2f;
+
+            //大きな波紋アニメーションの大きさの倍率
+            const float bigScaleMultiplier = 1.5f;
+
             var oldScore = int.Parse(scoreText.text);
-            DOVirtual.Int(oldScore, newScore, 0.5f, value => { scoreText.text = value.ToString(); })
-                     .SetEase(Ease.OutCubic);
+            DOVirtual.Int(oldScore, newScore, duration, value => { scoreText.text = value.ToString(); })
+                .SetEase(Ease.OutCubic);
+
+            if (oldScore < newScore) {
+                PlayRippleAnimation(normalScaleMultiplier);
+            }
 
             #region 波紋アニメーションの処理
 
@@ -29,29 +42,28 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
                 (current, threshold) => current || (oldScore < threshold && newScore >= threshold));
 
             if (oldScore < newScore && isOverThreshold) {
-                PlayRippleAnimation();
+                PlayRippleAnimation(bigScaleMultiplier);
             }
 
             #endregion
         }
 
-        private void PlayRippleAnimation() {
+        private void PlayRippleAnimation(float scaleMultiplier) {
             var rippleText = Instantiate(scoreText, scoreText.transform.parent);
             var ripplePaper = Instantiate(scorePaper, scorePaper.transform.parent);
 
-            const float scaleMultiplier = 1.2f;
+            //波紋アニメーションの時間(秒)
             const float duration = 1f;
 
-            
             rippleText.transform.DOScale(rippleText.transform.localScale * scaleMultiplier, duration)
-                      .SetEase(Ease.OutCubic);
+                .SetEase(Ease.OutCubic);
             ripplePaper.transform.DOScale(ripplePaper.transform.localScale * scaleMultiplier, duration)
-                       .SetEase(Ease.OutCubic);
+                .SetEase(Ease.OutCubic);
 
             rippleText.DOFade(0f, duration).SetEase(Ease.OutCubic)
-                      .OnComplete(() => { Destroy(rippleText.gameObject); });
+                .OnComplete(() => { Destroy(rippleText.gameObject); });
             ripplePaper.DOFade(0f, duration).SetEase(Ease.OutCubic)
-                       .OnComplete(() => { Destroy(ripplePaper.gameObject); });
+                .OnComplete(() => { Destroy(ripplePaper.gameObject); });
         }
     }
 }

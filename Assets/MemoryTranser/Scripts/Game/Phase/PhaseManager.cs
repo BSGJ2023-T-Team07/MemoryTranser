@@ -179,6 +179,12 @@ namespace MemoryTranser.Scripts.Game.Phase {
                 var phaseCore = ScriptableObject.CreateInstance<PhaseCore>();
 
                 var randomPhaseType = (BoxMemoryType)Random.Range(0, (int)BoxMemoryType.Count);
+
+                //もし前のフェイズと同じクエストタイプだったら、違うタイプにする
+                while (randomPhaseType == _phaseCores[^1].QuestType) {
+                    randomPhaseType = (BoxMemoryType)Random.Range(0, (int)BoxMemoryType.Count);
+                }
+
                 phaseCore.QuestType = randomPhaseType;
 
                 _phaseCores.Add(phaseCore);
@@ -253,10 +259,17 @@ namespace MemoryTranser.Scripts.Game.Phase {
             //フェイズの残り時間をリセット
             _phaseRemainingTime = phaseDuration;
 
-            //次のフェイズの情報を生成して追加
+            //次のフェイズの情報を生成
             var phaseCore = ScriptableObject.CreateInstance<PhaseCore>();
             var randomPhaseType = (BoxMemoryType)Random.Range(0, (int)BoxMemoryType.Count);
+
+            //もし前のフェイズと同じクエストタイプだったら、違うタイプにする
+            while (randomPhaseType == _phaseCores[^1].QuestType) {
+                randomPhaseType = (BoxMemoryType)Random.Range(0, (int)BoxMemoryType.Count);
+            }
+
             phaseCore.QuestType = randomPhaseType;
+
             _phaseCores.Add(phaseCore);
 
             //MemoryBoxの生成確率を更新

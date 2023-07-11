@@ -21,6 +21,7 @@ namespace MemoryTranser.Scripts.Game.UI.Result {
         [SerializeField] private GameObject resultPaperStamp;
 
         private void Awake() {
+            //勝手に再生されないように止めておく
             resultAnimator.enabled = false;
         }
 
@@ -52,22 +53,28 @@ namespace MemoryTranser.Scripts.Game.UI.Result {
             resultAnimator.Play("ResultShow");
         }
 
+
+        // Called by Animation Event
         private void ShowReachedPhaseCount() {
             reachedPhaseCountText.gameObject.SetActive(true);
             SeManager.I.Play(SEs.ResultShow1);
         }
 
+        // Called by Animation Event
         private void ShowReachedMaxComboCount() {
             reachedMaxComboCountText.gameObject.SetActive(true);
             SeManager.I.Play(SEs.ResultShow1);
         }
 
+        // Called by Animation Event
         private void ShowTotalScore() {
             totalScoreText.gameObject.SetActive(true);
             resultPaperStamp.SetActive(true);
             SeManager.I.Play(SEs.ResultShow2);
         }
 
+
+        // Called by Animation Event
         private void ShowBackToTitleText() {
             backToTitleText.gameObject.SetActive(true);
             backToTitleText.DOFade(0.1f, 1f).SetLoops(-1, LoopType.Yoyo);

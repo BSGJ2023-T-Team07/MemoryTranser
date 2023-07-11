@@ -85,6 +85,7 @@ namespace MemoryTranser.Scripts.Game.Concentration {
         public void OnStateChangedToInitializing() {
             _remainingConcentration = maxConcentration;
             _remainingTimeForAdditionalDecrease = additionalDecreaseInterval;
+            _isPinchEffectPlayed = false;
         }
 
         public void OnStateChangedToReady() {

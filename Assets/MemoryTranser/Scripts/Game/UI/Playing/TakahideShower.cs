@@ -15,10 +15,6 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
 
         private float _remainingChangeDuration;
 
-        protected override void Awake() {
-            base.Awake();
-        }
-
         private void Update() {
             if (_remainingChangeDuration > 0) {
                 _remainingChangeDuration -= Time.deltaTime;

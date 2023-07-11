@@ -626,7 +626,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
             animator.SetBool(AnimHasBox, _myState is FairyState.IdlingWithBox or FairyState.WalkingWithBox);
             animator.SetBool(AnimIsWalking, _myState is FairyState.WalkingWithBox or FairyState.WalkingWithoutBox);
-            animator.SetBool(AnimIsFreezing, _myState == FairyState.Freeze);
+            animator.SetBool(AnimIsFreezing, _myState is FairyState.Freeze);
         }
 
         #region interfaceの実装

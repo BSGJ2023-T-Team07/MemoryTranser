@@ -29,7 +29,7 @@ namespace MemoryTranser.Scripts.Game.Sound {
 
 
         private void Start() {
-            DontDestroyOnLoad(gameObject);
+            //TODO:ここのコメントアウトを消す
             // bgmIntroSource.volume = 0.5f;
             // bgmMainSource.volume = 0.5f;
         }

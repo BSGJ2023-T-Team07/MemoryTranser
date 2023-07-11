@@ -1,4 +1,5 @@
 using System;
+using Cinemachine;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using MemoryTranser.Scripts.Game.BrainEvent;
@@ -6,9 +7,11 @@ using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.MemoryBox;
 using MemoryTranser.Scripts.Game.Sound;
 using MemoryTranser.Scripts.Game.UI.Playing;
+using TMPro;
 using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 using Constant = MemoryTranser.Scripts.Game.Util.Constant;
 
 namespace MemoryTranser.Scripts.Game.Fairy {
@@ -26,12 +29,21 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         [SerializeField] private SpriteRenderer throwDirectionArrowSpRr;
         [SerializeField] private BrainEventManager brainEventManager;
         [SerializeField] private BlinkTicketCountShower blinkTicketCountShower;
+        [SerializeField] private CinemachineImpulseSource impulseSource;
+
+        [Space] [SerializeField] private Image currentRStickImage;
+        [SerializeField] private TextMeshProUGUI downerRStickHoldText;
+        [SerializeField] private Image upperRStickEffectImage;
+
+        [Space] [SerializeField] private Sprite neutralRStickSprite;
+        [SerializeField] private Sprite downerRStickSprite;
+        [SerializeField] private Sprite upperRStickSprite;
 
         #endregion
 
         #region 変数の定義
 
-        [SerializeField] private FairyParameters myParameters;
+        [Space] [SerializeField] private FairyParameters myParameters;
 
         [Header("煩悩に当たった時に操作不能になる時間(秒)")] [SerializeField]
         private float stunDurationSec;
@@ -45,7 +57,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         [Header("MemoryBoxをHoldできる最大距離(円の半径)")] [SerializeField]
         private float holdableDistance;
 
-        [Header("煩悩を倒したときにもらえるブリンクチケットの数")] [SerializeField]
+        [Space] [Header("煩悩を倒したときにもらえるブリンクチケットの数")] [SerializeField]
         private int additionalBlinkTicketOnDefeatDesire;
 
         [Header("ブリンク可能回数")] [SerializeField] private int blinkTicketCount;
@@ -68,7 +80,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         [Header("ブリンクの方向の先行入力の猶予時間(秒)")] [SerializeField]
         private float precedeBlinkDirectionInputSec = 0.1f;
 
-        [Header("何秒ゲージを貯めれば納品できるか")] [SerializeField]
+        [Space] [Header("何秒ゲージを貯めれば納品できるか")] [SerializeField]
         private float necessaryInputSecToOutput = 1f;
 
         private static readonly int AnimHasBox = Animator.StringToHash("hasBox");
@@ -101,7 +113,8 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         private float _nowInputSecToOutput;
 
         private int _remainFrameCountOnIsBlinkingChangedToTrue;
-        private Tweener _invincibleTweener;
+        private Sequence _rStickDownSequence;
+        private Sequence _rStickUpSequence;
 
         #endregion
 
@@ -165,6 +178,14 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         private void Awake() {
             throwDirectionArrowSpRr.enabled = false;
             _selectThrowingDirectionAction = playerInput.actions["SelectThrowingDirection"];
+
+            currentRStickImage.sprite = neutralRStickSprite;
+            currentRStickImage.enabled = false;
+            downerRStickHoldText.enabled = false;
+            upperRStickEffectImage.enabled = false;
+
+            _rStickDownSequence = DOTween.Sequence();
+            _rStickUpSequence = DOTween.Sequence();
         }
 
         private void Update() {
@@ -175,7 +196,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             #region MemoryBox密着時のブリンクのための処理
 
             if (_changedIsBlinkingTrueThisFrame) {
-                if (_remainFrameCountOnIsBlinkingChangedToTrue == 1) {
+                if (_remainFrameCountOnIsBlinkingChangedToTrue >= 1) {
                     _changedIsBlinkingTrueThisFrame = false;
                     _remainFrameCountOnIsBlinkingChangedToTrue = 0;
                 }
@@ -188,22 +209,22 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
             #region 納品入力の処理
 
-            if (_isControllable && _selectThrowingDirectionAction.IsPressed()) {
-                var directionInput = _selectThrowingDirectionAction.ReadValue<Vector2>();
+            if (_isInOutputArea && _isControllable) {
+                if (_selectThrowingDirectionAction.IsPressed()) {
+                    var directionInput = _selectThrowingDirectionAction.ReadValue<Vector2>();
 
-                if (_applyInvertingInput) {
-                    directionInput = -directionInput;
-                }
-
-                if (_isInOutputArea) {
-                    if (Vector2.Dot(directionInput, Vector2.down) > 0.6f) {
-                        _nowInputSecToOutput += Time.deltaTime;
+                    if (_applyInvertingInput) {
+                        directionInput = -directionInput;
                     }
 
-                    if (_nowInputSecToOutput > necessaryInputSecToOutput &&
-                        Vector2.Dot(directionInput, Vector2.up) > 0.7f) {
-                        _nowInputSecToOutput = 0f;
-                        _onOutputInput.OnNext(Unit.Default);
+                    if (Vector2.Dot(directionInput, Vector2.down) > 0.6f) {
+                        _nowInputSecToOutput += Time.deltaTime;
+
+                        if (_nowInputSecToOutput > necessaryInputSecToOutput &&
+                            Vector2.Dot(directionInput, Vector2.up) > 0.6f) {
+                            _nowInputSecToOutput = 0f;
+                            _onOutputInput.OnNext(Unit.Default);
+                        }
                     }
                 }
             }
@@ -231,6 +252,27 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         private void OnTriggerEnter2D(Collider2D other) {
             if (other.gameObject.layer == LayerMask.NameToLayer("OutputArea")) {
                 _isInOutputArea = true;
+
+                if (!_applyInvertingInput) {
+                    if (_rStickDownSequence == DOTween.Sequence()) {
+                        _rStickDownSequence.AppendCallback(() => {
+                            currentRStickImage.sprite = downerRStickSprite;
+                            currentRStickImage.enabled = true;
+                            downerRStickHoldText.enabled = true;
+                        });
+                        _rStickDownSequence.AppendInterval(0.5f);
+                        _rStickDownSequence.AppendCallback(() => {
+                            currentRStickImage.sprite = neutralRStickSprite;
+                            currentRStickImage.enabled = false;
+                            downerRStickHoldText.enabled = false;
+                        });
+                        _rStickDownSequence.AppendInterval(0.5f);
+                        _rStickDownSequence.SetLoops(-1);
+
+                        _rStickDownSequence.Play();
+                    }
+                }
+                else { }
             }
         }
 
@@ -446,8 +488,6 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
             myParameters.UpdateWalkSpeedByWeightAndCombo(_holdingBox.Weight, CurrentComboCount);
 
-            Debug.Log($"IDが{_holdingBox.BoxId}の記憶を持った");
-
             SeManager.I.Play(SEs.HoldBox);
         }
 
@@ -455,7 +495,6 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             _holdingBox.BeThrown(myParameters.ThrowPower,
                 _inputThrowDirection);
 
-            Debug.Log($"IDが{_holdingBox.BoxId}の記憶を投げた");
             _holdingBox = null;
             throwDirectionArrowSpRr.enabled = false;
             myParameters.UpdateWalkSpeedByWeightAndCombo(0, CurrentComboCount);
@@ -466,7 +505,6 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         private void Put(bool playSE) {
             _holdingBox.BePut();
 
-            Debug.Log($"IDが{_holdingBox.BoxId}の記憶を置いた");
             _holdingBox = null;
             throwDirectionArrowSpRr.enabled = false;
             myParameters.UpdateWalkSpeedByWeightAndCombo(0, CurrentComboCount);
@@ -517,6 +555,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         private void PushSphereBox(MemoryBoxCore sphereBox) {
             sphereBox.BePushed(_blinkDirection, blinkDistance / blinkDurationSec * pushBoxPowerMultiplier);
+            impulseSource.GenerateImpulse();
         }
 
         #endregion

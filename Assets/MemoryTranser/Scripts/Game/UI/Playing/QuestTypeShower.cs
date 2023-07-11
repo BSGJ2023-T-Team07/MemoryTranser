@@ -15,6 +15,9 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
         [Header("クエストの文章の背景のx軸の余白")] [SerializeField]
         private float questTextPaddingX;
 
+        [Header("Middleのオブジェクトの透明度")] [SerializeField]
+        private float middleObjectAlpha;
+
         [Header("色付き文字が通常文字よりどれだけ大きいか")] [SerializeField]
         private float additionalFontSize;
 
@@ -122,9 +125,9 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
             var currentMiddleImageColor = middleStartQuestImage.color;
             var currentMiddleTextColor = middleStartQuestText.color;
             middleStartQuestImage.color = new Color(currentMiddleImageColor.r, currentMiddleImageColor.g,
-                currentMiddleImageColor.b, 0.5f);
+                currentMiddleImageColor.b, middleObjectAlpha);
             middleStartQuestText.color = new Color(currentMiddleTextColor.r, currentMiddleTextColor.g,
-                currentMiddleTextColor.b, 0.5f);
+                currentMiddleTextColor.b, middleObjectAlpha);
         }
 
         public void UpdateQuestText(BoxMemoryType afterNextMemoryType) {
@@ -144,8 +147,8 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
             transformArray[TOP].gameObject.SetActive(true);
             transformArray[TOP].DOLocalMove(_middleObjectPos, questTransitionDuration).SetEase(Ease.InOutQuad);
             transformArray[TOP].DOScale(_middleObjectScale, questTransitionDuration).SetEase(Ease.InOutQuad);
-            imageArray[TOP].DOFade(0.5f, questTransitionDuration);
-            textArray[TOP].DOFade(0.5f, questTransitionDuration);
+            imageArray[TOP].DOFade(middleObjectAlpha, questTransitionDuration);
+            textArray[TOP].DOFade(middleObjectAlpha, questTransitionDuration);
 
             //MiddleのオブジェクトをDownに動かす
             transformArray[MIDDLE].DOLocalMove(_downObjectPos, questTransitionDuration).SetEase(Ease.InOutQuad);

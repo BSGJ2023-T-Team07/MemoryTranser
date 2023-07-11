@@ -181,8 +181,10 @@ namespace MemoryTranser.Scripts.Game.Phase {
                 var randomPhaseType = (BoxMemoryType)Random.Range(0, (int)BoxMemoryType.Count);
 
                 //もし前のフェイズと同じクエストタイプだったら、違うタイプにする
-                while (randomPhaseType == _phaseCores[^1].QuestType) {
-                    randomPhaseType = (BoxMemoryType)Random.Range(0, (int)BoxMemoryType.Count);
+                if (i > 0) {
+                    while (randomPhaseType == _phaseCores[^1].QuestType) {
+                        randomPhaseType = (BoxMemoryType)Random.Range(0, (int)BoxMemoryType.Count);
+                    }
                 }
 
                 phaseCore.QuestType = randomPhaseType;

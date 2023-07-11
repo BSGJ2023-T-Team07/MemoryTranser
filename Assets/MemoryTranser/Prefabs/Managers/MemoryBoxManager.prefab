@@ -57,7 +57,8 @@ MonoBehaviour:
   maxWeight: 2
   minWeight: 0.8
   generateIntervalSec: 1
-  sphereBoxWeightMagnification: 5
+  sphereBoxMassMagnification: 2
+  sphereBoxScaleMagnification: 1.2
 --- !u!1 &6035145267203715587
 GameObject:
   m_ObjectHideFlags: 0

@@ -46,8 +46,11 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         [Header("MemoryBoxが消えてから再生成されるまでの時間(秒)")] [SerializeField]
         private float generateIntervalSec;
 
-        [Header("SphereBoxの重さの倍率")] [SerializeField]
-        private float sphereBoxWeightMagnification;
+        [Header("SphereBoxの質量の倍率")] [SerializeField]
+        private float sphereBoxMassMagnification;
+
+        [Header("SphereBoxのScaleの倍率")] [SerializeField]
+        private float sphereBoxScaleMagnification;
 
         private MemoryBoxCore[] _allBoxes;
         private Queue<MemoryBoxCore> _appliedDisappearedBoxes;
@@ -99,14 +102,21 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
                 memoryBoxCore.Rb2D.mass = randomWeight;
             }
             else {
-                memoryBoxCore.Rb2D.mass = randomWeight * sphereBoxWeightMagnification;
+                memoryBoxCore.Rb2D.mass = randomWeight * sphereBoxMassMagnification;
             }
 
             //決定したパラメーターから他の値に反映させる
             memoryBoxCore.SpRr.sprite = randomBoxType.ToMemoryBoxSprite(randomBoxShape);
             memoryBoxCore.Trail.widthMultiplier = randomWeight;
             memoryBoxCore.Trail.time = randomWeight;
-            memoryBoxCore.transform.localScale = Vector3.one * memoryBoxCore.Weight / 1.2f;
+            if (memoryBoxCore.BoxShapeType == MemoryBoxShapeType.Cube) {
+                memoryBoxCore.transform.localScale = Vector3.one * memoryBoxCore.Weight / 1.2f;
+            }
+            else {
+                memoryBoxCore.transform.localScale =
+                    Vector3.one * (memoryBoxCore.Weight / 1.2f * sphereBoxScaleMagnification);
+            }
+
             memoryBoxCore.gameObject.layer = LayerMask.NameToLayer($"{randomBoxShape.ToString()}MemoryBox");
 
             return memoryBoxCore;

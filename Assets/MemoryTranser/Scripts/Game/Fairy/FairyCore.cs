@@ -7,11 +7,9 @@ using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.MemoryBox;
 using MemoryTranser.Scripts.Game.Sound;
 using MemoryTranser.Scripts.Game.UI.Playing;
-using TMPro;
 using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 using Constant = MemoryTranser.Scripts.Game.Util.Constant;
 
 namespace MemoryTranser.Scripts.Game.Fairy {
@@ -77,6 +75,8 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         [Space] [Header("何秒ゲージを貯めれば納品できるか")] [SerializeField]
         private float necessaryInputSecToOutput;
 
+        [Header("納品入力の保持時間")] [SerializeField] private float sustainOutputInputSec;
+
         private static readonly int AnimHasBox = Animator.StringToHash("hasBox");
         private static readonly int AnimIsWalking = Animator.StringToHash("isWalking");
         private static readonly int AnimIsFreezing = Animator.StringToHash("isFreezing");
@@ -105,6 +105,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         private float _remainingStunDurationSec;
         private float _remainingInvincibleSecAfterRecoverFromStun;
         private float _nowInputSecToOutput;
+        private float _remainingSecToSustainOutputInput;
 
         private int _remainFrameCountOnIsBlinkingChangedToTrue;
 
@@ -177,6 +178,8 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
             UpdateFairyState();
 
+            var directionInput = _selectThrowingDirectionAction.ReadValue<Vector2>();
+
             #region MemoryBox密着時のブリンクのための処理
 
             if (_changedIsBlinkingTrueThisFrame) {
@@ -195,13 +198,13 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
             if (_isInOutputArea && _isControllable) {
                 if (_selectThrowingDirectionAction.IsPressed()) {
-                    var directionInput = _selectThrowingDirectionAction.ReadValue<Vector2>().normalized;
+                    _remainingSecToSustainOutputInput = sustainOutputInputSec;
 
                     if (_applyInvertingInput) {
                         directionInput = -directionInput;
                     }
 
-                    if (Vector2.Dot(directionInput, Vector2.down) > 0.6f) {
+                    if (Vector2.Dot(directionInput.normalized, Vector2.down) > 0.6f) {
                         _nowInputSecToOutput += Time.deltaTime;
 
                         if (_nowInputSecToOutput > necessaryInputSecToOutput &&
@@ -211,7 +214,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
                     }
 
                     if (_nowInputSecToOutput > necessaryInputSecToOutput &&
-                        Vector2.Dot(directionInput, Vector2.up) > 0.6f) {
+                        Vector2.Dot(directionInput.normalized, Vector2.up) > 0.6f) {
                         _nowInputSecToOutput = 0f;
                         _onOutputInput.OnNext(Unit.Default);
                         ShowRStickHoldAction();
@@ -221,7 +224,20 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
             #endregion
 
-            #region ブリンク方向先行入力の判定
+            #region 納品入力の保持の処理
+
+            if (_nowInputSecToOutput > 0f) {
+                _remainingSecToSustainOutputInput -= Time.deltaTime;
+
+                if (_remainingSecToSustainOutputInput < 0) {
+                    _nowInputSecToOutput = 0f;
+                    ShowRStickHoldAction();
+                }
+            }
+
+            #endregion
+
+            #region ブリンク方向先行入力の処理
 
             if (_inputWalkDirectionBeforeZero != Vector2.zero && _remainingPrecedeBlinkDirectionInputSec > 0f) {
                 _remainingPrecedeBlinkDirectionInputSec -= Time.deltaTime;

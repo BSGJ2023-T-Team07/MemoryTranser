@@ -643,6 +643,7 @@ MonoBehaviour:
   pushBoxPowerMultiplier: 4
   precedeBlinkDirectionInputSec: 0.3
   necessaryInputSecToOutput: 0.3
+  sustainOutputInputSec: 0.2
 --- !u!114 &8073110865618226502
 MonoBehaviour:
   m_ObjectHideFlags: 0

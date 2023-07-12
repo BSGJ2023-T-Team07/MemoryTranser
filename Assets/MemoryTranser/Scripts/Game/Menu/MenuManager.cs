@@ -57,7 +57,6 @@ namespace MemoryTranser.Scripts.Game.Menu {
                 return;
             }
 
-            var value = context.ReadValue<float>();
             CloseMenu();
         }
 
@@ -71,7 +70,6 @@ namespace MemoryTranser.Scripts.Game.Menu {
                 return;
             }
 
-            var value = context.ReadValue<float>();
             SelectionUp();
         }
 
@@ -85,7 +83,6 @@ namespace MemoryTranser.Scripts.Game.Menu {
                 return;
             }
 
-            var value = context.ReadValue<float>();
             SelectionDown();
         }
 
@@ -99,7 +96,6 @@ namespace MemoryTranser.Scripts.Game.Menu {
                 return;
             }
 
-            var value = context.ReadValue<float>();
             Decide(_currentMenuSelection);
         }
 

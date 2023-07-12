@@ -29,9 +29,8 @@ namespace MemoryTranser.Scripts.Game.Sound {
 
 
         private void Start() {
-            //TODO:ここのコメントアウトを消す
-            // bgmIntroSource.volume = 0.5f;
-            // bgmMainSource.volume = 0.5f;
+            bgmIntroSource.volume = 0.5f;
+            bgmMainSource.volume = 0.5f;
         }
 
         #endregion
@@ -41,7 +40,6 @@ namespace MemoryTranser.Scripts.Game.Sound {
         }
 
         private async void PlayIntro() {
-            Debug.Log("BGMイントロの再生を開始しました");
             bgmIntroSource.Play();
 
             //イントロが終わったらメイン部分の再生を開始する
@@ -51,7 +49,6 @@ namespace MemoryTranser.Scripts.Game.Sound {
         }
 
         private void PlayMain() {
-            Debug.Log("BGMメインの再生を開始しました");
             bgmMainSource.Play();
         }
 

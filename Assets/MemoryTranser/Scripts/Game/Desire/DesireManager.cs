@@ -298,21 +298,27 @@ namespace MemoryTranser.Scripts.Game.Desire {
         }
 
         public void OnStateChangedToFinished() {
-            foreach (var desire in _desireCorePool) {
-                Destroy(desire);
+            if (_desireCorePool.Count > 0) {
+                foreach (var desire in _desireCorePool) {
+                    Destroy(desire);
+                }
             }
 
             _desireCorePool = null;
 
 
-            foreach (var desire in _existingDesireCores) {
-                Destroy(desire);
+            if (_existingDesireCores.Count > 0) {
+                foreach (var desire in _existingDesireCores) {
+                    Destroy(desire);
+                }
             }
 
             _existingDesireCores.Dispose();
 
-            foreach (var desire in _desireCorePoolOnDesireOutbreak) {
-                Destroy(desire);
+            if (_desireCorePoolOnDesireOutbreak.Count > 0) {
+                foreach (var desire in _desireCorePoolOnDesireOutbreak) {
+                    Destroy(desire);
+                }
             }
 
             _desireCorePoolOnDesireOutbreak = null;

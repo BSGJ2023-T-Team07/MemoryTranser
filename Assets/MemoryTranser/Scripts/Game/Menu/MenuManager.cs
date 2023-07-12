@@ -145,11 +145,16 @@ namespace MemoryTranser.Scripts.Game.Menu {
                     CloseMenu();
                     break;
                 case MenuSelection.BackToTitle:
-                    SceneManager.LoadScene("MemoryTranser/Scenes/TitleScene");
+                    TransitToTitle();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(selection), selection, null);
             }
+        }
+
+        private static void TransitToTitle() {
+            Time.timeScale = 1f;
+            SceneManager.LoadScene("MemoryTranser/Scenes/TitleScene");
         }
 
         #endregion

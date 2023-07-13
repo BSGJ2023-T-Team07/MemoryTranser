@@ -703,6 +703,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         public void OnStateChangedToInitializing() {
             InitializeFairy();
+            AddBlinkTicket(1);
         }
 
         public void OnStateChangedToReady() { }

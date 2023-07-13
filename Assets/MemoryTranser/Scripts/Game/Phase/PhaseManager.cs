@@ -132,7 +132,7 @@ namespace MemoryTranser.Scripts.Game.Phase {
                 var basicScore = box.BoxShapeType == MemoryBoxShapeType.Cube ? cubeBoxBasicScore : sphereBoxBasicScore;
 
                 if (box.BoxMemoryType == currentQuest) {
-                    score += Mathf.FloorToInt((basicScore + (trueCount - 1)) * box.Weight);
+                    score += Mathf.FloorToInt((basicScore + (trueCount - 1) / 5f) * box.Weight);
                 }
                 else {
                     score -= Mathf.FloorToInt((basicScore + (falseCount - 1)) * box.Weight);

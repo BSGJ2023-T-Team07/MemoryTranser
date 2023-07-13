@@ -105,7 +105,7 @@ namespace MemoryTranser.Scripts.Game.BrainEvent {
         #region interfaceの実装
 
         public void OnStateChangedToInitializing() {
-            const BrainEventType initialBrainEvent = BrainEventType.None;
+            var initialBrainEvent = BrainEventType.None;
             _remainingTimeForReSelection = GetSecForReselection(initialBrainEvent);
             _onBrainEventTransition.Value = initialBrainEvent;
             _brainEvents.Add(initialBrainEvent);

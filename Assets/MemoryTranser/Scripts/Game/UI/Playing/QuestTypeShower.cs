@@ -145,28 +145,33 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
 
             //TopのオブジェクトをMiddleに動かす
             transformArray[TOP].gameObject.SetActive(true);
-            transformArray[TOP].DOLocalMove(_middleObjectPos, questTransitionDuration).SetEase(Ease.InOutQuad);
-            transformArray[TOP].DOScale(_middleObjectScale, questTransitionDuration).SetEase(Ease.InOutQuad);
-            imageArray[TOP].DOFade(middleObjectAlpha, questTransitionDuration);
-            textArray[TOP].DOFade(middleObjectAlpha, questTransitionDuration);
+            transformArray[TOP].DOLocalMove(_middleObjectPos, questTransitionDuration).SetEase(Ease.InOutQuad)
+                .SetLink(gameObject);
+            transformArray[TOP].DOScale(_middleObjectScale, questTransitionDuration).SetEase(Ease.InOutQuad)
+                .SetLink(gameObject);
+            imageArray[TOP].DOFade(middleObjectAlpha, questTransitionDuration).SetLink(gameObject);
+            textArray[TOP].DOFade(middleObjectAlpha, questTransitionDuration).SetLink(gameObject);
 
             //MiddleのオブジェクトをDownに動かす
-            transformArray[MIDDLE].DOLocalMove(_downObjectPos, questTransitionDuration).SetEase(Ease.InOutQuad);
-            transformArray[MIDDLE].DOScale(_downObjectScale, questTransitionDuration).SetEase(Ease.InOutQuad);
-            imageArray[MIDDLE].DOFade(1f, questTransitionDuration);
-            textArray[MIDDLE].DOFade(1f, questTransitionDuration);
+            transformArray[MIDDLE].DOLocalMove(_downObjectPos, questTransitionDuration).SetEase(Ease.InOutQuad)
+                .SetLink(gameObject);
+            transformArray[MIDDLE].DOScale(_downObjectScale, questTransitionDuration).SetEase(Ease.InOutQuad)
+                .SetLink(gameObject);
+            imageArray[MIDDLE].DOFade(1f, questTransitionDuration).SetLink(gameObject);
+            textArray[MIDDLE].DOFade(1f, questTransitionDuration).SetLink(gameObject);
 
             //Downのオブジェクトを動かして表示を消す
-            transformArray[DOWN].DOLocalMove(_finishedQuestPos, questTransitionDuration).SetEase(Ease.InOutQuad);
-            transformArray[DOWN].DOScale(0f, questTransitionDuration).SetEase(Ease.InOutQuad);
-            imageArray[DOWN].DOFade(0f, questTransitionDuration);
+            transformArray[DOWN].DOLocalMove(_finishedQuestPos, questTransitionDuration).SetEase(Ease.InOutQuad)
+                .SetLink(gameObject);
+            transformArray[DOWN].DOScale(0f, questTransitionDuration).SetEase(Ease.InOutQuad).SetLink(gameObject);
+            imageArray[DOWN].DOFade(0f, questTransitionDuration).SetLink(gameObject);
             textArray[DOWN].DOFade(0f, questTransitionDuration)
                 .OnComplete(() => {
                     //表示が消えきったら、Topに戻す
                     transformArray[DOWN].localPosition = _topObjectPos;
                     transformArray[DOWN].localScale = _topObjectScale;
                     transformArray[DOWN].gameObject.SetActive(false);
-                });
+                }).SetLink(gameObject);
 
             //キューをずらす
             _transforms.Enqueue(_transforms.Dequeue());

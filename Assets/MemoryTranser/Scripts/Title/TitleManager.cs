@@ -15,7 +15,7 @@ namespace MemoryTranser.Scripts.Title {
     public class TitleManager : MonoBehaviour {
         [SerializeField] private TitleSelectionShower titleSelectionShower;
         [SerializeField] private PlayerInput playerInput;
-        private TitleSelection _currentTitleSelection = TitleSelection.Start;
+        private TitleSelection _currentTitleSelection = TitleSelection.StartWithIntroduction;
 
         #region Unityから呼ばれる
 
@@ -76,10 +76,13 @@ namespace MemoryTranser.Scripts.Title {
             SeManager.I.Play(SEs.SelectionDefault1);
         }
 
-        private void Decide(TitleSelection selection) {
+        private static void Decide(TitleSelection selection) {
             SeManager.I.Play(SEs.DecisionDefault1);
             switch (selection) {
-                case TitleSelection.Start:
+                case TitleSelection.StartWithIntroduction:
+                    TransitToStoryScene();
+                    break;
+                case TitleSelection.StartWithoutIntroduction:
                     TransitToGameScene();
                     break;
                 // case TitleSelection.Credit:
@@ -93,6 +96,13 @@ namespace MemoryTranser.Scripts.Title {
         }
 
         #endregion
+
+        private static void TransitToStoryScene() {
+            SceneTransitionEffecter.I.PlayFadeEffect(DOTween.Sequence().OnPlay(() => {
+                BgmManager.I.StopIntroLoop();
+                SceneManager.LoadScene("MemoryTranser/Scenes/StoryIntroductionScene");
+            }));
+        }
 
         private static void TransitToGameScene() {
             SceneTransitionEffecter.I.PlayFadeEffect(DOTween.Sequence().OnPlay(() => {
@@ -111,7 +121,8 @@ namespace MemoryTranser.Scripts.Title {
     }
 
     public enum TitleSelection {
-        Start,
+        StartWithIntroduction,
+        StartWithoutIntroduction,
 
         // Credit,
         Exit,

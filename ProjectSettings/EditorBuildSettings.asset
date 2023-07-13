@@ -11,5 +11,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/MemoryTranser/Scenes/GameScene.unity
     guid: 8021f65bd6c88e9438e0cd73f4ee9678
+  - enabled: 1
+    path: Assets/MemoryTranser/Scenes/StoryIntroductionScene.unity
+    guid: 40771f6e737460849afa77797194bedd
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: e353fb421b3f17447a136605e4c9c818, type: 2}

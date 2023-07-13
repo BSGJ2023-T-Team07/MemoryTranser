@@ -4,18 +4,26 @@ using UnityEngine;
 
 namespace MemoryTranser.Scripts.Title.UI {
     public class TitleSelectionShower : MonoBehaviour {
-        [SerializeField] private TextMeshProUGUI startText;
+        [SerializeField] private TextMeshProUGUI startWithIntroText;
+        [SerializeField] private TextMeshProUGUI startWithoutIntroText;
         [SerializeField] private TextMeshProUGUI creditText;
         [SerializeField] private TextMeshProUGUI exitText;
 
         private void Awake() {
-            UpdateTitleSelection(TitleSelection.Start);
+            UpdateTitleSelection(TitleSelection.StartWithIntroduction);
         }
 
         public void UpdateTitleSelection(TitleSelection selection) {
             switch (selection) {
-                case TitleSelection.Start:
-                    startText.color = Color.white;
+                case TitleSelection.StartWithIntroduction:
+                    startWithIntroText.color = Color.white;
+                    startWithoutIntroText.color = Color.gray;
+                    creditText.color = Color.gray;
+                    exitText.color = Color.gray;
+                    break;
+                case TitleSelection.StartWithoutIntroduction:
+                    startWithIntroText.color = Color.gray;
+                    startWithoutIntroText.color = Color.white;
                     creditText.color = Color.gray;
                     exitText.color = Color.gray;
                     break;
@@ -25,7 +33,8 @@ namespace MemoryTranser.Scripts.Title.UI {
                 //     exitText.color = Color.gray;
                 //     break;
                 case TitleSelection.Exit:
-                    startText.color = Color.gray;
+                    startWithIntroText.color = Color.gray;
+                    startWithoutIntroText.color = Color.gray;
                     creditText.color = Color.gray;
                     exitText.color = Color.white;
                     break;

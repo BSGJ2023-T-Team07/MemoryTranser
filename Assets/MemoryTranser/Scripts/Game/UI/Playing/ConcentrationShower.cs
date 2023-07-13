@@ -13,8 +13,8 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
         }
 
         public void PlayAnimationWhenPinch() {
-            concentrationTransform.DOShakePosition(2f, 10f, 20);
-            concentrationImage.DOColor(Color.red, 0.5f).SetLoops(4, LoopType.Yoyo);
+            concentrationTransform.DOShakePosition(2f, 10f, 20).SetLink(gameObject);
+            concentrationImage.DOColor(Color.red, 0.5f).SetLoops(4, LoopType.Yoyo).SetLink(gameObject);
         }
 
         public void PlayAnimationWhenIncrease() { }

@@ -56,14 +56,14 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
             const float duration = 1f;
 
             rippleText.transform.DOScale(rippleText.transform.localScale * scaleMultiplier, duration)
-                .SetEase(Ease.OutCubic);
+                .SetEase(Ease.OutCubic).SetLink(gameObject);
             ripplePaper.transform.DOScale(ripplePaper.transform.localScale * scaleMultiplier, duration)
-                .SetEase(Ease.OutCubic);
+                .SetEase(Ease.OutCubic).SetLink(gameObject);
 
             rippleText.DOFade(0f, duration).SetEase(Ease.OutCubic)
-                .OnComplete(() => { Destroy(rippleText.gameObject); });
+                .OnComplete(() => { Destroy(rippleText.gameObject); }).SetLink(gameObject);
             ripplePaper.DOFade(0f, duration).SetEase(Ease.OutCubic)
-                .OnComplete(() => { Destroy(ripplePaper.gameObject); });
+                .OnComplete(() => { Destroy(ripplePaper.gameObject); }).SetLink(gameObject);
         }
     }
 }

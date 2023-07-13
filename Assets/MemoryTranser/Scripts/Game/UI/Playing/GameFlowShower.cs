@@ -30,7 +30,7 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
                     countDownLayer.SetActive(false);
                     pauseBackGround.SetActive(false);
                     GameFlowManager.I.ChangeGameState(GameState.Initializing);
-                }));
+                })).SetLink(gameObject);
         }
     }
 }

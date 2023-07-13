@@ -1,9 +1,10 @@
 using MemoryTranser.Scripts.Game.Fairy;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.Phase;
-using MemoryTranser.Scripts.Game.Sound;
 using MemoryTranser.Scripts.Game.UI.Result;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 namespace MemoryTranser.Scripts.Game.Result {
     public class ResultManager : MonoBehaviour, IOnStateChangedToResult {
@@ -12,6 +13,13 @@ namespace MemoryTranser.Scripts.Game.Result {
         [SerializeField] private ResultShower resultShower;
         [SerializeField] private PhaseManager phaseManager;
         [SerializeField] private FairyCore fairyCore;
+
+        private readonly InputAction _pressAnyKeyAction =
+            new(type: InputActionType.PassThrough, binding: "*/<Button>", interactions: "Press");
+
+        private void OnDisable() {
+            _pressAnyKeyAction.Disable();
+        }
 
         #endregion
 
@@ -23,9 +31,14 @@ namespace MemoryTranser.Scripts.Game.Result {
 
         #endregion
 
+        private void Update() {
+            if (resultShower.IsAnimationCompleted && _pressAnyKeyAction.triggered) {
+                SceneManager.LoadScene("MemoryTranser/Scenes/TitleScene");
+            }
+        }
+
 
         public void OnStateChangedToResult() {
-            BgmManager.I.PausePlayingBgm();
             var phaseInfo = phaseManager.GetResultInformation();
             _totalScore = phaseInfo.Item1;
             _reachedPhaseCount = phaseInfo.Item2;
@@ -33,6 +46,7 @@ namespace MemoryTranser.Scripts.Game.Result {
             _reachedMaxComboCount = fairyCore.GetResultInformation();
 
             resultShower.ShowResult(_totalScore, _reachedPhaseCount, _reachedMaxComboCount);
+            _pressAnyKeyAction.Enable();
         }
     }
 }

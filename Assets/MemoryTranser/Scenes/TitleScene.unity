@@ -1695,6 +1695,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   titleSelectionShower: {fileID: 277486066}
+  playerInput: {fileID: 1079699357}
 --- !u!4 &1079699356
 Transform:
   m_ObjectHideFlags: 0
@@ -2702,8 +2703,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   titleLogoImage: {fileID: 1141230573}
-  titleLogoScaleMultiplier: 1.1
-  animationUnitDurationSec: 3
+  titleLogoScaleMultiplier: 1.15
+  animationUnitDurationSec: 2
 --- !u!4 &2084034582
 Transform:
   m_ObjectHideFlags: 0

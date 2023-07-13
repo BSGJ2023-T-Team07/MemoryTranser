@@ -12,13 +12,21 @@ using UnityEditor;
 namespace MemoryTranser.Scripts.Title {
     public class TitleManager : MonoBehaviour {
         [SerializeField] private TitleSelectionShower titleSelectionShower;
-
+        [SerializeField] private PlayerInput playerInput;
         private TitleSelection _currentTitleSelection = TitleSelection.Start;
 
         #region Unityから呼ばれる
 
+        private void OnEnable() {
+            playerInput.enabled = true;
+        }
+
         private void Start() {
             BgmManager.I.PlayIntroLoop();
+        }
+
+        private void OnDisable() {
+            playerInput.enabled = false;
         }
 
         #endregion

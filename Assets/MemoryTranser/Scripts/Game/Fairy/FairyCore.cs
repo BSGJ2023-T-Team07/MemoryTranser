@@ -173,6 +173,14 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             _selectThrowingDirectionAction = playerInput.actions["SelectThrowingDirection"];
         }
 
+        private void OnEnable() {
+            playerInput.enabled = true;
+        }
+
+        private void OnDisable() {
+            playerInput.enabled = false;
+        }
+
         private void Update() {
             AnimationChange();
 

@@ -5,7 +5,8 @@ using MemoryTranser.Scripts.Game.Util;
 using UnityEngine;
 
 namespace MemoryTranser.Scripts.Game.Sound {
-    public class BgmManager : SingletonMonoBehaviour<BgmManager>, IOnStateChangedToInitializing {
+    public class BgmManager : SingletonMonoBehaviour<BgmManager>, IOnStateChangedToInitializing,
+        IOnStateChangedToResult {
         protected override bool DontDestroy => true;
 
         #region コンポーネントの定義
@@ -39,6 +40,12 @@ namespace MemoryTranser.Scripts.Game.Sound {
             PlayIntroAndStopAndPlayMain();
         }
 
+        public void OnStateChangedToResult() {
+            bgmIntroSource.Stop();
+            bgmMainSource.Stop();
+            SetBgmPitch(1f);
+        }
+
         private async void PlayIntroAndStopAndPlayMain() {
             bgmIntroSource.Play();
 
@@ -46,7 +53,9 @@ namespace MemoryTranser.Scripts.Game.Sound {
             await UniTask.Delay(TimeSpan.FromSeconds(bgmIntro.length));
 
             bgmIntroSource.Stop();
-            bgmMainSource.Play();
+            if (GameFlowManager.I is { CurrentGameState: GameState.Playing or GameState.Ready }) {
+                bgmMainSource.Play();
+            }
         }
 
         public void PlayIntroLoop() {

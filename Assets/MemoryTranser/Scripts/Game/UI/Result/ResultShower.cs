@@ -1,8 +1,6 @@
-using System;
 using DG.Tweening;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.Sound;
-using MemoryTranser.Scripts.Game.Util;
 using TMPro;
 using UnityEngine;
 
@@ -19,6 +17,9 @@ namespace MemoryTranser.Scripts.Game.UI.Result {
         [SerializeField] private GameObject resultLayer;
         [SerializeField] private GameObject resultPaper;
         [SerializeField] private GameObject resultPaperStamp;
+
+
+        public bool IsAnimationCompleted => !resultAnimator.enabled;
 
         private void Awake() {
             //勝手に再生されないように止めておく
@@ -78,6 +79,7 @@ namespace MemoryTranser.Scripts.Game.UI.Result {
         private void ShowBackToTitleText() {
             backToTitleText.gameObject.SetActive(true);
             backToTitleText.DOFade(0.1f, 1f).SetLoops(-1, LoopType.Yoyo);
+            resultAnimator.enabled = false;
         }
     }
 }

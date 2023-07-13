@@ -718,6 +718,12 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
             brainEventManager.OnBeforeStartEvent.Where(x => x != BrainEventType.None).Subscribe(_ => {
                 exclamationSpRr.enabled = true;
+                var sequence = DOTween.Sequence();
+                var localScale = exclamationSpRr.transform.localScale;
+                sequence
+                    .Append(exclamationSpRr.transform.DOScale(localScale * 1.5f, 0.2f))
+                    .Append(exclamationSpRr.transform.DOScale(localScale, 0.1f))
+                    .Play();
                 SeManager.I.Play(SEs.NoticeEvent);
             });
         }

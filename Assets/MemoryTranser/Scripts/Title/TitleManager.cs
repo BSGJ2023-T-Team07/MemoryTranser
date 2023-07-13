@@ -29,6 +29,7 @@ namespace MemoryTranser.Scripts.Title {
 
         private void Awake() {
             _sliderAction = playerInput.actions["Slide"];
+            _sliderAction.canceled += context => { SeManager.I.Play(SEs.DecisionDefault1); };
         }
 
         private void OnEnable() {

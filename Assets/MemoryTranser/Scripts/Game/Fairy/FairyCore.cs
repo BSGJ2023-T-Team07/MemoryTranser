@@ -375,6 +375,10 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         }
 
         public void OnThrowInput(InputAction.CallbackContext context) {
+            if (!context.performed) {
+                return;
+            }
+
             //操作不能だったら何もしない
             if (!_isControllable) {
                 return;
@@ -395,7 +399,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         public void OnHoldInput(InputAction.CallbackContext context) {
             //このフレームに完全に押されてなければ何もしない
-            if (!context.action.WasPressedThisFrame()) {
+            if (!context.performed) {
                 return;
             }
 
@@ -428,7 +432,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         public void OnPutInput(InputAction.CallbackContext context) {
             //このフレームに完全に押されてなければ何もしない
-            if (!context.action.WasPressedThisFrame()) {
+            if (!context.performed) {
                 return;
             }
 
@@ -447,7 +451,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         public void OnBlinkInput(InputAction.CallbackContext context) {
             //このフレームに完全に押されてなければ何もしない
-            if (!context.action.WasPressedThisFrame()) {
+            if (!context.performed) {
                 return;
             }
 

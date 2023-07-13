@@ -8180,6 +8180,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MemoryColorManager
       objectReference: {fileID: 0}
+    - target: {fileID: 5057982732802318050, guid: 6bdb243284348a847b3854ceb4aa5cf1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8550,10 +8554,6 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1460290334}
-    - target: {fileID: 765878070938597016, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
-      propertyPath: m_SortingOrder
-      value: -1
-      objectReference: {fileID: 0}
     - target: {fileID: 3476403440198354191, guid: fca5cc71d2f983d478ed8b9a4415a24f, type: 3}
       propertyPath: m_Name
       value: Fairy

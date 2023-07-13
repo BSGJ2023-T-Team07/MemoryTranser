@@ -631,7 +631,7 @@ MonoBehaviour:
     initialThrowPower: 10
   stunDurationSec: 2
   invincibleSecAfterRecoverFromStun: 1.5
-  selectDirectionArrowThreshold: 0.2
+  selectDirectionArrowThreshold: 0.3
   holdableDistance: 2.5
   additionalBlinkTicketOnDefeatDesire: 1
   blinkTicketCount: 0
@@ -1070,7 +1070,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: -863352599
-  m_SortingOrder: 1
+  m_SortingOrder: -1
   m_TargetDisplay: 0
 --- !u!114 &2610837682918280801
 MonoBehaviour:

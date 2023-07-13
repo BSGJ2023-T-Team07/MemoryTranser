@@ -38,7 +38,7 @@ namespace MemoryTranser.Scripts.Game.Menu {
                 return;
             }
 
-            if (!context.action.WasPressedThisFrame()) {
+            if (!context.performed) {
                 return;
             }
 
@@ -55,7 +55,7 @@ namespace MemoryTranser.Scripts.Game.Menu {
                 return;
             }
 
-            if (!context.action.WasPressedThisFrame()) {
+            if (!context.performed) {
                 return;
             }
 
@@ -68,7 +68,7 @@ namespace MemoryTranser.Scripts.Game.Menu {
                 return;
             }
 
-            if (!context.action.WasPressedThisFrame()) {
+            if (!context.performed) {
                 return;
             }
 
@@ -81,7 +81,7 @@ namespace MemoryTranser.Scripts.Game.Menu {
                 return;
             }
 
-            if (!context.action.WasPressedThisFrame()) {
+            if (!context.performed) {
                 return;
             }
 
@@ -94,7 +94,7 @@ namespace MemoryTranser.Scripts.Game.Menu {
                 return;
             }
 
-            if (!context.action.WasPressedThisFrame()) {
+            if (!context.performed) {
                 return;
             }
 

@@ -717,8 +717,8 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             });
 
             brainEventManager.OnBeforeStartEvent.Where(x => x != BrainEventType.None).Subscribe(_ => {
-                Debug.Log("ビックリマークを表示します");
                 exclamationSpRr.enabled = true;
+                SeManager.I.Play(SEs.NoticeEvent);
             });
         }
 

@@ -67,6 +67,7 @@ namespace MemoryTranser.Scripts.Game.Sound {
         OpenMenu,
         CloseMenu,
         ResultShow3,
-        PushSphereBox
+        PushSphereBox,
+        NoticeEvent
     }
 }

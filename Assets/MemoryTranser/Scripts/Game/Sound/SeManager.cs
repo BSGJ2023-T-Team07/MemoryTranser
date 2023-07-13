@@ -29,6 +29,10 @@ namespace MemoryTranser.Scripts.Game.Sound {
         public void SetSeVolume(float volume) {
             audioSource.volume = volume;
         }
+
+        public void AddSeVolume(float volume) {
+            audioSource.volume += volume;
+        }
     }
 
     public enum SEs {

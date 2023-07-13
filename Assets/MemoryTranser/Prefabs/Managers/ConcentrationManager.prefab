@@ -47,7 +47,7 @@ MonoBehaviour:
   concentrationShower: {fileID: 0}
   maxConcentration: 120
   additionalDecreaseInterval: 20
-  additionalDecreasePercent: 15
-  maxDecreaseMultiplier: 200
+  additionalDecreasePercent: 20
+  maxDecreaseMultiplier: 250
   pinchSeThreshold: 36
   pinchBgmPitch: 1.1

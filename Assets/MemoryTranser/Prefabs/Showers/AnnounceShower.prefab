@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c6b09008db3ead4fad02c9083ad37a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  announceTextParent: {fileID: 0}
+  announceTextBackGround: {fileID: 0}
   announcePrefab: {fileID: 8719950943300319432, guid: ffd5e647916f05748803c569166f1b39, type: 3}
-  announceMoveSpeed: 0.1
+  announceMoveSpeed: 200
+  announceTextUnitIntervalDistance: 10

@@ -62,9 +62,6 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
         private void SetPostProcessForInvertControl() { }
 
         private void SetPostProcessForFeverTime() {
-            var bloom = postProcessVolume.profile.GetSetting<Bloom>();
-            bloom.active = true;
-            bloom.intensity.value = 1f;
         }
     }
 }

@@ -30,8 +30,6 @@ namespace MemoryTranser.Scripts.Game.BrainEvent {
 
         private List<BrainEventType> _brainEvents = new();
 
-        private float _eventDurationSec;
-
         private float _remainingTimeForReSelection;
         private int _currentBrainEventIndex = 0;
 
@@ -107,9 +105,8 @@ namespace MemoryTranser.Scripts.Game.BrainEvent {
         #region interfaceの実装
 
         public void OnStateChangedToInitializing() {
-            _remainingTimeForReSelection = _eventDurationSec;
-
             const BrainEventType initialBrainEvent = BrainEventType.None;
+            _remainingTimeForReSelection = GetSecForReselection(initialBrainEvent);
             _onBrainEventTransition.Value = initialBrainEvent;
             _brainEvents.Add(initialBrainEvent);
             _currentBrainEventIndex = 0;

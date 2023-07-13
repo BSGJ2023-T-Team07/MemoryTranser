@@ -64,7 +64,7 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
             newTextUnit.transform.DOLocalMoveX(-Constant.SCREEN_WIDTH - newTextUnit.preferredWidth,
                 _announceUnitDuration).SetRelative().SetEase(Ease.Linear).OnComplete(() => {
                 Destroy(_announceQueue.Peek().gameObject);
-            }).SetLink(gameObject);
+            }).SetLink(newTextUnit.gameObject);
 
             return newTextUnit;
         }

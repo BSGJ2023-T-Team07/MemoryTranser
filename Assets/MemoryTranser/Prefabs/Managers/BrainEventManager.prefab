@@ -44,5 +44,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c08a95e06c9f2f4a906086da6739bae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectDurationSec: 15
+  brainEventTypeShower: {fileID: 0}
+  noEventDurationSec: 15
+  blindDurationSec: 15
+  desireOutbreakDurationSec: 15
+  invertControlDurationSec: 15
   achievementOfStudyDurationSec: 5
+  feverTimeDurationSec: 6

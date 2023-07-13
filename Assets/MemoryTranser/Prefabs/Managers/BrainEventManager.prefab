@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   brainEventTypeShower: {fileID: 0}
+  eventAnnounceSec: 3
   noEventDurationSec: 15
   blindDurationSec: 15
   desireOutbreakDurationSec: 15

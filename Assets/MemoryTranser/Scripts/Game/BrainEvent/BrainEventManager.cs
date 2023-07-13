@@ -10,6 +10,9 @@ namespace MemoryTranser.Scripts.Game.BrainEvent {
     public class BrainEventManager : MonoBehaviour, IOnStateChangedToInitializing, IOnStateChangedToResult {
         [SerializeField] private BrainEventTypeShower brainEventTypeShower;
 
+        [Header("イベント開始の何秒前に告知を出すか")] [SerializeField]
+        private float eventAnnounceSec;
+
         [Header("イベント無しの継続時間")] [SerializeField]
         private float noEventDurationSec;
 
@@ -31,13 +34,18 @@ namespace MemoryTranser.Scripts.Game.BrainEvent {
         private List<BrainEventType> _brainEvents = new();
 
         private float _remainingTimeForReSelection;
+        private float _remainingTimeForEventAnnounce;
         private int _currentBrainEventIndex = 0;
+        private BrainEventType _nextBrainEvent;
 
         #region eventの定義
 
         private readonly ReactiveProperty<BrainEventType> _onBrainEventTransition = new();
 
         public IReadOnlyReactiveProperty<BrainEventType> OnBrainEventTransition => _onBrainEventTransition;
+
+        private readonly ReactiveProperty<BrainEventType> _onBeforeStartEvent = new();
+        public IReadOnlyReactiveProperty<BrainEventType> OnBeforeStartEvent => _onBeforeStartEvent;
 
         #endregion
 
@@ -48,25 +56,35 @@ namespace MemoryTranser.Scripts.Game.BrainEvent {
                 _remainingTimeForReSelection -= Time.deltaTime;
 
                 if (_remainingTimeForReSelection < 0f) {
-                    TransitToNextBrainEvent(out var nextBrainEvent);
-                    Debug.Log($"{nextBrainEvent}が発生");
+                    TransitToNextBrainEvent(_nextBrainEvent);
 
                     //イベントによって継続時間を変える
-                    _remainingTimeForReSelection = GetSecForReselection(nextBrainEvent);
+                    _remainingTimeForReSelection = GetSecForReselection(_nextBrainEvent);
+
+                    //告知の準備をする
+                    _remainingTimeForEventAnnounce = _remainingTimeForReSelection - eventAnnounceSec;
+
+                    //次のイベントを生成しておく
+                    _nextBrainEvent = SelectNextBrainEvent();
+                }
+            }
+
+            if (_remainingTimeForEventAnnounce > 0f) {
+                _remainingTimeForEventAnnounce -= Time.deltaTime;
+
+                if (_remainingTimeForEventAnnounce < 0f) {
+                    _onBeforeStartEvent.Value = _nextBrainEvent;
                 }
             }
         }
 
         #endregion
 
-        private void TransitToNextBrainEvent(out BrainEventType nextBrainEvent) {
-            var thisNextBrainEvent = SelectNextBrainEvent();
-            _brainEvents.Add(thisNextBrainEvent);
-            _onBrainEventTransition.Value = thisNextBrainEvent;
-            brainEventTypeShower.SetBrainEventShow(thisNextBrainEvent, GetSecForReselection(thisNextBrainEvent));
+        private void TransitToNextBrainEvent(BrainEventType nextBrainEvent) {
+            _brainEvents.Add(nextBrainEvent);
+            _onBrainEventTransition.Value = nextBrainEvent;
+            brainEventTypeShower.SetBrainEventShow(nextBrainEvent, GetSecForReselection(nextBrainEvent));
             _currentBrainEventIndex++;
-
-            nextBrainEvent = thisNextBrainEvent;
         }
 
         private BrainEventType SelectNextBrainEvent() {
@@ -106,16 +124,22 @@ namespace MemoryTranser.Scripts.Game.BrainEvent {
 
         public void OnStateChangedToInitializing() {
             var initialBrainEvent = BrainEventType.None;
-            _remainingTimeForReSelection = GetSecForReselection(initialBrainEvent);
             _onBrainEventTransition.Value = initialBrainEvent;
             _brainEvents.Add(initialBrainEvent);
             _currentBrainEventIndex = 0;
             brainEventTypeShower.SetBrainEventShow(initialBrainEvent, GetSecForReselection(initialBrainEvent));
+
+            //次のイベントを生成しておく
+            _remainingTimeForReSelection = GetSecForReselection(initialBrainEvent);
+            _remainingTimeForEventAnnounce = GetSecForReselection(initialBrainEvent) - eventAnnounceSec;
+            _nextBrainEvent = SelectNextBrainEvent();
         }
 
         public void OnStateChangedToResult() {
             _remainingTimeForReSelection = -1f;
+            _remainingTimeForEventAnnounce = -1f;
             _onBrainEventTransition.Dispose();
+            _onBeforeStartEvent.Dispose();
         }
 
         #endregion

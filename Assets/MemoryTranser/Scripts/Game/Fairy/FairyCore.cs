@@ -25,6 +25,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         [SerializeField] private PlayerInput playerInput;
         [SerializeField] private Transform memoryBoxHolderBottom;
         [SerializeField] private SpriteRenderer throwDirectionArrowSpRr;
+        [SerializeField] private SpriteRenderer exclamationSpRr;
         [SerializeField] private CinemachineImpulseSource impulseSource;
 
         [Space] [SerializeField] private BrainEventManager brainEventManager;
@@ -174,6 +175,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         private void Awake() {
             throwDirectionArrowSpRr.enabled = false;
+            exclamationSpRr.enabled = false;
             _selectThrowingDirectionAction = playerInput.actions["SelectThrowingDirection"];
             CurrentComboCount = 0;
         }
@@ -705,9 +707,18 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         #region interfaceの実装
 
         public void OnGameAwake() {
-            brainEventManager.OnBrainEventTransition.Subscribe(_ => { _applyInvertingInput = false; });
+            brainEventManager.OnBrainEventTransition.Subscribe(_ => {
+                _applyInvertingInput = false;
+                exclamationSpRr.enabled = false;
+            });
+
             brainEventManager.OnBrainEventTransition.Where(x => x == BrainEventType.InvertControl).Subscribe(_ => {
                 _applyInvertingInput = true;
+            });
+
+            brainEventManager.OnBeforeStartEvent.Where(x => x != BrainEventType.None).Subscribe(_ => {
+                Debug.Log("ビックリマークを表示します");
+                exclamationSpRr.enabled = true;
             });
         }
 

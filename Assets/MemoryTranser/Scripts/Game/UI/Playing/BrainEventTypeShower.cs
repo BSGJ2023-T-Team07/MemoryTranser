@@ -1,12 +1,29 @@
 using System;
 using MemoryTranser.Scripts.Game.BrainEvent;
+using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.Util;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 
 namespace MemoryTranser.Scripts.Game.UI.Playing {
-    public class BrainEventTypeShower : MonoBehaviour {
+    public class BrainEventTypeShower : MonoBehaviour, IOnStateChangedToInitializing {
         [SerializeField] private PostProcessVolume postProcessVolume;
+
+        [Space] [SerializeField] private PostProcessProfile nonePostProcessProfile;
+        [SerializeField] private PostProcessProfile blindPostProcessProfile;
+        [SerializeField] private PostProcessProfile desireOutbreakPostProcessProfile;
+        [SerializeField] private PostProcessProfile invertControlPostProcessProfile;
+        [SerializeField] private PostProcessProfile achievementOfStudyPostProcessProfile;
+        [SerializeField] private PostProcessProfile feverTimePostProcessProfile;
+
+
+        #region interfaceの実装
+
+        public void OnStateChangedToInitializing() {
+            SetPostProcessForNone();
+        }
+
+        #endregion
 
         public void SetBrainEventShow(BrainEventType brainEventType, float durationSec) {
             SetPostProcess(brainEventType);
@@ -56,12 +73,28 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
             }
         }
 
-        private void SetPostProcessForNone() { }
-        private void SetPostProcessForDesireOutBreak() { }
-        private void SetPostProcessForBlind() { }
-        private void SetPostProcessForAchievementOfStudy() { }
-        private void SetPostProcessForInvertControl() { }
+        private void SetPostProcessForNone() {
+            postProcessVolume.profile = nonePostProcessProfile;
+        }
 
-        private void SetPostProcessForFeverTime() { }
+        private void SetPostProcessForDesireOutBreak() {
+            postProcessVolume.profile = desireOutbreakPostProcessProfile;
+        }
+
+        private void SetPostProcessForBlind() {
+            postProcessVolume.profile = blindPostProcessProfile;
+        }
+
+        private void SetPostProcessForAchievementOfStudy() {
+            postProcessVolume.profile = achievementOfStudyPostProcessProfile;
+        }
+
+        private void SetPostProcessForInvertControl() {
+            postProcessVolume.profile = invertControlPostProcessProfile;
+        }
+
+        private void SetPostProcessForFeverTime() {
+            postProcessVolume.profile = feverTimePostProcessProfile;
+        }
     }
 }

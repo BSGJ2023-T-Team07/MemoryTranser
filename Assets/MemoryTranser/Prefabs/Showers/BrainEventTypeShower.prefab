@@ -45,3 +45,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   postProcessVolume: {fileID: 0}
+  nonePostProcessProfile: {fileID: 11400000, guid: 9ecf5d4b9d8423f439a1f6963959d1f0, type: 2}
+  blindPostProcessProfile: {fileID: 11400000, guid: 2ad147f3fd4af1e42b803df7ead22a69, type: 2}
+  desireOutbreakPostProcessProfile: {fileID: 11400000, guid: cd86237a35a2b4b4ba47c42a1ebac1f8, type: 2}
+  invertControlPostProcessProfile: {fileID: 11400000, guid: 902f287b85005ec469e831f0eec7fbc9, type: 2}
+  achievementOfStudyPostProcessProfile: {fileID: 11400000, guid: 53255e6758578ba45a5a8ce7c2860b09, type: 2}
+  feverTimePostProcessProfile: {fileID: 11400000, guid: 015fdf5b6ddd77341a8f4184cd2574c5, type: 2}

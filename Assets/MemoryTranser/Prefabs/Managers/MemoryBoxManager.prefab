@@ -52,6 +52,7 @@ MonoBehaviour:
   phaseManager: {fileID: 0}
   brainEventManager: {fileID: 0}
   maxBoxGenerateCount: 30
+  maxSphereBoxGenerateCount: 10
   nearPhasesCount: 3
   maxDisappearBoxCountOnStudy: 5
   maxWeight: 2

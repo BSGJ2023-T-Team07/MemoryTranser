@@ -31,6 +31,9 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         [Header("MemoryBoxの最大生成数")] [SerializeField]
         private int maxBoxGenerateCount;
 
+        [Header("丸いMemoryBoxの最大生成数")] [SerializeField]
+        private int maxSphereBoxGenerateCount;
+
         [Header("勉強の成果イベントで考慮するフェイズの数")] [SerializeField]
         private int nearPhasesCount;
 
@@ -58,7 +61,21 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
         private float[] _initialBoxTypeProbWeights;
         private float[] _currentBoxTypeProbWeights;
-        private AliasMethod _aliasMethod;
+        private AliasMethod _memoryTypeAliasMethod;
+        private readonly AliasMethod _shapeTypeAliasMethod = new();
+
+        #endregion
+
+        #region Unityから呼ばれる
+
+        private void Awake() {
+            spawnArea.GetComponent<SpriteRenderer>().enabled = false;
+
+            _outputable = new bool[maxBoxGenerateCount];
+            _appliedDisappearedBoxes = new Queue<MemoryBoxCore>();
+
+            _shapeTypeAliasMethod.Constructor(new[] { 3f, 1f });
+        }
 
         #endregion
 
@@ -91,7 +108,24 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             //ランダムにパラメーターを決める
             var randomBoxType = GetRandomBoxType();
             var randomWeight = Random.Range(minWeight, maxWeight);
-            var randomBoxShape = (MemoryBoxShapeType)new List<int> { 0, 0, 1 }[Random.Range(0, 3)];
+
+            var currentSphereBoxCount = _allBoxes.Count(box => {
+                if (box) {
+                    return box.BoxShapeType == MemoryBoxShapeType.Sphere;
+                }
+                else {
+                    return false;
+                }
+            });
+
+            MemoryBoxShapeType randomBoxShape;
+            if (currentSphereBoxCount >= maxSphereBoxGenerateCount) {
+                randomBoxShape = MemoryBoxShapeType.Cube;
+            }
+            else {
+                randomBoxShape = (MemoryBoxShapeType)_shapeTypeAliasMethod.Roll();
+            }
+
 
             //決定したパラメーターを代入する
             memoryBoxCore.BoxMemoryType = randomBoxType;
@@ -214,20 +248,20 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         }
 
         private void InitializeBoxTypeProbWeights() {
-            _aliasMethod = new AliasMethod();
+            _memoryTypeAliasMethod = new AliasMethod();
             _initialBoxTypeProbWeights = new float[(int)BoxMemoryType.Count];
             Array.Fill(_initialBoxTypeProbWeights, 1f);
             _currentBoxTypeProbWeights = _initialBoxTypeProbWeights;
         }
 
         private BoxMemoryType GetRandomBoxType() {
-            var randomBoxType = (BoxMemoryType)_aliasMethod.Roll();
+            var randomBoxType = (BoxMemoryType)_memoryTypeAliasMethod.Roll();
             return randomBoxType;
         }
 
         public void SetBoxTypeProbWeights(float[] boxTypeWeights) {
             _currentBoxTypeProbWeights = boxTypeWeights;
-            _aliasMethod.Constructor(_currentBoxTypeProbWeights);
+            _memoryTypeAliasMethod.Constructor(_currentBoxTypeProbWeights);
             boxTypeProbabilityShower.SetBoxTypeProbabilityText(_currentBoxTypeProbWeights);
         }
 
@@ -254,10 +288,6 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         #region interfaceの実装
 
         public void OnGameAwake() {
-            spawnArea.GetComponent<SpriteRenderer>().enabled = false;
-
-            _outputable = new bool[maxBoxGenerateCount];
-            _appliedDisappearedBoxes = new Queue<MemoryBoxCore>();
             InitializeBoxTypeProbWeights();
 
             //ステージ上のDesireの数が0になったら消えていたMemoryBoxをAppearさせる、というeventを購読する

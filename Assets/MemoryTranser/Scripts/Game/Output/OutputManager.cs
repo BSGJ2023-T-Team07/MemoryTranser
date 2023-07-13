@@ -90,7 +90,7 @@ namespace MemoryTranser.Scripts.Game.Output {
                 phaseManager.CalculateScoreInformation(boxes);
 
             //イベントの倍率をかける
-            score = (int)(score * _scoreMultiplierByEvent);
+            score = Mathf.FloorToInt(score * _scoreMultiplierByEvent);
 
             //MemoryBoxをDisappearさせる
             foreach (var box in boxes) {

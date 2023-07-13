@@ -1,7 +1,9 @@
+using DG.Tweening;
 using MemoryTranser.Scripts.Game.Fairy;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.Phase;
 using MemoryTranser.Scripts.Game.UI.Result;
+using MemoryTranser.Scripts.SceneTransition;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -33,7 +35,9 @@ namespace MemoryTranser.Scripts.Game.Result {
 
         private void Update() {
             if (resultShower.IsAnimationCompleted && _pressAnyKeyAction.triggered) {
-                SceneManager.LoadScene("MemoryTranser/Scenes/TitleScene");
+                SceneTransitionEffecter.I.PlayFadeEffect(DOTween.Sequence().OnPlay(() => {
+                    SceneManager.LoadScene("MemoryTranser/Scenes/TitleScene");
+                }));
             }
         }
 

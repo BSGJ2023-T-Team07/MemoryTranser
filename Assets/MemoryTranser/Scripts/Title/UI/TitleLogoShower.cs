@@ -13,7 +13,8 @@ namespace MemoryTranser.Scripts.Title.UI {
             titleLogoImage.transform.DOScale(titleLogoImage.transform.localScale * titleLogoScaleMultiplier,
                     animationUnitDurationSec / 2f)
                 .SetEase(Ease.InOutQuad)
-                .SetLoops(-1, LoopType.Yoyo);
+                .SetLoops(-1, LoopType.Yoyo)
+                .SetLink(gameObject);
         }
     }
 }

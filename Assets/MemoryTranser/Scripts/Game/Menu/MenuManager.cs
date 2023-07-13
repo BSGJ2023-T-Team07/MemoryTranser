@@ -1,7 +1,9 @@
 using System;
+using DG.Tweening;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.Sound;
 using MemoryTranser.Scripts.Game.UI.Playing;
+using MemoryTranser.Scripts.SceneTransition;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -156,8 +158,11 @@ namespace MemoryTranser.Scripts.Game.Menu {
         }
 
         private static void TransitToTitle() {
-            Time.timeScale = 1f;
-            SceneManager.LoadScene("MemoryTranser/Scenes/TitleScene");
+            SceneTransitionEffecter.I.PlayFadeEffect(DOTween.Sequence().OnPlay(() => {
+                Time.timeScale = 1f;
+                BgmManager.I.StopIntroLoop();
+                SceneManager.LoadScene("MemoryTranser/Scenes/TitleScene");
+            }));
         }
 
         #endregion

@@ -19,11 +19,11 @@ namespace MemoryTranser.Scripts.Title.UI {
                     creditText.color = Color.gray;
                     exitText.color = Color.gray;
                     break;
-                case TitleSelection.Credit:
-                    startText.color = Color.gray;
-                    creditText.color = Color.white;
-                    exitText.color = Color.gray;
-                    break;
+                // case TitleSelection.Credit:
+                //     startText.color = Color.gray;
+                //     creditText.color = Color.white;
+                //     exitText.color = Color.gray;
+                //     break;
                 case TitleSelection.Exit:
                     startText.color = Color.gray;
                     creditText.color = Color.gray;

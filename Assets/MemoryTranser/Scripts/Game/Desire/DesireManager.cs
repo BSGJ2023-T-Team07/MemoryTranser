@@ -89,9 +89,9 @@ namespace MemoryTranser.Scripts.Game.Desire {
                         continue;
                     }
 
-                    var info = GetCanSpawnAndSpawnPosition();
-
                     isResult = GameFlowManager.I.CurrentGameState == GameState.Result;
+
+                    var info = GetCanSpawnAndSpawnPosition();
 
                     if (isResult) {
                         spawnPos = Vector3.zero;

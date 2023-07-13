@@ -1,5 +1,7 @@
 using System;
+using DG.Tweening;
 using MemoryTranser.Scripts.Game.Sound;
+using MemoryTranser.Scripts.SceneTransition;
 using MemoryTranser.Scripts.Title.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -80,8 +82,8 @@ namespace MemoryTranser.Scripts.Title {
                 case TitleSelection.Start:
                     TransitToGameScene();
                     break;
-                case TitleSelection.Credit:
-                    break;
+                // case TitleSelection.Credit:
+                //     break;
                 case TitleSelection.Exit:
                     ExitGame();
                     break;
@@ -93,8 +95,10 @@ namespace MemoryTranser.Scripts.Title {
         #endregion
 
         private static void TransitToGameScene() {
-            BgmManager.I.StopIntroLoop();
-            SceneManager.LoadScene("GameScene");
+            SceneTransitionEffecter.I.PlayFadeEffect(DOTween.Sequence().OnPlay(() => {
+                BgmManager.I.StopIntroLoop();
+                SceneManager.LoadScene("GameScene");
+            }));
         }
 
         private static void ExitGame() {
@@ -108,7 +112,8 @@ namespace MemoryTranser.Scripts.Title {
 
     public enum TitleSelection {
         Start,
-        Credit,
+
+        // Credit,
         Exit,
 
         //以上の要素の数を取れる

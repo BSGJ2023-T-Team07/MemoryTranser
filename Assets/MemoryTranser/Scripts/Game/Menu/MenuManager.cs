@@ -105,10 +105,11 @@ namespace MemoryTranser.Scripts.Game.Menu {
 
         private async void OpenMenu() {
             playerInput.SwitchCurrentActionMap("UI");
-
             _isMenuOpened = true;
             Time.timeScale = 0f;
             BgmManager.I.PausePlayingBgm();
+            SeManager.I.Play(SEs.OpenMenu);
+
             await menuShower.ToggleMenu(true);
 
             _currentMenuSelection = MenuSelection.Resume;
@@ -117,9 +118,11 @@ namespace MemoryTranser.Scripts.Game.Menu {
 
         private async void CloseMenu() {
             playerInput.SwitchCurrentActionMap("Player");
-
             _isMenuOpened = false;
+            SeManager.I.Play(SEs.OpenMenu);
+
             await menuShower.ToggleMenu(false);
+
             Time.timeScale = 1f;
             BgmManager.I.UnPausePlayingBgm();
         }
@@ -128,14 +131,18 @@ namespace MemoryTranser.Scripts.Game.Menu {
             _currentMenuSelection = (MenuSelection)(((int)_currentMenuSelection - 1 + (int)MenuSelection.Count) %
                                                     (int)MenuSelection.Count);
             menuShower.UpdateMenuSelectionShow(_currentMenuSelection);
+            SeManager.I.Play(SEs.SelectionDefault1);
         }
 
         private void SelectionDown() {
             _currentMenuSelection = (MenuSelection)(((int)_currentMenuSelection + 1) % (int)MenuSelection.Count);
             menuShower.UpdateMenuSelectionShow(_currentMenuSelection);
+            SeManager.I.Play(SEs.SelectionDefault1);
         }
 
         private void Decide(MenuSelection selection) {
+            SeManager.I.Play(SEs.DecisionDefault1);
+
             switch (selection) {
                 case MenuSelection.Resume:
                     CloseMenu();

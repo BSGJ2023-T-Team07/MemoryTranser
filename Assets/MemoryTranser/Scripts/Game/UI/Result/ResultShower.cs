@@ -57,20 +57,20 @@ namespace MemoryTranser.Scripts.Game.UI.Result {
         // Called by Animation Event
         private void ShowReachedPhaseCount() {
             reachedPhaseCountText.gameObject.SetActive(true);
-            SeManager.I.Play(SEs.ResultShow1);
+            SeManager.I.Play(SEs.ResultShow3);
         }
 
         // Called by Animation Event
         private void ShowReachedMaxComboCount() {
             reachedMaxComboCountText.gameObject.SetActive(true);
-            SeManager.I.Play(SEs.ResultShow1);
+            SeManager.I.Play(SEs.ResultShow3);
         }
 
         // Called by Animation Event
         private void ShowTotalScore() {
             totalScoreText.gameObject.SetActive(true);
             resultPaperStamp.SetActive(true);
-            SeManager.I.Play(SEs.ResultShow2);
+            SeManager.I.Play(SEs.ResultStamp);
         }
 
 

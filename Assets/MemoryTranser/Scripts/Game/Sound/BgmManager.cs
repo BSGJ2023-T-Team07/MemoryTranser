@@ -29,27 +29,34 @@ namespace MemoryTranser.Scripts.Game.Sound {
 
 
         private void Start() {
-            bgmIntroSource.volume = 0.5f;
-            bgmMainSource.volume = 0.5f;
+            // bgmIntroSource.volume = 0.5f;
+            // bgmMainSource.volume = 0.5f;
         }
 
         #endregion
 
         public void OnStateChangedToInitializing() {
-            PlayIntro();
+            PlayIntroAndStopAndPlayMain();
         }
 
-        private async void PlayIntro() {
+        private async void PlayIntroAndStopAndPlayMain() {
             bgmIntroSource.Play();
 
             //イントロが終わったらメイン部分の再生を開始する
             await UniTask.Delay(TimeSpan.FromSeconds(bgmIntro.length));
 
-            PlayMain();
+            bgmIntroSource.Stop();
+            bgmMainSource.Play();
         }
 
-        private void PlayMain() {
-            bgmMainSource.Play();
+        public void PlayIntroLoop() {
+            bgmIntroSource.loop = true;
+            bgmIntroSource.Play();
+        }
+
+        public void StopIntroLoop() {
+            bgmIntroSource.loop = false;
+            bgmIntroSource.Stop();
         }
 
         public void PausePlayingBgm() {

@@ -1,3 +1,5 @@
+using System;
+using MemoryTranser.Scripts.Game.Sound;
 using MemoryTranser.Scripts.Title.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -12,6 +14,14 @@ namespace MemoryTranser.Scripts.Title {
         [SerializeField] private TitleSelectionShower titleSelectionShower;
 
         private TitleSelection _currentTitleSelection = TitleSelection.Start;
+
+        #region Unityから呼ばれる
+
+        private void Start() {
+            BgmManager.I.PlayIntroLoop();
+        }
+
+        #endregion
 
         #region 操作入力時の処理
 
@@ -47,14 +57,17 @@ namespace MemoryTranser.Scripts.Title {
             _currentTitleSelection = (TitleSelection)(((int)_currentTitleSelection - 1 + (int)TitleSelection.Count) %
                                                       (int)TitleSelection.Count);
             titleSelectionShower.UpdateTitleSelection(_currentTitleSelection);
+            SeManager.I.Play(SEs.SelectionDefault1);
         }
 
         private void SelectionDown() {
             _currentTitleSelection = (TitleSelection)(((int)_currentTitleSelection + 1) % (int)TitleSelection.Count);
             titleSelectionShower.UpdateTitleSelection(_currentTitleSelection);
+            SeManager.I.Play(SEs.SelectionDefault1);
         }
 
         private void Decide(TitleSelection selection) {
+            SeManager.I.Play(SEs.DecisionDefault1);
             switch (selection) {
                 case TitleSelection.Start:
                     TransitToGameScene();
@@ -65,13 +78,14 @@ namespace MemoryTranser.Scripts.Title {
                     ExitGame();
                     break;
                 default:
-                    throw new System.ArgumentOutOfRangeException(nameof(selection), selection, null);
+                    throw new ArgumentOutOfRangeException(nameof(selection), selection, null);
             }
         }
 
         #endregion
 
         private static void TransitToGameScene() {
+            BgmManager.I.StopIntroLoop();
             SceneManager.LoadScene("GameScene");
         }
 

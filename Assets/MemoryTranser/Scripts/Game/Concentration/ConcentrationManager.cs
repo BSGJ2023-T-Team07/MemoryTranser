@@ -57,7 +57,7 @@ namespace MemoryTranser.Scripts.Game.Concentration {
                 _remainingConcentration -= Time.deltaTime * _decreaseMultiplier;
 
                 if (!_isPinchEffectPlayed && _remainingConcentration < pinchSeThreshold) {
-                    SeManager.I.Play(SEs.ConcentrationIsLittle);
+                    // SeManager.I.Play(SEs.ConcentrationIsLittle);
                     BgmManager.I.SetBgmPitch(pinchBgmPitch);
                     concentrationShower.PlayAnimationWhenPinch();
                     _isPinchEffectPlayed = true;

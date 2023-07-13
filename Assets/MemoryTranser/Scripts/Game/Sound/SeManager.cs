@@ -43,6 +43,13 @@ namespace MemoryTranser.Scripts.Game.Sound {
         ConcentrationIsLittle,
         TimeUp,
         ResultShow1,
-        ResultShow2
+        ResultShow2,
+        ResultStamp,
+        SelectionDefault1,
+        Blink,
+        OpenMenu,
+        CloseMenu,
+        ResultShow3,
+        PushSphereBox
     }
 }

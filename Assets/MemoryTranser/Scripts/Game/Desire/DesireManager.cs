@@ -295,6 +295,12 @@ namespace MemoryTranser.Scripts.Game.Desire {
             for (var i = 0; i < canSpawnFlags.Length; i++) {
                 canSpawnFlags[i] = false;
             }
+
+            if (_existingDesireCores.Count > 0) {
+                foreach (var desire in _existingDesireCores) {
+                    desire.gameObject.SetActive(false);
+                }
+            }
         }
 
         public void OnStateChangedToFinished() {

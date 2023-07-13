@@ -514,6 +514,8 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             _isBlinking = true;
             _changedIsBlinkingTrueThisFrame = true;
 
+            SeManager.I.Play(SEs.Blink);
+
             var blinkTweenerCore = rb2D.DOMove(blinkDirection * blinkDistance, blinkDurationSec)
                 .SetRelative().SetEase(Ease.OutQuad).OnKill(() => {
                     _isBlinking = false;
@@ -549,6 +551,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         private void PushSphereBox(MemoryBoxCore sphereBox) {
             sphereBox.BePushed(_blinkDirection, blinkDistance / blinkDurationSec * pushBoxPowerMultiplier);
             impulseSource.GenerateImpulse();
+            SeManager.I.Play(SEs.PushSphereBox);
         }
 
         #endregion

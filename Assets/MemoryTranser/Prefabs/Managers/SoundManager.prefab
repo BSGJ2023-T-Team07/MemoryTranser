@@ -87,8 +87,18 @@ MonoBehaviour:
     audioClip: {fileID: 8300000, guid: 2626edac2e5f8294c8bfe13786114546, type: 3}
   - se: 11
     audioClip: {fileID: 8300000, guid: 079907c8c7d4b724898988746f8f9dc7, type: 3}
-  - se: 9
-    audioClip: {fileID: 8300000, guid: d978c0ae6cea6694aaaae8f8aa0bc0a9, type: 3}
+  - se: 14
+    audioClip: {fileID: 8300000, guid: 3abba12368943e94d8bd536f5c3ba92e, type: 3}
+  - se: 13
+    audioClip: {fileID: 8300000, guid: b6ef347b8b29ac0409d964d844153a85, type: 3}
+  - se: 12
+    audioClip: {fileID: 8300000, guid: 44bdd5be17b2b0146906c554bc22706d, type: 3}
+  - se: 15
+    audioClip: {fileID: 8300000, guid: da839c7e04231f04aaf080e45471987e, type: 3}
+  - se: 17
+    audioClip: {fileID: 8300000, guid: 6932155ad3ce14d46904b2d8fcedef63, type: 3}
+  - se: 18
+    audioClip: {fileID: 8300000, guid: bb428d616497a9548afb4f2c64137ef8, type: 3}
   audioSource: {fileID: 36107599862668079}
 --- !u!82 &6745425310972273930
 AudioSource:

@@ -18,6 +18,8 @@ namespace MemoryTranser.Scripts.Game.UI.Result {
         [SerializeField] private GameObject resultPaper;
         [SerializeField] private GameObject resultPaperStamp;
 
+        private const float SCALE_MULTIPLIER = 2f;
+
 
         public bool IsAnimationCompleted => !resultAnimator.enabled;
 
@@ -58,20 +60,42 @@ namespace MemoryTranser.Scripts.Game.UI.Result {
         // Called by Animation Event
         private void ShowReachedPhaseCount() {
             reachedPhaseCountText.gameObject.SetActive(true);
-            SeManager.I.Play(SEs.ResultShow3);
+
+            var theTransform = reachedPhaseCountText.transform;
+            theTransform.localScale *= SCALE_MULTIPLIER;
+
+            theTransform.DOScale(theTransform.localScale / SCALE_MULTIPLIER, 0.1f).OnComplete(() => {
+                SeManager.I.Play(SEs.ResultShow3);
+            });
         }
 
         // Called by Animation Event
         private void ShowReachedMaxComboCount() {
             reachedMaxComboCountText.gameObject.SetActive(true);
-            SeManager.I.Play(SEs.ResultShow3);
+
+            var theTransform = reachedMaxComboCountText.transform;
+            theTransform.localScale *= SCALE_MULTIPLIER;
+
+            theTransform.DOScale(theTransform.localScale / SCALE_MULTIPLIER, 0.1f).OnComplete(() => {
+                SeManager.I.Play(SEs.ResultShow3);
+            });
         }
 
         // Called by Animation Event
         private void ShowTotalScore() {
             totalScoreText.gameObject.SetActive(true);
             resultPaperStamp.SetActive(true);
-            SeManager.I.Play(SEs.ResultStamp);
+
+            var theTransform0 = totalScoreText.transform;
+            var theTransform1 = resultPaperStamp.transform;
+
+            theTransform0.localScale *= SCALE_MULTIPLIER;
+            theTransform1.localScale *= SCALE_MULTIPLIER;
+
+            theTransform0.DOScale(theTransform0.localScale / SCALE_MULTIPLIER, 0.1f).SetLink(gameObject);
+            theTransform1.DOScale(theTransform1.localScale / SCALE_MULTIPLIER, 0.1f).OnComplete(() => {
+                SeManager.I.Play(SEs.ResultStamp);
+            }).SetLink(gameObject);
         }
 
 

@@ -59,6 +59,8 @@ namespace MemoryTranser.Scripts.Title {
                 case TitleSelection.Start:
                     TransitToGameScene();
                     break;
+                case TitleSelection.Credit:
+                    break;
                 case TitleSelection.Exit:
                     ExitGame();
                     break;
@@ -84,6 +86,7 @@ namespace MemoryTranser.Scripts.Title {
 
     public enum TitleSelection {
         Start,
+        Credit,
         Exit,
 
         //以上の要素の数を取れる

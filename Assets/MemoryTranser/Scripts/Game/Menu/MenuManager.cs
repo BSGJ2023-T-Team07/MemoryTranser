@@ -103,23 +103,23 @@ namespace MemoryTranser.Scripts.Game.Menu {
 
         #region 行動の定義
 
-        private void OpenMenu() {
+        private async void OpenMenu() {
             playerInput.SwitchCurrentActionMap("UI");
 
             _isMenuOpened = true;
-            menuShower.ToggleMenu(true);
             Time.timeScale = 0f;
             BgmManager.I.PausePlayingBgm();
+            await menuShower.ToggleMenu(true);
 
             _currentMenuSelection = MenuSelection.Resume;
             menuShower.UpdateMenuSelectionShow(_currentMenuSelection);
         }
 
-        private void CloseMenu() {
+        private async void CloseMenu() {
             playerInput.SwitchCurrentActionMap("Player");
 
             _isMenuOpened = false;
-            menuShower.ToggleMenu(false);
+            await menuShower.ToggleMenu(false);
             Time.timeScale = 1f;
             BgmManager.I.UnPausePlayingBgm();
         }

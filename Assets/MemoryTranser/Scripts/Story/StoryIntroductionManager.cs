@@ -59,6 +59,9 @@ namespace MemoryTranser.Scripts.Story {
             _introductionSequence = DOTween.Sequence();
             pauseBackGround.SetActive(false);
             pausingText.enabled = false;
+            pausableText.enabled = true;
+            unPausableText.enabled = false;
+            skippableText.enabled = true;
         }
 
         private void Start() {
@@ -123,6 +126,8 @@ namespace MemoryTranser.Scripts.Story {
         private void IntroductionPause() {
             pauseBackGround.SetActive(true);
             pausingText.enabled = true;
+            pausableText.enabled = false;
+            unPausableText.enabled = true;
             _isPausing = true;
             _introductionSequence.TogglePause();
         }
@@ -130,6 +135,8 @@ namespace MemoryTranser.Scripts.Story {
         private void IntroductionUnPause() {
             pauseBackGround.SetActive(false);
             pausingText.enabled = false;
+            pausableText.enabled = true;
+            unPausableText.enabled = false;
             _isPausing = false;
             _introductionSequence.TogglePause();
         }

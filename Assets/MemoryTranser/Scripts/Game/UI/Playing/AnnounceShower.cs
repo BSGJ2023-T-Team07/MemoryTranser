@@ -59,11 +59,12 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
             var newTextUnit = Instantiate(announcePrefab, announceTextBackGround);
             newTextUnit.transform.localPosition = _defaultAnnounceTextLocalPosition;
             newTextUnit.SetText(text);
+            _announceQueue.Enqueue(newTextUnit);
 
             //動かして消えるところまで定義しておく
             newTextUnit.transform.DOLocalMoveX(-Constant.SCREEN_WIDTH - newTextUnit.preferredWidth,
                 _announceUnitDuration).SetRelative().SetEase(Ease.Linear).OnComplete(() => {
-                Destroy(_announceQueue.Peek().gameObject);
+                Destroy(newTextUnit.gameObject);
             }).SetLink(newTextUnit.gameObject);
 
             return newTextUnit;

@@ -26,6 +26,7 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
                 BrainEventType.DesireOutbreak => $"{brainEventType.ToJapanese()}発生中！",
                 BrainEventType.InvertControl => $"{brainEventType.ToJapanese()}発生中！",
                 BrainEventType.AchievementOfStudy => $"{brainEventType.ToJapanese()}が出た！",
+                BrainEventType.FeverTime => $"{brainEventType.ToJapanese()}発生中！",
                 _ => throw new ArgumentOutOfRangeException(nameof(brainEventType), brainEventType, null)
             };
         }
@@ -61,7 +62,6 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
         private void SetPostProcessForAchievementOfStudy() { }
         private void SetPostProcessForInvertControl() { }
 
-        private void SetPostProcessForFeverTime() {
-        }
+        private void SetPostProcessForFeverTime() { }
     }
 }

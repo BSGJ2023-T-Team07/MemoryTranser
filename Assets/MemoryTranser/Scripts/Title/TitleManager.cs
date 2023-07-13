@@ -196,10 +196,12 @@ namespace MemoryTranser.Scripts.Title {
         }
 
         private static void ExitGame() {
-#if UNITY_EDITOR
+#if (UNITY_EDITOR)
             EditorApplication.isPlaying = false;
-#else
+#elif (UNITY_STANDALONE)
             Application.Quit();
+#elif (UNITY_WEBGL)
+            Application.OpenURL("about:blank");
 #endif
         }
     }

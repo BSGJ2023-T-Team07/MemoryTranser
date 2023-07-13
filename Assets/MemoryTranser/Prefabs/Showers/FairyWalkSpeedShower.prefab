@@ -45,5 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fairyWalkSpeedSlider: {fileID: 0}
-  maxWalkSpeedShowMultiplier: 1.5
   updateAnimationSec: 0.2
+  twoValue: 0.943
+  oneValue: 0.147
+  zeroValue: 0.077

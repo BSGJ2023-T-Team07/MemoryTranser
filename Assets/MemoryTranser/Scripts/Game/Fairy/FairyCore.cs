@@ -578,8 +578,6 @@ namespace MemoryTranser.Scripts.Game.Fairy {
                 return;
             }
 
-            AddBlinkTicket(-1);
-
             if (HasBox) {
                 Put(false);
             }
@@ -592,6 +590,10 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             CurrentComboCount = 0;
             _myState = FairyState.Freeze;
 
+            AddBlinkTicket(-1);
+
+            fairyWalkSpeedShower.SetWalkSpeedSlider(0f, myParameters.InitialWalkSpeed);
+
             //高秀を悲しませる
             TakahideShower.I.ChangeTakahideImage(TakahideState.Sad);
 
@@ -599,7 +601,10 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             await UniTask.Delay(TimeSpan.FromSeconds(stunDurationSec));
 
             _isControllable = true;
-            _myState = HasBox ? FairyState.IdlingWithBox : FairyState.IdlingWithoutBox;
+            _myState = FairyState.IdlingWithoutBox;
+
+            fairyWalkSpeedShower.SetWalkSpeedSlider(myParameters.GetPlainWalkSpeed(_currentComboCount),
+                myParameters.InitialWalkSpeed);
 
             //一定時間無敵にする
             var invincibleTweener =

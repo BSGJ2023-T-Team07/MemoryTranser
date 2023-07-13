@@ -7,19 +7,27 @@ namespace MemoryTranser.Scripts.Game.UI.Playing {
     public class FairyWalkSpeedShower : MonoBehaviour {
         [SerializeField] private Slider fairyWalkSpeedSlider;
 
-        [Header("初期値の何倍まで見せるか")] [SerializeField]
-        private float maxWalkSpeedShowMultiplier;
-
         [Header("値の更新アニメーションに何秒かかるか")] [SerializeField]
         private float updateAnimationSec;
 
+        [Header("×2のときの値")] [SerializeField] private float twoValue;
+        [Header("×1のときの値")] [SerializeField] private float oneValue;
+        [Header("×0のときの値")] [SerializeField] private float zeroValue;
+
         private void Awake() {
-            fairyWalkSpeedSlider.value = 0f;
+            fairyWalkSpeedSlider.value = oneValue;
         }
 
-        public void SetWalkSpeedSlider(float plainWalkSpeed, float initialWalkSpeed) {
-            fairyWalkSpeedSlider.DOValue(1f / (initialWalkSpeed * maxWalkSpeedShowMultiplier - initialWalkSpeed) *
-                                         (plainWalkSpeed - initialWalkSpeed), updateAnimationSec).SetLink(gameObject);
+        public void SetWalkSpeedSlider(float currentPlainWalkSpeed, float initialWalkSpeed) {
+            if (currentPlainWalkSpeed < initialWalkSpeed) {
+                fairyWalkSpeedSlider.DOValue(
+                    (oneValue - zeroValue) / initialWalkSpeed * currentPlainWalkSpeed + zeroValue,
+                    updateAnimationSec).SetLink(gameObject);
+            }
+            else {
+                fairyWalkSpeedSlider.DOValue((twoValue - oneValue) / initialWalkSpeed * (currentPlainWalkSpeed -
+                    initialWalkSpeed * (1 - oneValue / (twoValue - oneValue))), updateAnimationSec).SetLink(gameObject);
+            }
         }
     }
 }

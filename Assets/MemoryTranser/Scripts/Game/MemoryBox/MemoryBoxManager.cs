@@ -34,6 +34,9 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         [Header("丸いMemoryBoxの最大生成数")] [SerializeField]
         private int maxSphereBoxGenerateCount;
 
+        [Header("四角いMemoryBoxが丸いものより何倍でやすいか")] [SerializeField]
+        private float squareBoxGenerateProbabilityMagnification;
+
         [Header("勉強の成果イベントで考慮するフェイズの数")] [SerializeField]
         private int nearPhasesCount;
 
@@ -74,7 +77,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
             _outputable = new bool[maxBoxGenerateCount];
             _appliedDisappearedBoxes = new Queue<MemoryBoxCore>();
 
-            _shapeTypeAliasMethod.Constructor(new[] { 3f, 1f });
+            _shapeTypeAliasMethod.Constructor(new[] { squareBoxGenerateProbabilityMagnification, 1f });
         }
 
         #endregion

@@ -30,6 +30,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         [Space] [SerializeField] private BrainEventManager brainEventManager;
         [SerializeField] private BlinkTicketCountShower blinkTicketCountShower;
         [SerializeField] private FairyHowToOutputShower fairyHowToOutputShower;
+        [SerializeField] private FairyWalkSpeedShower fairyWalkSpeedShower;
 
         #endregion
 
@@ -155,6 +156,9 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
                 _currentComboCount = value;
 
+                fairyWalkSpeedShower.SetWalkSpeedSlider(myParameters.GetPlainWalkSpeed(value),
+                    myParameters.InitialWalkSpeed);
+
                 if (HasBox) {
                     myParameters.UpdateWalkSpeedByWeightAndCombo(_holdingBox.Weight, value);
                 }
@@ -171,6 +175,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         private void Awake() {
             throwDirectionArrowSpRr.enabled = false;
             _selectThrowingDirectionAction = playerInput.actions["SelectThrowingDirection"];
+            CurrentComboCount = 0;
         }
 
         private void OnEnable() {
@@ -531,7 +536,6 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             var blinkTweenerCore = rb2D.DOMove(blinkDirection * blinkDistance, blinkDurationSec)
                 .SetRelative().SetEase(Ease.OutQuad).OnKill(() => {
                     _isBlinking = false;
-                    rb2D.velocity = Vector2.zero;
                     IsControllableTrueAfterBlinked();
                     IsBlinkRecoveredTrueAfterBlinked();
                 }).OnComplete(() => {
@@ -543,7 +547,6 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             blinkTweenerCore.OnUpdate(() => {
                 if (_applyCancelingBlink) {
                     blinkTweenerCore.Kill();
-                    rb2D.velocity = Vector2.zero;
                 }
             });
 
@@ -574,6 +577,8 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             if (_isInvincible) {
                 return;
             }
+
+            AddBlinkTicket(-1);
 
             if (HasBox) {
                 Put(false);
@@ -617,7 +622,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         }
 
         private int AddBlinkTicket(int add) {
-            blinkTicketCount = Mathf.Min(blinkTicketCount + add, maxBlinkTicketCount);
+            blinkTicketCount = Mathf.Clamp(blinkTicketCount + add, 0, maxBlinkTicketCount);
             blinkTicketCountShower.SetBlinkTicketCountShow(blinkTicketCount);
             return blinkTicketCount;
         }

@@ -51,8 +51,8 @@ namespace MemoryTranser.Scripts.Game.Sound {
             //イントロが終わったらメイン部分の再生を開始する
             await UniTask.Delay(TimeSpan.FromSeconds(bgmIntro.length));
 
-            bgmIntroSource.Stop();
             if (GameFlowManager.I is { CurrentGameState: GameState.Playing or GameState.Ready }) {
+                bgmIntroSource.Stop();
                 bgmMainSource.Play();
             }
         }

@@ -25,6 +25,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         #region プロパティーの定義
 
+        public float InitialWalkSpeed => initialWalkSpeed;
         public float WalkSpeed => Mathf.Clamp(_walkSpeed, minWalkSpeed, maxWalkSpeed);
 
         public float ThrowPower => Mathf.Clamp(_throwPower, minThrowPower, maxThrowPower);
@@ -41,6 +42,14 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         public void UpdateWalkSpeedByWeightAndCombo(float weight, int comboCount) {
             //TODO: 重さとコンボ数によって歩く速さを変化させる式の吟味
             _walkSpeed = initialWalkSpeed - weight + comboCount / 10f;
+        }
+
+        #endregion
+
+        #region パラメーター取得関連
+
+        public float GetPlainWalkSpeed(int comboCount) {
+            return initialWalkSpeed + comboCount / 10f;
         }
 
         #endregion

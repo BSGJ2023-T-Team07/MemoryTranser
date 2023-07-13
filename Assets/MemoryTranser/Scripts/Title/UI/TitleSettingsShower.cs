@@ -1,4 +1,5 @@
 using System;
+using MemoryTranser.Scripts.Game.Sound;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,6 +26,11 @@ namespace MemoryTranser.Scripts.Title.UI {
             _bgmSliderTextDefaultScale = bgmSliderTextTransform.localScale;
             _seSliderDefaultScale = seVolumeSlider.transform.localScale;
             _seSliderTextDefaultScale = seSliderTextTransform.localScale;
+        }
+
+        private void Start() {
+            seVolumeSlider.value = SeManager.I.GetSeVolume();
+            bgmVolumeSlider.value = BgmManager.I.GetBgmVolume();
         }
 
         public void OpenSettings() {

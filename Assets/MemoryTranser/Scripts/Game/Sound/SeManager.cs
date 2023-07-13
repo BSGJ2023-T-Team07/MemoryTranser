@@ -1,3 +1,4 @@
+using System;
 using MemoryTranser.Scripts.Game.Util;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -6,7 +7,7 @@ namespace MemoryTranser.Scripts.Game.Sound {
     public class SeManager : SingletonMonoBehaviour<SeManager> {
         protected override bool DontDestroy => true;
 
-        [System.Serializable]
+        [Serializable]
         public class SeData {
             public SEs se;
             public AudioClip audioClip;
@@ -14,6 +15,14 @@ namespace MemoryTranser.Scripts.Game.Sound {
 
         [SerializeField] private SeData[] seDatas;
         [SerializeField] private AudioSource audioSource;
+
+        [Space] [SerializeField] private float initialVolume;
+
+        protected override void Awake() {
+            base.Awake();
+
+            audioSource.volume = initialVolume;
+        }
 
         public void Play(SEs seType) {
             foreach (var seData in seDatas) {
@@ -28,6 +37,10 @@ namespace MemoryTranser.Scripts.Game.Sound {
 
         public void SetSeVolume(float volume) {
             audioSource.volume = volume;
+        }
+
+        public float GetSeVolume() {
+            return audioSource.volume;
         }
 
         public void AddSeVolume(float volume) {

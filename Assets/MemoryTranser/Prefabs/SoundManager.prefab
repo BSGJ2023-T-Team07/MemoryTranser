@@ -52,6 +52,7 @@ MonoBehaviour:
   bgmMain: {fileID: 8300000, guid: d512197b2d43a754da9948b401069549, type: 3}
   bgmIntroSource: {fileID: 6745425310972273930}
   bgmMainSource: {fileID: 8344688564734918979}
+  initialVolume: 0.4
 --- !u!114 &3043404059194860603
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -100,6 +101,7 @@ MonoBehaviour:
   - se: 18
     audioClip: {fileID: 8300000, guid: bb428d616497a9548afb4f2c64137ef8, type: 3}
   audioSource: {fileID: 36107599862668079}
+  initialVolume: 0.75
 --- !u!82 &6745425310972273930
 AudioSource:
   m_ObjectHideFlags: 0

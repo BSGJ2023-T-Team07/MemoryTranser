@@ -9206,10 +9206,6 @@ PrefabInstance:
     m_TransformParent: {fileID: 1479279386}
     m_Modifications:
     - target: {fileID: 1460897837396770625, guid: 0298d3e2d8816804d96c33d102bbb963, type: 3}
-      propertyPath: middleObjectAlpha
-      value: 0.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1460897837396770625, guid: 0298d3e2d8816804d96c33d102bbb963, type: 3}
       propertyPath: topStartQuestText
       value: 
       objectReference: {fileID: 355728939}

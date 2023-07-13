@@ -17,6 +17,8 @@ namespace MemoryTranser.Scripts.Game.Sound {
         [SerializeField] private AudioSource bgmIntroSource;
         [SerializeField] private AudioSource bgmMainSource;
 
+        [Space] [SerializeField] private float initialVolume;
+
         #endregion
 
         #region Unityから呼ばれる
@@ -26,12 +28,9 @@ namespace MemoryTranser.Scripts.Game.Sound {
 
             bgmIntroSource.clip = bgmIntro;
             bgmMainSource.clip = bgmMain;
-        }
 
-
-        private void Start() {
-            // bgmIntroSource.volume = 0.5f;
-            // bgmMainSource.volume = 0.5f;
+            bgmIntroSource.volume = initialVolume;
+            bgmMainSource.volume = initialVolume;
         }
 
         #endregion
@@ -81,6 +80,10 @@ namespace MemoryTranser.Scripts.Game.Sound {
         public void SetBgmVolume(float volume) {
             bgmIntroSource.volume = volume;
             bgmMainSource.volume = volume;
+        }
+
+        public float GetBgmVolume() {
+            return bgmMainSource.volume;
         }
 
         public void AddBgmVolume(float volume) {

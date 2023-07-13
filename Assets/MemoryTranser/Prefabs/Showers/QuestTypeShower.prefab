@@ -30,7 +30,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1460897837396770625
 MonoBehaviour:
@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   questTextPaddingX: 30
+  middleObjectAlpha: 0.8
   additionalFontSize: 10
   questTransitionDuration: 1
   topStartQuestObject: {fileID: 0}
@@ -60,30 +61,30 @@ MonoBehaviour:
   mathTexts:
   - startText: 
     mainText: "\u7A4D\u5206"
-    finalText: "\u3063\u3066\u306A\u3093\u3060\u3063\u3051"
+    finalText: "\u306E\u8A08\u7B97\u65B9\u6CD5\u306F\u2026"
   - startText: 
-    mainText: "\u5FAE\u5206"
-    finalText: "\u3063\u3066\u306A\u3093\u3060\u3063\u3051"
-  - startText: 
-    mainText: "\u89E3\u306E\u516C\u5F0F"
-    finalText: "\u3063\u3066\u306A\u3093\u3060\u3063\u3051"
+    mainText: "\u70B9P"
+    finalText: "\u304C\u52D5\u3044\u305F\u3089\u2026"
   japaneseTexts:
   - startText: "\u3053\u306E"
-    mainText: "\u90E8\u9996"
-    finalText: "\u3063\u3066\u306A\u3093\u3060\u3063\u3051"
+    mainText: "\u6F22\u5B57\u306E\u90E8\u9996"
+    finalText: "\u306F\u2026"
   - startText: "\u3053\u306E"
     mainText: "\u719F\u8A9E\u306E\u610F\u5473"
     finalText: "\u306F\u2026"
+  - startText: 
+    mainText: "\u4E3B\u4EBA\u516C\u306E\u5FC3\u60C5"
+    finalText: "\u2026\uFF1F"
   englishTexts:
   - startText: 
-    mainText: "be\u52D5\u8A5E"
-    finalText: "\u3063\u3066\u306A\u3093\u3060\u3063\u3051"
-  - startText: 
+    mainText: "\u30EA\u30B9\u30CB\u30F3\u30B0"
+    finalText: "\u304C\u96E3\u3057\u3044\u2026"
+  - startText: "\u3053\u306E\u5358\u8A9E\u306E"
     mainText: "\u30A2\u30AF\u30BB\u30F3\u30C8"
-    finalText: "\u3063\u3066\u306A\u3093\u3060\u3063\u3051"
+    finalText: "\u306F\u2026"
   - startText: 
     mainText: "\u4EEE\u5B9A\u6CD5"
-    finalText: "\u3063\u3066\u306A\u3093\u3060\u3063\u3051"
+    finalText: "\u3063\u3066\u306A\u3093\u3060\u3063\u3051\u2026"
   lifeTexts:
   - startText: "\u3053\u306E"
     mainText: "\u7E2B\u3044\u65B9"
@@ -99,6 +100,9 @@ MonoBehaviour:
   - startText: "\u3053\u306E"
     mainText: "\u5730\u5C64"
     finalText: "\u306E\u540D\u524D\u3063\u3066\u306A\u3093\u3060\u3063\u3051"
+  - startText: "\u3053\u306E"
+    mainText: "\u79D1\u5B66\u73FE\u8C61"
+    finalText: "\u306E\u540D\u524D\u306F\u2026"
   triviaTexts:
   - startText: 
     mainText: "\u30E4\u30FC\u30C9\u30DD\u30F3\u30C9\u6CD5"
@@ -108,15 +112,21 @@ MonoBehaviour:
     mainText: "4\u5206\u97F3\u7B26"
     finalText: "\u3063\u3066\u306A\u3093\u3060\u3063\u3051"
   - startText: 
-    mainText: D.C.
-    finalText: "\u3063\u3066\u306A\u3093\u3060\u3063\u3051"
+    mainText: "D.C.\u306E\u610F\u5473"
+    finalText: "\u306F\u2026"
   - startText: 
     mainText: "\u30D0\u30C3\u30CF"
-    finalText: "\u3063\u3066\u8AB0\u3060\u3063\u3051"
-  socialStudiesTexts:
+    finalText: "\u3063\u3066\u8AB0\u3060\u3063\u3051\uFF1F"
   - startText: 
-    mainText: "\u91D1\u878D\u5371\u6A5F"
-    finalText: "\u3063\u3066\u3044\u3064\u306E\u8A71\uFF1F"
+    mainText: "\u97F3\u697D\u6027\u306E\u9055\u3044"
+    finalText: "\u3063\u3066\u4F55\uFF1F"
+  socialStudiesTexts:
+  - startText: "\u3053\u306E"
+    mainText: "\u56FD\u65D7"
+    finalText: "\u306F\u3069\u3053\u306E\u3060\uFF1F"
   - startText: 
     mainText: "\u9769\u547D"
-    finalText: "\u306E\u8D77\u3053\u3057\u65B9"
+    finalText: "\u3063\u3066\u3069\u3046\u8D77\u3053\u308B\u3063\u3051\u2026"
+  - startText: "\u3053\u306E"
+    mainText: "\u6CD5\u5F8B"
+    finalText: "\u306E\u610F\u5473\u306F\u2026"

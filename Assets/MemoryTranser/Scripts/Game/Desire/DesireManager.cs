@@ -6,7 +6,6 @@ using MemoryTranser.Scripts.Game.BrainEvent;
 using MemoryTranser.Scripts.Game.Fairy;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.Phase;
-using MemoryTranser.Scripts.Game.UI.Debug;
 using MemoryTranser.Scripts.Game.Util;
 using UnityEngine;
 using UniRx;
@@ -19,7 +18,6 @@ namespace MemoryTranser.Scripts.Game.Desire {
         [SerializeField] private BrainEventManager brainEventManager;
         [SerializeField] private GameObject desirePrefab;
         [SerializeField] private FairyCore fairyCore;
-        [SerializeField] private DesireInformationShower desireInformationShower;
 
         [Header("Desireが最初にスポーンする間隔(秒)")] [SerializeField]
         private float initialSpawnIntervalSec;
@@ -220,7 +218,6 @@ namespace MemoryTranser.Scripts.Game.Desire {
         private void SpawnDesire(Vector3 spawnPos) {
             var desireCore = _desireCorePool.Dequeue();
             _existingDesireCores.Add(desireCore);
-            desireInformationShower.SetDesireInformationText(_existingDesireCores.ToArray());
 
             desireCore.Appear(spawnPos);
         }
@@ -237,7 +234,6 @@ namespace MemoryTranser.Scripts.Game.Desire {
         private void CollectDefaultDesire(DesireCore desireCore) {
             _desireCorePool.Enqueue(desireCore);
             _existingDesireCores.Remove(desireCore);
-            desireInformationShower.SetDesireInformationText(_existingDesireCores.ToArray());
         }
 
         private void CollectOutBreakDesire(DesireCore desireCore) {

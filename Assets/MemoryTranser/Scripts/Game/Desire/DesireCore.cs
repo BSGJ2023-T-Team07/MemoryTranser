@@ -1,6 +1,7 @@
 using System;
 using MemoryTranser.Scripts.Game.Fairy;
 using MemoryTranser.Scripts.Game.GameManagers;
+using MemoryTranser.Scripts.Game.Sound;
 using UnityEngine;
 using UnityEngine.AI;
 using UniRx;
@@ -164,6 +165,7 @@ namespace MemoryTranser.Scripts.Game.Desire {
 
         public void BeAttacked() {
             _onBeAttacked.OnNext(Unit.Default);
+            SeManager.I.Play(SEs.DesireIsAttacked);
             Disappear();
         }
     }

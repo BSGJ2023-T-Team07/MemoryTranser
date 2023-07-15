@@ -1,11 +1,10 @@
 using System;
+using DG.Tweening;
 using MemoryTranser.Scripts.Game.Fairy;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.Sound;
 using UnityEngine;
-using UnityEngine.AI;
 using UniRx;
-using UnityEngine.Serialization;
 
 namespace MemoryTranser.Scripts.Game.Desire {
     [RequireComponent(typeof(SpriteRenderer))]
@@ -14,11 +13,8 @@ namespace MemoryTranser.Scripts.Game.Desire {
         #region コンポーネントの定義
 
         [HideInInspector] public Transform targetTransform;
-
-        [SerializeField] private BoxCollider2D boxCollider2D;
         [SerializeField] private Rigidbody2D rb2D;
         [SerializeField] private SpriteRenderer spRr;
-        [SerializeField] private NavMeshAgent navMeshAgent;
 
         #endregion
 

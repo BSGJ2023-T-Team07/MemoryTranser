@@ -2,6 +2,7 @@ using System;
 using DG.Tweening;
 using MemoryTranser.Scripts.Game.Fairy;
 using MemoryTranser.Scripts.Game.GameManagers;
+using MemoryTranser.Scripts.Game.Sound;
 using UnityEngine;
 using UniRx;
 
@@ -159,6 +160,7 @@ namespace MemoryTranser.Scripts.Game.Desire {
 
 
         public void BeAttacked() {
+            SeManager.I.Play(SEs.DesireIsAttacked);
             _onBeAttacked.OnNext(Unit.Default);
             Disappear();
         }

@@ -7,6 +7,7 @@ using MemoryTranser.Scripts.Game.BrainEvent;
 using MemoryTranser.Scripts.Game.Desire;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.Phase;
+using MemoryTranser.Scripts.Game.UI.Debug;
 using MemoryTranser.Scripts.Game.Util;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -18,6 +19,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
 
         [SerializeField] private GameObject memoryBoxPrefab;
         [SerializeField] private GameObject spawnArea;
+        [SerializeField] private BoxTypeProbabilityShower boxTypeProbabilityShower;
         [SerializeField] private DesireManager desireManager;
         [SerializeField] private PhaseManager phaseManager;
         [SerializeField] private BrainEventManager brainEventManager;
@@ -263,6 +265,7 @@ namespace MemoryTranser.Scripts.Game.MemoryBox {
         public void SetBoxTypeProbWeights(float[] boxTypeWeights) {
             _currentBoxTypeProbWeights = boxTypeWeights;
             _memoryTypeAliasMethod.Constructor(_currentBoxTypeProbWeights);
+            boxTypeProbabilityShower.SetBoxTypeProbabilityText(_currentBoxTypeProbWeights);
         }
 
         public void AddOutputableId(int boxId) {

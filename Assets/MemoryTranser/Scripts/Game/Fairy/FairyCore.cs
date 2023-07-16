@@ -48,6 +48,9 @@ namespace MemoryTranser.Scripts.Game.Fairy {
         [Header("投げる方向の入力の閾値")] [SerializeField]
         private float selectDirectionArrowThreshold;
 
+        [Header("投げる方向入力の保持時間(秒)")] [SerializeField]
+        private float precedeThrowDirectionInputSec;
+
         [Header("MemoryBoxをHoldできる最大距離(円の半径)")] [SerializeField]
         private float holdableDistance;
 
@@ -100,10 +103,12 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
         private Vector2 _inputWalkDirection;
         private Vector2 _inputWalkDirectionBeforeZero;
+        private Vector2 _inputThrowDirectionBeforeZero;
         private Vector2 _inputThrowDirection;
         private Vector2 _blinkDirection;
 
         private float _remainingPrecedeBlinkDirectionInputSec;
+        private float _remainingPrecedeThrowDirectionInputSec;
         private float _remainingStunDurationSec;
         private float _remainingInvincibleSecAfterRecoverFromStun;
         private float _nowInputSecToOutput;
@@ -264,6 +269,19 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             }
 
             #endregion
+
+            #region 投げる方向先行入力の処理
+
+            if (_inputThrowDirectionBeforeZero != Vector2.zero && _remainingPrecedeThrowDirectionInputSec > 0f) {
+                _remainingPrecedeThrowDirectionInputSec -= Time.deltaTime;
+
+                if (_remainingPrecedeThrowDirectionInputSec < 0f) {
+                    _inputThrowDirectionBeforeZero = Vector2.zero;
+                    _remainingPrecedeThrowDirectionInputSec = -1;
+                }
+            }
+
+            #endregion
         }
 
         private void FixedUpdate() {
@@ -348,7 +366,7 @@ namespace MemoryTranser.Scripts.Game.Fairy {
                 moveInput = -moveInput;
             }
 
-            if (moveInput == Vector2.zero) {
+            if (moveInput.sqrMagnitude < Constant.DELTA) {
                 _inputWalkDirectionBeforeZero = _inputWalkDirection;
                 _remainingPrecedeBlinkDirectionInputSec = precedeBlinkDirectionInputSec;
             }
@@ -370,6 +388,9 @@ namespace MemoryTranser.Scripts.Game.Fairy {
 
             //MemoryBoxを持っていないか、投げるための入力が不十分だったら何もしない
             if (!HasBox || directionInput.sqrMagnitude < selectDirectionArrowThreshold) {
+                _inputThrowDirectionBeforeZero = _inputThrowDirection;
+                _remainingPrecedeThrowDirectionInputSec = precedeThrowDirectionInputSec;
+
                 _inputThrowDirection = Vector2.zero;
                 throwDirectionArrowSpRr.enabled = false;
             }
@@ -396,12 +417,20 @@ namespace MemoryTranser.Scripts.Game.Fairy {
                 return;
             }
 
+            Vector2 throwDirection;
             if (_inputThrowDirection == Vector2.zero) {
-                Debug.Log("もっと勢いを付けて投げてください");
-                return;
+                throwDirection = _inputThrowDirectionBeforeZero;
+
+                if (throwDirection == Vector2.zero) {
+                    Debug.Log("もっと勢いをつけて投げてください");
+                    return;
+                }
+            }
+            else {
+                throwDirection = _inputThrowDirection;
             }
 
-            Throw();
+            Throw(throwDirection);
         }
 
         public void OnHoldInput(InputAction.CallbackContext context) {
@@ -503,9 +532,9 @@ namespace MemoryTranser.Scripts.Game.Fairy {
             SeManager.I.Play(SEs.HoldBox);
         }
 
-        private void Throw() {
+        private void Throw(Vector2 throwDirection) {
             _holdingBox.BeThrown(myParameters.ThrowPower,
-                _inputThrowDirection);
+                throwDirection);
 
             _holdingBox = null;
             throwDirectionArrowSpRr.enabled = false;

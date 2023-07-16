@@ -68,6 +68,7 @@ namespace MemoryTranser.Scripts.Game.Sound {
         CloseMenu,
         ResultShow3,
         PushSphereBox,
-        NoticeEvent
+        NoticeEvent,
+        DesireIsAttacked
     }
 }

@@ -1,5 +1,7 @@
 using System;
+using System.Threading;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.Util;
 using UnityEngine;
@@ -21,6 +23,12 @@ namespace MemoryTranser.Scripts.Game.Sound {
 
         #endregion
 
+        #region 変数の定義
+
+        private CancellationTokenSource _cancellationTokenSourceForPlayMain;
+
+        #endregion
+
         #region Unityから呼ばれる
 
         protected override void Awake() {
@@ -31,25 +39,29 @@ namespace MemoryTranser.Scripts.Game.Sound {
 
             bgmIntroSource.volume = initialVolume;
             bgmMainSource.volume = initialVolume;
+
+            _cancellationTokenSourceForPlayMain = new CancellationTokenSource();
         }
 
         #endregion
 
         public void OnStateChangedToInitializing() {
-            PlayIntroAndStopAndPlayMain();
+            _cancellationTokenSourceForPlayMain = new CancellationTokenSource();
+            PlayIntroAndStopAndPlayMain(_cancellationTokenSourceForPlayMain.Token).Forget(e => { });
         }
 
         public void OnStateChangedToResult() {
-            bgmIntroSource.Stop();
-            bgmMainSource.Stop();
+            const float fadeDuration = 0.8f;
+            bgmIntroSource.DOFade(0f, fadeDuration).OnComplete(() => { bgmIntroSource.Stop(); });
+            bgmMainSource.DOFade(0f, fadeDuration).OnComplete(() => { bgmMainSource.Stop(); });
             SetBgmPitch(1f);
         }
 
-        private async void PlayIntroAndStopAndPlayMain() {
+        private async UniTask PlayIntroAndStopAndPlayMain(CancellationToken cancellationToken = default) {
             bgmIntroSource.Play();
 
             //イントロが終わったらメイン部分の再生を開始する
-            await UniTask.Delay(TimeSpan.FromSeconds(bgmIntro.length));
+            await UniTask.Delay(TimeSpan.FromSeconds(bgmIntro.length), cancellationToken: cancellationToken);
 
             if (GameFlowManager.I is { CurrentGameState: GameState.Playing or GameState.Ready }) {
                 bgmIntroSource.Stop();
@@ -65,6 +77,7 @@ namespace MemoryTranser.Scripts.Game.Sound {
         public void StopIntroLoop() {
             bgmIntroSource.loop = false;
             bgmIntroSource.Stop();
+            _cancellationTokenSourceForPlayMain.Cancel();
         }
 
         public void PausePlayingBgm() {

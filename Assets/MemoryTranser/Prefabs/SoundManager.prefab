@@ -102,6 +102,8 @@ MonoBehaviour:
     audioClip: {fileID: 8300000, guid: bb428d616497a9548afb4f2c64137ef8, type: 3}
   - se: 19
     audioClip: {fileID: 8300000, guid: 40b873afb4484c048bf147e2ff84c7b6, type: 3}
+  - se: 20
+    audioClip: {fileID: 8300000, guid: 38d3d1e4336e11c409bc6d49aef5015f, type: 3}
   audioSource: {fileID: 36107599862668079}
   initialVolume: 0.75
 --- !u!82 &6745425310972273930

@@ -719,6 +719,7 @@ MonoBehaviour:
   stunDurationSec: 2
   invincibleSecAfterRecoverFromStun: 1.5
   selectDirectionArrowThreshold: 0.3
+  precedeThrowDirectionInputSec: 0.2
   holdableDistance: 2.5
   additionalBlinkTicketOnDefeatDesire: 1
   blinkTicketCount: 0

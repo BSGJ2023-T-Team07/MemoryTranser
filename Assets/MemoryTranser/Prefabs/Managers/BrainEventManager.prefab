@@ -49,6 +49,6 @@ MonoBehaviour:
   noEventDurationSec: 15
   blindDurationSec: 15
   desireOutbreakDurationSec: 15
-  invertControlDurationSec: 15
+  invertControlDurationSec: 8
   achievementOfStudyDurationSec: 5
   feverTimeDurationSec: 6

@@ -4144,7 +4144,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8700833956803179272, guid: 1bc42f9c5636d0740879db5ba6e6f85a, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7744,7 +7744,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4581010340769217123, guid: 70740b46c3cea514288136fb49b440ff, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6745425310972273930, guid: 70740b46c3cea514288136fb49b440ff, type: 3}
       propertyPath: m_Volume
@@ -8739,7 +8739,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5057982732802318050, guid: 6bdb243284348a847b3854ceb4aa5cf1, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -10750,9 +10750,93 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6063816613071003109, guid: 371bab362cfe1324c841c0735fa15d25, type: 3}
+      propertyPath: fairyWalkSpeedPict
+      value: 
+      objectReference: {fileID: 898208464}
+    - target: {fileID: 6063816613071003109, guid: 371bab362cfe1324c841c0735fa15d25, type: 3}
       propertyPath: fairyWalkSpeedSlider
       value: 
       objectReference: {fileID: 1893319140}
+    - target: {fileID: 6063816613071003109, guid: 371bab362cfe1324c841c0735fa15d25, type: 3}
+      propertyPath: fairyWalkSpeedGradient.ctime1
+      value: 19082
+      objectReference: {fileID: 0}
+    - target: {fileID: 6063816613071003109, guid: 371bab362cfe1324c841c0735fa15d25, type: 3}
+      propertyPath: fairyWalkSpeedGradient.ctime2
+      value: 33153
+      objectReference: {fileID: 0}
+    - target: {fileID: 6063816613071003109, guid: 371bab362cfe1324c841c0735fa15d25, type: 3}
+      propertyPath: fairyWalkSpeedGradient.ctime3
+      value: 51079
+      objectReference: {fileID: 0}
+    - target: {fileID: 6063816613071003109, guid: 371bab362cfe1324c841c0735fa15d25, type: 3}
+      propertyPath: fairyWalkSpeedGradient.ctime4
+      value: 65535
+      objectReference: {fileID: 0}
+    - target: {fileID: 6063816613071003109, guid: 371bab362cfe1324c841c0735fa15d25, type: 3}
+      propertyPath: fairyWalkSpeedGradient.key0.b
+      value: 0.18396229
+      objectReference: {fileID: 0}
+    - target: {fileID: 6063816613071003109, guid: 371bab362cfe1324c841c0735fa15d25, type: 3}
+      propertyPath: fairyWalkSpeedGradient.key0.g
+      value: 0.97359097
+      objectReference: {fileID: 0}
+    - target: {fileID: 6063816613071003109, guid: 371bab362cfe1324c841c0735fa15d25, type: 3}
+      propertyPath: fairyWalkSpeedGradient.key0.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6063816613071003109, guid: 371bab362cfe1324c841c0735fa15d25, type: 3}
+      propertyPath: fairyWalkSpeedGradient.key1.b
+      value: 0.6274117
+      objectReference: {fileID: 0}
+    - target: {fileID: 6063816613071003109, guid: 371bab362cfe1324c841c0735fa15d25, type: 3}
+      propertyPath: fairyWalkSpeedGradient.key1.g
+      value: 0.8962264
+      objectReference: {fileID: 0}
+    - target: {fileID: 6063816613071003109, guid: 371bab362cfe1324c841c0735fa15d25, type: 3}
+      propertyPath: fairyWalkSpeedGradient.key1.r
+      value: 0.15641688
+      objectReference: {fileID: 0}
+    - target: {fileID: 6063816613071003109, guid: 371bab362cfe1324c841c0735fa15d25, type: 3}
+      propertyPath: fairyWalkSpeedGradient.key2.b
+      value: 0.27189332
+      objectReference: {fileID: 0}
+    - target: {fileID: 6063816613071003109, guid: 371bab362cfe1324c841c0735fa15d25, type: 3}
+      propertyPath: fairyWalkSpeedGradient.key2.g
+      value: 0.114587024
+      objectReference: {fileID: 0}
+    - target: {fileID: 6063816613071003109, guid: 371bab362cfe1324c841c0735fa15d25, type: 3}
+      propertyPath: fairyWalkSpeedGradient.key2.r
+      value: 0.9716981
+      objectReference: {fileID: 0}
+    - target: {fileID: 6063816613071003109, guid: 371bab362cfe1324c841c0735fa15d25, type: 3}
+      propertyPath: fairyWalkSpeedGradient.key3.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6063816613071003109, guid: 371bab362cfe1324c841c0735fa15d25, type: 3}
+      propertyPath: fairyWalkSpeedGradient.key3.g
+      value: 0.48627448
+      objectReference: {fileID: 0}
+    - target: {fileID: 6063816613071003109, guid: 371bab362cfe1324c841c0735fa15d25, type: 3}
+      propertyPath: fairyWalkSpeedGradient.key3.r
+      value: 0.7781185
+      objectReference: {fileID: 0}
+    - target: {fileID: 6063816613071003109, guid: 371bab362cfe1324c841c0735fa15d25, type: 3}
+      propertyPath: fairyWalkSpeedGradient.key4.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6063816613071003109, guid: 371bab362cfe1324c841c0735fa15d25, type: 3}
+      propertyPath: fairyWalkSpeedGradient.key4.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6063816613071003109, guid: 371bab362cfe1324c841c0735fa15d25, type: 3}
+      propertyPath: fairyWalkSpeedGradient.key4.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6063816613071003109, guid: 371bab362cfe1324c841c0735fa15d25, type: 3}
+      propertyPath: fairyWalkSpeedGradient.m_NumColorKeys
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 6779783320554524971, guid: 371bab362cfe1324c841c0735fa15d25, type: 3}
       propertyPath: m_Name
       value: FairyWalkSpeedShower

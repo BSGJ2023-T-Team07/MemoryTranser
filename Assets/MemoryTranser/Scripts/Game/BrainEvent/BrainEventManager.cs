@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using MemoryTranser.Scripts.Game.GameManagers;
 using MemoryTranser.Scripts.Game.UI.Playing;
+using MemoryTranser.Scripts.Game.Util;
 using UniRx;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -38,6 +39,8 @@ namespace MemoryTranser.Scripts.Game.BrainEvent {
         private int _currentBrainEventIndex = 0;
         private BrainEventType _nextBrainEvent;
 
+        private AliasMethod _brainEventSelector;
+
         #region eventの定義
 
         private readonly ReactiveProperty<BrainEventType> _onBrainEventTransition = new();
@@ -50,6 +53,11 @@ namespace MemoryTranser.Scripts.Game.BrainEvent {
         #endregion
 
         #region Unityから呼ばれる
+
+        private void Awake() {
+            _brainEventSelector = new AliasMethod();
+            _brainEventSelector.Constructor(new[] { 10f, 9f, 3f, 3f, 20f, 5f });
+        }
 
         private void Update() {
             if (_remainingTimeForReSelection > 0f) {
@@ -91,7 +99,7 @@ namespace MemoryTranser.Scripts.Game.BrainEvent {
             BrainEventType nextBrainEvent;
             //1つ前にギミックが発生していたら、何も起きない
             if (GetCurrentBrainEvent() == BrainEventType.None) {
-                nextBrainEvent = (BrainEventType)Random.Range(0, (int)BrainEventType.Count);
+                nextBrainEvent = (BrainEventType)_brainEventSelector.Roll();
             }
             else {
                 nextBrainEvent = BrainEventType.None;
